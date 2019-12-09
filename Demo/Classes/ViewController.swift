@@ -1,0 +1,70 @@
+//
+//  ViewController.swift
+//  VXWalkthrough
+//
+//  Created by Graham Lancashire on 09.12.19.
+//
+
+import Foundation
+import UIKit
+
+class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
+    override public func viewDidLoad() {
+        super.viewDidLoad()
+
+        if !VXWalkthroughViewController.walkthroughShown() {
+            // this is to avoid timing issues
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
+                // show the walkthrough
+                self.showWalkthrough()
+            })
+        }
+    }
+    @IBAction func present() {
+        showWalkthrough()
+    }
+    func showWalkthrough() {
+        let backgroundColor = UIColor(red: 167.0 / 255.0, green: 131.0 / 255.0, blue: 82.0 / 255.0, alpha: 1.0)
+
+        // create the walkthough controller
+        if let walkthrough = VXWalkthroughViewController.create(delegate: self, backgroundColor: backgroundColor) {
+            // this is the default
+            //    walkthrough.roundImages = YES;
+
+            // this uses full screen images
+            //    walkthrough.roundImages = NO;
+            //    walkthrough.pageStoryboardID = @"WalkthroughPageFull";
+
+            // show it
+            walkthrough.modalPresentationStyle = .fullScreen
+            self.present(walkthrough, animated: true)
+        }
+
+    }
+
+    func walkthroughCloseButtonPressed(_ sender: Any?) {
+        // delegate for handling close button
+        dismiss(animated: true)
+    }
+    func walkthroughNextButtonPressed() {
+        //
+    }
+
+    func walkthroughPrevButtonPressed() {
+        //
+    }
+
+    func walkthroughPageDidChange(_ pageNumber: Int) {
+        //
+    }
+
+    func walkthroughActionButtonPressed(_ pSender: Any?, withOptions pOptions: [AnyHashable : Any]?) {
+        //
+    }
+
+
+    override var shouldAutorotate: Bool {
+        return true
+    }
+
+}
