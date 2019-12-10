@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @objc
-protocol VXWalkthroughViewControllerDelegate: NSObjectProtocol {
+public protocol VXWalkthroughViewControllerDelegate: NSObjectProtocol {
     @objc optional func walkthroughCloseButtonPressed(_ sender: Any?) // If the skipRequest(sender:) action is connected to a button, this function is called when that button is pressed.
     @objc optional func walkthroughNextButtonPressed() //
     @objc optional func walkthroughPrevButtonPressed() //
@@ -21,7 +21,7 @@ protocol VXWalkthroughViewControllerDelegate: NSObjectProtocol {
 // The walkthrough page represents any page added to the Walkthrough.
 // At the moment it's only used to perform custom animations on didScroll.
 @objc
-protocol VXWalkthroughPage: AnyObject {
+public protocol VXWalkthroughPage: AnyObject {
     // While sliding to the "next" slide (from right to left), the "current" slide changes its offset from 1.0 to 2.0 while the "next" slide changes it from 0.0 to 1.0
     // While sliding to the "previous" slide (left to right), the current slide changes its offset from 1.0 to 0.0 while the "previous" slide changes it from 2.0 to 1.0
     // The other pages update their offsets whith values like 2.0, 3.0, -2.0... depending on their positions and on the status of the walkthrough
@@ -30,31 +30,31 @@ protocol VXWalkthroughPage: AnyObject {
     var key: String? { get }
 }
 
-class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
+public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
     // - MARK: Constants
-    static let kTitle = "title"
-    static let kImage = "image"
-    static let kStoryBoardID = "storyboardID"
-    static let kOptions = "options"
+    public static let kTitle = "title"
+    public static let kImage = "image"
+    public static let kStoryBoardID = "storyboardID"
+    public static let kOptions = "options"
 
-    static let kPickerValue = "pickerValue"
-    static let kLoginValue = "loginValue"
-    static let kEmailValue = "emailValue"
-    static let kPasswordValue = "passwordValue"
+    public static let kPickerValue = "pickerValue"
+    public static let kLoginValue = "loginValue"
+    public static let kEmailValue = "emailValue"
+    public static let kPasswordValue = "passwordValue"
 
-    static let kEmailPrompt = "emailPrompt"
-    static let kLoginPrompt = "loginPrompt"
-    static let kPasswordPrompt = "passwordPrompt"
-    static let kButtonTitle = "buttonTitle"
-    static let kPlaceholderValue = "placeholderValue"
-    static let kIsScanEnabled = "scanenabled"
+    public static let kEmailPrompt = "emailPrompt"
+    public static let kLoginPrompt = "loginPrompt"
+    public static let kPasswordPrompt = "passwordPrompt"
+    public static let kButtonTitle = "buttonTitle"
+    public static let kPlaceholderValue = "placeholderValue"
+    public static let kIsScanEnabled = "scanenabled"
 
-    static let kSuccess = "success"
-    static let kError = "error"
+    public static let kSuccess = "success"
+    public static let kError = "error"
 
-    static let kKey = "key"
-    static let kSort = "sort"
-    static let kAvailabe = "available"
+    public static let kKey = "key"
+    public static let kSort = "sort"
+    public static let kAvailabe = "available"
 
     // - MARK: Walkthrough Delegate
     // This delegate performs basic operations such as dismissing the Walkthrough or call whatever action on page change.
@@ -164,7 +164,7 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
        UserDefaults.standard.set(true, forKey: startInfoKey)
        UserDefaults.standard.synchronize()
     }
-    class func walkthroughShown() -> Bool {
+    public class func walkthroughShown() -> Bool {
        // check if the startup info has been shown for the current release
        let appVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String
        let startInfoKey = "vxwalkthroughshown_\(appVersion ?? "")"
@@ -174,7 +174,7 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
        return walkthroughShown
     }
 
-    class func create(delegate: VXWalkthroughViewControllerDelegate, backgroundColor: UIColor?, styles: [String : Any]? = nil) -> VXWalkthroughViewController? {
+    public class func create(delegate: VXWalkthroughViewControllerDelegate, backgroundColor: UIColor?, styles: [String : Any]? = nil) -> VXWalkthroughViewController? {
         let bundle = Bundle(for: VXWalkthroughViewController.self)
 
         let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
@@ -191,7 +191,7 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
     }
 
 
-     func createPageViewController(_ key: String, item: [String : Any]?) -> VXWalkthroughPageViewController? {
+     public func createPageViewController(_ key: String, item: [String : Any]?) -> VXWalkthroughPageViewController? {
         let bundle = Bundle(for: self.classForCoder)
 
         let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
@@ -210,7 +210,7 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
         return nil
     }
 
-    func createItem(_ key: String, item: [String : Any]?) -> [String : Any]? {
+    public func createItem(_ key: String, item: [String : Any]?) -> [String : Any]? {
         let text = NSLocalizedString(key, comment: "")
         let buttonTitle = NSLocalizedString(key , comment: "")
 
@@ -404,7 +404,7 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
         pageControl?.isHidden = controllers.count <= 1
     }
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         for i in 0..<controllers.count {
             if let vc = controllers[i] as? VXWalkthroughPage{
                 let mx = ((scrollView.contentOffset.x + view.bounds.size.width) - (view.bounds.size.width * CGFloat(i))) / view.bounds.size.width
@@ -425,15 +425,15 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
         }
     }
 
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         updateUI()
     }
 
-    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         updateUI()
     }
 
-    override var shouldAutorotate: Bool {
+    override public var shouldAutorotate: Bool {
         return false
     }
     fileprivate func adjustOffsetForTransition() {

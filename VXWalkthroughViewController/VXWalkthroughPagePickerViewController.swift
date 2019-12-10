@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewController {
+public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewController {
     @IBOutlet weak var previousButton: UIButton?
     @IBOutlet weak var nextButton: UIButton?
     @IBOutlet weak var actionButton: UIButton?
@@ -53,7 +53,7 @@ class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewController {
         return "WalkthroughPagePicker"
     }
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         self.nextButton?.backgroundColor = self.actionButton?.backgroundColor
@@ -69,7 +69,7 @@ class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewController {
         self.previousButton?.alpha = 1.0
     }
 
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         self.actionButton?.layer.masksToBounds = true

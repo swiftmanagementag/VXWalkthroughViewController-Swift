@@ -8,13 +8,13 @@
 import Foundation
 import UIKit
 
-enum VXWalkthroughAnimationType : Int {
+public enum VXWalkthroughAnimationType : Int {
     case linear = 0
     case curve = 1
     case zoom = 2
     case inOut = 3
 }
-class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
+public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
     var animationType = VXWalkthroughAnimationType.inOut
     var subviewsSpeed = [CGPoint]()
      // Array of views' tags that should not be animated during the scroll/transition
@@ -34,7 +34,7 @@ class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
             }
         }
     }
-    var key: String?
+    public var key: String?
     var item: [String : Any]? {
         didSet {
             if let item = item {
@@ -160,7 +160,7 @@ class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
 
     }
 
-    func walkthroughDidScroll(_ position: CGFloat, withOffset offset: CGFloat) {
+    public func walkthroughDidScroll(_ position: CGFloat, withOffset offset: CGFloat) {
         for i in 0..<subviewsSpeed.count {
             // Perform Transition/Scale/Rotate animations
             switch animationType {

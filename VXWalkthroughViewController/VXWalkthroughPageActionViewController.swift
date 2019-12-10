@@ -8,10 +8,10 @@
 import Foundation
 import UIKit
 
-class VXWalkthroughPageActionViewController: VXWalkthroughPageViewController {
+public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewController {
     @IBOutlet weak var actionButton: UIButton?
 
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         self.actionButton?.layer.masksToBounds = true

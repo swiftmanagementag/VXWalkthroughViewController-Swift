@@ -11,7 +11,7 @@ import UIKit
 import QRCodeReader
 #endif
 
-class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewController, UITextFieldDelegate {
+public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewController, UITextFieldDelegate {
     @IBOutlet weak var loginField: UITextField?
     @IBOutlet weak var passwordField: UITextField?
     @IBOutlet weak var loginLabel: UILabel?
@@ -32,7 +32,7 @@ class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewController, UIT
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         self.keyboardIsVisible = false
 
@@ -69,7 +69,7 @@ class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewController, UIT
 
     }
 
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         self.actionButton?.layer.masksToBounds = true

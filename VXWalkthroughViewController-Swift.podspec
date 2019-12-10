@@ -10,11 +10,12 @@ Pod::Spec.new do |s|
   s.source       	= { :git => 'https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift.git', :tag => s.version.to_s }
   s.platform     	= :ios, '11.0'
   s.swift_version   = '5.0'
+  s.module_name   = 'VXWalkthrough'
   s.source_files 	= 'VXWalkthroughViewController/**/*.swift'
   s.resources 		= 'VXWalkthroughViewController/**/*.{bundle,xib,png,lproj,storyboard}'
-  s.resource_bundles = {
-    'VXWalkthroughViewController' => ['VXWalkthroughViewController/**/*.{bundle,xib,png,lproj,storyboard}']
-  }
+  #s.resource_bundles = {
+  #  'VXWalkthroughViewController' => ['VXWalkthroughViewController/**/*.{bundle,xib,png,lproj,storyboard}']
+  #}
   s.requires_arc 	= true
   s.framework		= 'QuartzCore'
   s.dependency    'QRCodeReader.swift', '~> 10.1.0'

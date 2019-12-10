@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewController, UITextFieldDelegate {
+public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewController, UITextFieldDelegate {
     @IBOutlet weak var emailField: UITextField?
     @IBOutlet weak var emailLabel: UILabel?
     @IBOutlet weak var messageLabel: UILabel?
@@ -25,7 +25,7 @@ class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewController, UI
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         self.keyboardIsVisible = false
 
@@ -44,7 +44,7 @@ class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewController, UI
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         self.actionButton?.layer.masksToBounds = true
