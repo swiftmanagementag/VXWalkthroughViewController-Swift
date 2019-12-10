@@ -34,6 +34,24 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
             // this uses full screen images
             //    walkthrough.roundImages = NO;
             //    walkthrough.pageStoryboardID = @"WalkthroughPageFull";
+            walkthrough.populate()
+
+           var item = walkthrough.createItem("ITWALKTHROUGH_LOGIN", item: [
+                VXWalkthroughViewController.kStoryBoardID: VXWalkthroughPageLoginViewController.storyboardID,
+                VXWalkthroughViewController.kLoginPrompt:  NSLocalizedString("Email", comment: "Email"),
+                VXWalkthroughViewController.kPasswordPrompt: NSLocalizedString("Password", comment: "Password"),
+                VXWalkthroughViewController.kPlaceholderValue: "xxxx-xxxx-xxxx"
+                ])
+
+            item?[VXWalkthroughViewController.kImage] = "walkthrough_0"
+            item?[VXWalkthroughViewController.kTitle] = "Long Title"
+            item?[VXWalkthroughViewController.kSort] = 1
+            item?[VXWalkthroughViewController.kIsScanEnabled] = true
+
+            walkthrough.items[VXWalkthroughViewController.kKey] = item
+            //if let vc = self.createPageViewController("", item: ) {
+            //    walkthrough.add(vc)
+            //}
 
             // show it
             walkthrough.modalPresentationStyle = .fullScreen
@@ -58,7 +76,7 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
         //
     }
 
-    func walkthroughActionButtonPressed(_ pSender: Any?, withOptions pOptions: [AnyHashable : Any]?) {
+    func walkthroughActionButtonPressed(_ pSender: Any?, item: [String : Any]?) {
         //
     }
 

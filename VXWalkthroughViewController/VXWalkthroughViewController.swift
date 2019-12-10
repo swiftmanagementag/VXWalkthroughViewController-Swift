@@ -8,26 +8,30 @@
 import Foundation
 import UIKit
 
+@objc
 protocol VXWalkthroughViewControllerDelegate: NSObjectProtocol {
-    func walkthroughCloseButtonPressed(_ sender: Any?) // If the skipRequest(sender:) action is connected to a button, this function is called when that button is pressed.
-    func walkthroughNextButtonPressed() //
-    func walkthroughPrevButtonPressed() //
-    func walkthroughPageDidChange(_ pageNumber: Int) // Called when current page changes
-    func walkthroughActionButtonPressed(_ pSender: Any?, withOptions pOptions: [AnyHashable : Any]?)
+    @objc optional func walkthroughCloseButtonPressed(_ sender: Any?) // If the skipRequest(sender:) action is connected to a button, this function is called when that button is pressed.
+    @objc optional func walkthroughNextButtonPressed() //
+    @objc optional func walkthroughPrevButtonPressed() //
+    @objc optional func walkthroughPageDidChange(_ pageNumber: Int) // Called when current page changes
+    @objc optional func walkthroughActionButtonPressed(_ pSender: Any?, item: [String : Any]?)
 }
+
 // Walkthrough Page:
 // The walkthrough page represents any page added to the Walkthrough.
 // At the moment it's only used to perform custom animations on didScroll.
-
+@objc
 protocol VXWalkthroughPage: AnyObject {
     // While sliding to the "next" slide (from right to left), the "current" slide changes its offset from 1.0 to 2.0 while the "next" slide changes it from 0.0 to 1.0
     // While sliding to the "previous" slide (left to right), the current slide changes its offset from 1.0 to 0.0 while the "previous" slide changes it from 2.0 to 1.0
     // The other pages update their offsets whith values like 2.0, 3.0, -2.0... depending on their positions and on the status of the walkthrough
     // This value can be used on the previous, current and next page to perform custom animations on page's subviews.
-    func walkthroughDidScroll(_ position: CGFloat, withOffset offset: CGFloat) // Called when the main Scrollview...scroll
+    @objc func walkthroughDidScroll(_ position: CGFloat, withOffset offset: CGFloat) // Called when the main Scrollview...scroll
+    var key: String? { get }
 }
 
 class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
+    // - MARK: Constants
     static let kTitle = "title"
     static let kImage = "image"
     static let kStoryBoardID = "storyboardID"
@@ -52,20 +56,29 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
     static let kSort = "sort"
     static let kAvailabe = "available"
 
-    // Walkthrough Delegate:
+    // - MARK: Walkthrough Delegate
     // This delegate performs basic operations such as dismissing the Walkthrough or call whatever action on page change.
     // Probably the Walkthrough is presented by this delegate.
     weak var delegate: VXWalkthroughViewControllerDelegate?
-    var group: String?
-    // TODO: If you need a page control, next or prev buttons add them via IB and connect them with these Outlets
-    @IBOutlet var pageControl: UIPageControl!
-    @IBOutlet var nextButton: UIButton!
-    @IBOutlet var prevButton: UIButton!
-    @IBOutlet var closeButton: UIButton!
-    var roundImages = false
-    var styles = [String : Any]()
+
+    // - MARK: Outlets
+    // you need a page control, next or prev buttons add them via IB and connect them with these Outlets
+    @IBOutlet var pageControl: UIPageControl?
+    @IBOutlet var nextButton: UIButton?
+    @IBOutlet var prevButton: UIButton?
+    @IBOutlet var closeButton: UIButton?
+
+    // - MARK: Properties
     var items = [String : Any]()
+
+    var group: String?
+    var roundImages = false
     var backgroundColor: UIColor?
+    var styles = [String : Any]()
+    var controllers = [UIViewController]()
+    var lastViewConstraints = [NSLayoutConstraint]()
+
+
     lazy var scrollview: UIScrollView = {
         let v = UIScrollView()
         v.showsHorizontalScrollIndicator = false
@@ -74,7 +87,8 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
         v.delegate = self
         v.translatesAutoresizingMaskIntoConstraints = false
 
-        self.view.insertSubview(v, at: 0) //scrollview is inserted as first view of the hierarchy
+         //scrollview is inserted as first view of the hierarchy
+        self.view.insertSubview(v, at: 0)
 
         self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[scrollview]-0-|", options: [], metrics: nil, views: [
             "scrollview": v
@@ -87,9 +101,6 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
         return v
     }()
 
-    var controllers = [VXWalkthroughPageViewController]()
-    var lastViewConstraint = [NSLayoutConstraint]()
-
     class var storyboardName: String {
         return "VXWalkthroughViewController"
     }
@@ -98,22 +109,69 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
         return "Walkthrough"
     }
     // The index of the current page (readonly)
-
-    var currentPage: Int {
-        return Int(self.scrollview.contentOffset.x / view.bounds.size.width)
+    open var currentPage: Int {
+        get{
+            let page = Int((scrollview.contentOffset.x / view.bounds.size.width))
+            return page
+        }
     }
 
-    var currentController: VXWalkthroughPageViewController? {
-        if self.currentPage < controllers.count {
+    open var currentViewController: UIViewController {
+        get{
+            let currentPage = self.currentPage
             return controllers[currentPage]
         }
-        return nil
     }
 
+    open var numberOfPages: Int{
+        get {
+            return self.controllers.count
+        }
+    }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+
         self.roundImages = true
+    }
+    override public func viewDidLoad() {
+       super.viewDidLoad()
+        if let i = UIImage(named: "VXWalkthroughController.bundle/VXWalkthroughViewControllerLeftArrow@2x.png") {
+            self.prevButton?.setImage(i, for: .normal)
+        }
+        if let i = UIImage(named: "VXWalkthroughController.bundle/VXWalkthroughViewControllerRightArrow@2x.png") {
+            self.nextButton?.setImage(i, for: .normal)
+        }
+        self.pageControl?.addTarget(self, action: #selector(pageControlDidTouch), for: UIControl.Event.touchUpInside)
+
+       // load walkthrough
+       self.load()
+       self.roundImages = true
+
+    }
+
+    override public func viewWillAppear(_ animated: Bool) {
+       super.viewWillAppear(animated)
+
+        self.pageControl?.numberOfPages = self.controllers.count
+        self.pageControl?.currentPage = 0
+
+        self.updateUI()
+
+       let appVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String
+       let startInfoKey = "vxwalkthroughshown_\(appVersion ?? "")"
+
+       UserDefaults.standard.set(true, forKey: startInfoKey)
+       UserDefaults.standard.synchronize()
+    }
+    class func walkthroughShown() -> Bool {
+       // check if the startup info has been shown for the current release
+       let appVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String
+       let startInfoKey = "vxwalkthroughshown_\(appVersion ?? "")"
+
+       let walkthroughShown = UserDefaults.standard.bool(forKey: startInfoKey)
+
+       return walkthroughShown
     }
 
     class func create(delegate: VXWalkthroughViewControllerDelegate, backgroundColor: UIColor?, styles: [String : Any]? = nil) -> VXWalkthroughViewController? {
@@ -132,66 +190,33 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
         return walkthrough
     }
 
-    override public func viewDidLoad() {
-        super.viewDidLoad()
 
-        // load walkthrough
-        self.load()
-        self.roundImages = true
-
-    }
-
-    override public func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        self.pageControl.numberOfPages = self.controllers.count
-        self.pageControl.currentPage = 0
-        self.updateUI()
-
-        let appVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String
-        let startInfoKey = "vxwalkthroughshown_\(appVersion ?? "")"
-
-        UserDefaults.standard.set(true, forKey: startInfoKey)
-        UserDefaults.standard.synchronize()
-    }
-
-    class func walkthroughShown() -> Bool {
-        // check if the startup info has been shown for the current release
-        let appVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String
-        let startInfoKey = "vxwalkthroughshown_\(appVersion ?? "")"
-
-        let walkthroughShown = UserDefaults.standard.bool(forKey: startInfoKey)
-
-        return walkthroughShown
-    }
-
-
-    func createPageViewController(_ key: String, options: [String : Any]?) -> VXWalkthroughPageViewController? {
+     func createPageViewController(_ key: String, item: [String : Any]?) -> VXWalkthroughPageViewController? {
         let bundle = Bundle(for: self.classForCoder)
 
         let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
         //    stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: nil)
 
-        let storyboardID = (options?["storyboardID"] as? String) ?? VXWalkthroughPageViewController.storyboardID
+        let storyboardID = (item?["storyboardID"] as? String) ?? VXWalkthroughPageViewController.storyboardID
         if let vc = stb.instantiateViewController(withIdentifier: storyboardID) as? VXWalkthroughPageViewController {
             vc.styles = styles
             vc.roundImages = roundImages
             vc.parentController = self
-            vc.view.backgroundColor = backgroundColor
-
-            vc.item = options
+            vc.view.backgroundColor = self.backgroundColor
+            vc.view.isOpaque = false
+            vc.item = item
             return vc
         }
         return nil
     }
 
-    func createItem(_ key: String, options: [String : Any]?) -> [String : Any]? {
+    func createItem(_ key: String, item: [String : Any]?) -> [String : Any]? {
         let text = NSLocalizedString(key, comment: "")
         let buttonTitle = NSLocalizedString(key , comment: "")
 
         let imageName = key
 
-        let item: [String : Any] = [
+        let itemMore: [String : Any] = [
             VXWalkthroughViewController.kKey: key,
             VXWalkthroughViewController.kTitle: text,
             VXWalkthroughViewController.kImage: imageName,
@@ -199,17 +224,17 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
             VXWalkthroughViewController.kButtonTitle: buttonTitle
         ]
 
-        var itemResult = item
+        var itemResult = itemMore
 
-        if let options = options {
-            for (k, v) in options {
+        if let item = item {
+            for (k, v) in item {
                 itemResult[k] = v
             }
         }
         return itemResult
     }
 
-    func populate(useDefault: Bool = true) {
+    public func populate(useDefault: Bool = true) {
         self.items = [String : Any]()
 
         if useDefault {
@@ -256,7 +281,7 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
                 return v1 < v2
             }
             for item in itemsSorted {
-                if let vc = self.createPageViewController(item.key, options: item.value as? [String: Any]) {
+                if let vc = self.createPageViewController(item.key, item: item.value as? [String: Any]) {
                     add(vc)
                 }
             }
@@ -264,28 +289,39 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
 
         self.view.backgroundColor = backgroundColor
     }
-    func controller(key: String) -> VXWalkthroughPageViewController? {
+    func controller(key: String) -> UIViewController? {
         let controller = self.controllers.first { (vc) -> Bool in
-            vc.key == key
+            if let wvc = vc as? VXWalkthroughPage {
+                return wvc.key == key
+            } else {
+                return false
+            }
         }
         return controller
     }
-
     @IBAction func nextPage() {
         if currentPage + 1 < controllers.count {
-            delegate?.walkthroughNextButtonPressed()
-            var frame = scrollview.frame
-            frame.origin.x = CGFloat(self.currentPage + 1) * frame.size.width
-            scrollview.scrollRectToVisible(frame, animated: true)
+            delegate?.walkthroughNextButtonPressed?()
+            gotoPage(currentPage + 1)
         }
     }
 
     @IBAction func prevPage() {
         if currentPage > 0 {
-            delegate?.walkthroughPrevButtonPressed()
+            delegate?.walkthroughPrevButtonPressed?()
+            gotoPage(currentPage - 1)
 
+        }
+    }
+    @objc func pageControlDidTouch(){
+        if let pc = pageControl{
+           gotoPage(pc.currentPage)
+        }
+    }
+    fileprivate func gotoPage(_ page:Int){
+        if page < controllers.count{
             var frame = scrollview.frame
-            frame.origin.x = CGFloat(self.currentPage - 1) * frame.size.width
+            frame.origin.x = CGFloat(page) * frame.size.width
             scrollview.scrollRectToVisible(frame, animated: true)
         }
     }
@@ -293,70 +329,54 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
     // TODO: If you want to implement a "skip" option
     // connect a button to this IBAction and implement the delegate with the skipWalkthrough
     @IBAction func close(_ sender: Any) {
-        delegate?.walkthroughCloseButtonPressed(self)
+        delegate?.walkthroughCloseButtonPressed?(self)
     }
 
     // Add a new page to the walkthrough.
     // To have information about the current position of the page in the walkthrough add a UIVIewController which implements BWWalkthroughPage
 
-    func add(_ vc: VXWalkthroughPageViewController) {
+    func add(_ vc: UIViewController) {
         controllers.append(vc)
+        self.addChild(vc)
+        vc.didMove(toParent: self)
+
 
         // Setup the viewController view
         vc.view.translatesAutoresizingMaskIntoConstraints = false
         if let view = vc.view {
             scrollview.addSubview(view)
-        }
+            // Constraints
 
-        // Constraints
+            let metricDict: [String: Any] = [
+                "w": vc.view.bounds.size.width,
+                "h": vc.view.bounds.size.height
+            ]
+            let viewsDict: [String: Any] = [
+                "view": view,
+                "container": scrollview
+            ]
 
-        let metricDict = [
-            "w": NSNumber(value: Double(vc.view.bounds.size.width)),
-            "h": NSNumber(value: Double(vc.view.bounds.size.height))
-        ]
+            // - Generic cnst
+            scrollview.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[view(==container)]", options:[], metrics: metricDict, views: viewsDict))
+            scrollview.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[view(==container)]", options:[], metrics: metricDict, views: viewsDict))
+            scrollview.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]|", options:[], metrics: nil, views: viewsDict))
 
-        // - Generic cnst
-        if let view = vc.view {
-            vc.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[view(h)]", options: [], metrics: metricDict, views: [
-                "view": view
-            ]))
-            vc.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[view(w)]", options: [], metrics: metricDict, views: [
-                "view": view
-            ]))
-            scrollview.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]|", options: [], metrics: nil, views: [
-                "view": view
-            ]))
-        }
-        // cnst for position: 1st element
+            if controllers.count == 1 {
+                scrollview.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]", options:[], metrics: nil, views: ["view": view]))
 
-        if controllers.count == 1 {
-            if let view = vc.view {
-                scrollview.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]", options: [], metrics: nil, views: [
-                    "view": view
-                ]))
+            } else {
+                let previousVC = controllers[controllers.count - 2]
+                let previousView = previousVC.view
+
+                if let previousView = previousView {
+                    scrollview.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[previousView]-0-[view]", options:[], metrics: nil, views: ["previousView": previousView, "view": view]))
+                }
+                if !lastViewConstraints.isEmpty {
+                    scrollview.removeConstraints(lastViewConstraints)
+                }
+                lastViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:[view]-0-|", options:[], metrics: nil, views: ["view": view])
+                scrollview.addConstraints(lastViewConstraints)
             }
-
-            // cnst for position: other elements
-        } else {
-
-            let previousVC = controllers[controllers.count - 2]
-            let previousView = previousVC.view
-
-            if let previousView = previousView, let view = vc.view {
-                scrollview.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:[previousView]-0-[view]", options: [], metrics: nil, views: [
-                    "previousView": previousView,
-                    "view": view
-                ]))
-            }
-            if !lastViewConstraint.isEmpty {
-                scrollview.removeConstraints(lastViewConstraint)
-            }
-            if let view = vc.view {
-                lastViewConstraint = NSLayoutConstraint.constraints(withVisualFormat: "H:[view]-0-|", options: [], metrics: nil, views: [
-                    "view": view
-                ])
-            }
-            scrollview.addConstraints(lastViewConstraint)
         }
     }
 
@@ -364,30 +384,29 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
 
     func updateUI() {
         // Get the current page
-        pageControl.currentPage = currentPage
+        pageControl?.currentPage = currentPage
 
         // Notify delegate about the new page
-        delegate?.walkthroughPageDidChange(currentPage)
+        delegate?.walkthroughPageDidChange?(currentPage)
 
         // Hide/Show navigation buttons
         if currentPage == controllers.count - 1 || controllers.count == 1 {
-            nextButton.isHidden = true
+            nextButton?.isHidden = true
         } else {
-            nextButton.isHidden = false
+            nextButton?.isHidden = false
         }
 
         if currentPage == 0 || controllers.count == 1 {
-            prevButton.isHidden = true
+            prevButton?.isHidden = true
         } else {
-            prevButton.isHidden = false
+            prevButton?.isHidden = false
         }
-        pageControl.isHidden = controllers.count <= 1
+        pageControl?.isHidden = controllers.count <= 1
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         for i in 0..<controllers.count {
-            weak var vc = controllers[i]
-            if vc != nil {
+            if let vc = controllers[i] as? VXWalkthroughPage{
                 let mx = ((scrollView.contentOffset.x + view.bounds.size.width) - (view.bounds.size.width * CGFloat(i))) / view.bounds.size.width
 
                 // While sliding to the "next" slide (from right to left), the "current" slide changes its offset from 1.0 to 2.0 while the "next" slide changes it from 0.0 to 1.0
@@ -400,7 +419,7 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
 
                 // We animate only the previous, current and next page
                 if mx < 2 && mx > -2.0 {
-                    vc?.walkthroughDidScroll(scrollView.contentOffset.x, withOffset: mx)
+                    vc.walkthroughDidScroll(scrollView.contentOffset.x, withOffset: mx)
                 }
             }
         }
@@ -416,5 +435,24 @@ class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
 
     override var shouldAutorotate: Bool {
         return false
+    }
+    fileprivate func adjustOffsetForTransition() {
+
+        // Get the current page before the transition occurs, otherwise the new size of content will change the index
+        let currentPage = self.currentPage
+
+        let popTime = DispatchTime.now() + Double(Int64( Double(NSEC_PER_SEC) * 0.1 )) / Double(NSEC_PER_SEC)
+        DispatchQueue.main.asyncAfter(deadline: popTime) {
+            [weak self] in
+            self?.gotoPage(currentPage)
+        }
+    }
+
+    override open func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        adjustOffsetForTransition()
+    }
+
+    override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        adjustOffsetForTransition()
     }
 }

@@ -18,7 +18,6 @@
 		0AFAE2B31ADF95990016B912 /* info.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0AFAE2B21ADF95990016B912 /* info.txt */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		22473B9C133800DD00F497E6 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22473B9B133800DD00F497E6 /* MainWindow-iPad.xib */; };
 		22AAF0BF1831F5B300AB15C4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 22AAF0BE1831F5B300AB15C4 /* README.md */; };
 		28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
 		28F335F11007B36200424DE2 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* ViewController.xib */; };
@@ -27,6 +26,12 @@
 		473B3943239EC68300F694E0 /* VXWalkthroughViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473B3942239EC68300F694E0 /* VXWalkthroughViewController.swift */; };
 		473B3947239EC69F00F694E0 /* VXWalkthroughPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473B3946239EC69F00F694E0 /* VXWalkthroughPageViewController.swift */; };
 		473B3949239ECCB500F694E0 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 473B3948239ECCB500F694E0 /* Launch Screen.storyboard */; };
+		473B3957239F8CDA00F694E0 /* VXWalkthroughPageActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473B3956239F8CDA00F694E0 /* VXWalkthroughPageActionViewController.swift */; };
+		473B3959239F8CE800F694E0 /* VXWalkthroughPageLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473B3958239F8CE800F694E0 /* VXWalkthroughPageLoginViewController.swift */; };
+		473B395B239F8CF900F694E0 /* VXWalkthroughPagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473B395A239F8CF900F694E0 /* VXWalkthroughPagePickerViewController.swift */; };
+		473B395D239F8D0900F694E0 /* VXWalkthroughPageSignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473B395C239F8D0900F694E0 /* VXWalkthroughPageSignupViewController.swift */; };
+		473B395F239FADAC00F694E0 /* VXWalkthroughViewController-Swift.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 473B395E239FADAC00F694E0 /* VXWalkthroughViewController-Swift.podspec */; };
+		9324A34BDF042E6CC35BD4CD /* Pods_VXWalkthrough.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC6D05DFC2F8FE2484AAB32A /* Pods_VXWalkthrough.framework */; };
 		D5FA63C516A8707A0087531C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D5FA63C416A8707A0087531C /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
@@ -39,12 +44,10 @@
 		0A5661411A6826F10069B195 /* walkthrough_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = walkthrough_2.png; sourceTree = "<group>"; };
 		0A56615C1A682A470069B195 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		0A56615E1A6908CB0069B195 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = VXWalkthrough/Images.xcassets; sourceTree = "<group>"; };
-		0AA8BC9D1A441E6B0031E730 /* VXWalkthroughViewController.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = VXWalkthroughViewController.podspec; path = ../VXWalkthroughViewController.podspec; sourceTree = "<group>"; };
 		0AFAE2B21ADF95990016B912 /* info.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = info.txt; path = ../info.txt; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* VXWalkthrough.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VXWalkthrough.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		22473B9B133800DD00F497E6 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "Resources-iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		22AAF0BE1831F5B300AB15C4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		28AD735F0D9D9599002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		28F335F01007B36200424DE2 /* ViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ViewController.xib; path = ../ViewController.xib; sourceTree = "<group>"; };
@@ -53,10 +56,17 @@
 		473B3942239EC68300F694E0 /* VXWalkthroughViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VXWalkthroughViewController.swift; sourceTree = "<group>"; };
 		473B3946239EC69F00F694E0 /* VXWalkthroughPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VXWalkthroughPageViewController.swift; sourceTree = "<group>"; };
 		473B3948239ECCB500F694E0 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		473B3956239F8CDA00F694E0 /* VXWalkthroughPageActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VXWalkthroughPageActionViewController.swift; sourceTree = "<group>"; };
+		473B3958239F8CE800F694E0 /* VXWalkthroughPageLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VXWalkthroughPageLoginViewController.swift; sourceTree = "<group>"; };
+		473B395A239F8CF900F694E0 /* VXWalkthroughPagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VXWalkthroughPagePickerViewController.swift; sourceTree = "<group>"; };
+		473B395C239F8D0900F694E0 /* VXWalkthroughPageSignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VXWalkthroughPageSignupViewController.swift; sourceTree = "<group>"; };
+		473B395E239FADAC00F694E0 /* VXWalkthroughViewController-Swift.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "VXWalkthroughViewController-Swift.podspec"; path = "../VXWalkthroughViewController-Swift.podspec"; sourceTree = "<group>"; };
 		6DAD2E4EAB184F72ACE29999 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D1107310486CEB800E47090 /* VXWalkthrough-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "VXWalkthrough-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		9B86E60F9BEC99E6E3A6A6BA /* Pods-VXWalkthrough.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VXWalkthrough.debug.xcconfig"; path = "Target Support Files/Pods-VXWalkthrough/Pods-VXWalkthrough.debug.xcconfig"; sourceTree = "<group>"; };
 		A0667BBC457D4307AC51AC26 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		D5FA63C416A8707A0087531C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		EC6D05DFC2F8FE2484AAB32A /* Pods_VXWalkthrough.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VXWalkthrough.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +77,7 @@
 				0A56615D1A682A470069B195 /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
+				9324A34BDF042E6CC35BD4CD /* Pods_VXWalkthrough.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,37 +124,33 @@
 			isa = PBXGroup;
 			children = (
 				0A5661311A6825850069B195 /* VXWalkthroughController.bundle */,
-				473B3946239EC69F00F694E0 /* VXWalkthroughPageViewController.swift */,
 				473B3942239EC68300F694E0 /* VXWalkthroughViewController.swift */,
+				473B3946239EC69F00F694E0 /* VXWalkthroughPageViewController.swift */,
+				473B3956239F8CDA00F694E0 /* VXWalkthroughPageActionViewController.swift */,
+				473B3958239F8CE800F694E0 /* VXWalkthroughPageLoginViewController.swift */,
+				473B395A239F8CF900F694E0 /* VXWalkthroughPagePickerViewController.swift */,
+				473B395C239F8D0900F694E0 /* VXWalkthroughPageSignupViewController.swift */,
 				0A5661361A6825850069B195 /* VXWalkthroughViewController.storyboard */,
 			);
 			name = VXWalkthroughViewController;
 			path = ../VXWalkthroughViewController;
 			sourceTree = SOURCE_ROOT;
 		};
-		22473B9A133800DC00F497E6 /* Resources-iPad */ = {
-			isa = PBXGroup;
-			children = (
-				22473B9B133800DD00F497E6 /* MainWindow-iPad.xib */,
-			);
-			name = "Resources-iPad";
-			sourceTree = "<group>";
-		};
-		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
+		29B97314FDCFA39411CA2CEA = {
 			isa = PBXGroup;
 			children = (
 				0AFAE2B21ADF95990016B912 /* info.txt */,
-				0AA8BC9D1A441E6B0031E730 /* VXWalkthroughViewController.podspec */,
+				473B395E239FADAC00F694E0 /* VXWalkthroughViewController-Swift.podspec */,
 				22AAF0BE1831F5B300AB15C4 /* README.md */,
 				0A56613B1A68267C0069B195 /* Localizable.strings */,
 				0A56613D1A6826F10069B195 /* images */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				2214586C13132D3200ED7D83 /* VXWalkthroughViewController */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
-				22473B9A133800DC00F497E6 /* Resources-iPad */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				A0667BBC457D4307AC51AC26 /* Pods.xcconfig */,
+				B924E9540214FF6A22F72EF8 /* Pods */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -167,8 +174,18 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				6DAD2E4EAB184F72ACE29999 /* libPods.a */,
+				EC6D05DFC2F8FE2484AAB32A /* Pods_VXWalkthrough.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B924E9540214FF6A22F72EF8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9B86E60F9BEC99E6E3A6A6BA /* Pods-VXWalkthrough.debug.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -178,9 +195,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "VXWalkthrough" */;
 			buildPhases = (
+				2716621C20F4FAD1B96AD54B /* [CP] Check Pods Manifest.lock */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				37B57168149FF430BF896902 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -218,7 +237,8 @@
 				en,
 				ja,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
+			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -241,24 +261,71 @@
 				473B3949239ECCB500F694E0 /* Launch Screen.storyboard in Resources */,
 				0AFAE2B31ADF95990016B912 /* info.txt in Resources */,
 				28F335F11007B36200424DE2 /* ViewController.xib in Resources */,
-				22473B9C133800DD00F497E6 /* MainWindow-iPad.xib in Resources */,
 				0A56613C1A68267C0069B195 /* Localizable.strings in Resources */,
 				0A56615F1A6908CB0069B195 /* Images.xcassets in Resources */,
 				22AAF0BF1831F5B300AB15C4 /* README.md in Resources */,
 				D5FA63C516A8707A0087531C /* Default-568h@2x.png in Resources */,
+				473B395F239FADAC00F694E0 /* VXWalkthroughViewController-Swift.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2716621C20F4FAD1B96AD54B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VXWalkthrough-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		37B57168149FF430BF896902 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VXWalkthrough/Pods-VXWalkthrough-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/QRCodeReader.swift/QRCodeReader.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/QRCodeReader.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VXWalkthrough/Pods-VXWalkthrough-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				473B3957239F8CDA00F694E0 /* VXWalkthroughPageActionViewController.swift in Sources */,
+				473B395D239F8D0900F694E0 /* VXWalkthroughPageSignupViewController.swift in Sources */,
 				473B3941239EC55400F694E0 /* ViewController.swift in Sources */,
 				473B3947239EC69F00F694E0 /* VXWalkthroughPageViewController.swift in Sources */,
 				473B393F239EC53100F694E0 /* AppDelegate.swift in Sources */,
+				473B395B239F8CF900F694E0 /* VXWalkthroughPagePickerViewController.swift in Sources */,
+				473B3959239F8CE800F694E0 /* VXWalkthroughPageLoginViewController.swift in Sources */,
 				473B3943239EC68300F694E0 /* VXWalkthroughViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,6 +335,7 @@
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9B86E60F9BEC99E6E3A6A6BA /* Pods-VXWalkthrough.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -279,7 +347,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "VXWalkthrough-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ch.swift.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = VXWalkthrough;
@@ -318,14 +386,13 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = VX_NO_SLASH;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};

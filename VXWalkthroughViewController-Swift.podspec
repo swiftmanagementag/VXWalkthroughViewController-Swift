@@ -1,4 +1,4 @@
-@version = "1.0.19"
+@version = "1.1.19"
 
 Pod::Spec.new do |s|
   s.name         	= 'VXWalkthroughViewController-Swift'
@@ -16,6 +16,5 @@ Pod::Spec.new do |s|
   }
   s.requires_arc 	= true
   s.framework		= 'QuartzCore'
-  s.dependency    'Slash', '~> 0.1'
-  s.dependency    'QRCodeReaderViewController', '~> 4.0.2'
+  s.dependency    'QRCodeReader.swift', '~> 10.1.0'
 end

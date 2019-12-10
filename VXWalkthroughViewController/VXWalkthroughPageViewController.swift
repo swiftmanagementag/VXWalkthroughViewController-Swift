@@ -15,10 +15,16 @@ enum VXWalkthroughAnimationType : Int {
     case inOut = 3
 }
 class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
-    var speed = CGPoint.zero
-    var speedVariance = CGPoint.zero
     var animationType = VXWalkthroughAnimationType.inOut
-    var animateAlpha = false
+    var subviewsSpeed = [CGPoint]()
+     // Array of views' tags that should not be animated during the scroll/transition
+    var notAnimatableViews:[Int] = []
+
+    var speed = CGPoint(x: 1.0, y: 0.5)
+    var speedVariance = CGPoint(x: 0.8, y:0.5)
+    var animateAlpha = true
+    var roundImages = true
+
     var pageIndex = 0
     var imageName: String? {
         didSet {
@@ -50,23 +56,12 @@ class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
         }
     }
     var styles: [String : Any]?
-    var roundImages = false
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var titleView: UILabel!
     weak var parentController: VXWalkthroughViewController?
-    var subsWeights = [CGPoint]()
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.setup()
-    }
-    func setup() {
-        // Edit these values using the Attribute inspector or modify directly the "User defined runtime attributes" in IB
-        self.speed = CGPoint(x: 0.0, y: 0.0) // Note if you set this value via Attribute inspector it can only be an Integer (change it manually via User defined runtime attribute if you need a Float)
-        self.speedVariance = CGPoint(x: 0.0, y: 0.0) // Note if you set this value via Attribute inspector it can only be an Integer (change it manually via User defined runtime attribute if you need a Float)
-        self.animationType = .inOut
-        self.animateAlpha = true
-        self.roundImages = true
     }
     class var storyboardID: String {
         return "WalkthroughPage"
@@ -74,19 +69,18 @@ class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
     override public func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
 
         view.layer.masksToBounds = true
         imageView?.isHidden = true
         titleView?.isHidden = true
 
-        for _ in view.subviews {
-            var speed = self.speed
-
+        for v in view.subviews {
             speed.x += speedVariance.x
             speed.y += speedVariance.y
-
-            self.speed = speed
-            subsWeights.append(self.speed)
+            if !notAnimatableViews.contains(v.tag) {
+                subviewsSpeed.append(speed)
+            }
         }
     }
     private var _titleText: String?
@@ -98,46 +92,57 @@ class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
                 titleView?.isHidden = false
                 _titleText = titleText
 
-                let fontSize = 24.0
+                if let t = titleText {
+                    let fontSize = 24.0
 
-        #if VX_SLASH
+                    let regularAttributes = [
+                         NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize)),
+                         NSAttributedString.Key.foregroundColor: UIColor.white
+                    ]
+                    let boldAttributes = [
+                         NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: CGFloat(fontSize)),
+                         NSAttributedString.Key.foregroundColor: UIColor.white
+                    ]
 
-            if styles?.isEmpty ?? false {
-                styles = [
-                "$default": [
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize)),
-                NSAttributedString.Key.foregroundColor: UIColor.white
-                ],
-                "b": [
-                NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: CGFloat(fontSize))
-                ],
-                "em": [
-                NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: CGFloat(fontSize)),
-                NSAttributedString.Key.foregroundColor: UIColor.white
-                ]
-                ]
-            }
-                let attributedString: NSAttributedString? = nil
-            do {
-            //    attributedString = try SLSMarkupParser.attributedString(withMarkup: self.titleText, style: styles)
-            } catch {
+                    let attributedString = NSMutableAttributedString(string: t, attributes: regularAttributes)
+
+                    // add bold handling
+                    if t.contains("*") {
+                        var shift = 0 // number of characters removed so far
+                        let pattern = "(\\*)(.*?)(\\*)"
+
+                        if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
+                            regex.enumerateMatches(in: t, options: [], range: NSMakeRange(0, t.count)) { result, flags, stop in
+
+                                if let r = result {
+                                    var r1 = r.range(at: 1) // Location of the leading delimiter
+                                    var r2 = r.range(at: 2) // Location of the string between the delimiters
+                                    var r3 = r.range(at: 3) // Location of the trailing delimiter
+                                    // Adjust locations according to the string modifications:
+                                    r1.location -= shift
+                                    r2.location -= shift
+                                    r3.location -= shift
+
+                                    attributedString.addAttributes(boldAttributes, range: r2)
+
+                                    attributedString.mutableString.deleteCharacters(in: r3)
+                                    attributedString.mutableString.deleteCharacters(in: r1)
+                                    // Update offset:
+                                    shift += r1.length + r3.length
+                                }
+                            }
+                        }
+
+                        let paragraphStyle = NSMutableParagraphStyle()
+                        paragraphStyle.alignment = .center
+
+                        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length ))
+                    }
+                    titleView?.attributedText = attributedString
+                } else {
+                    titleView?.text = nil
+                    titleView?.attributedText = nil
                 }
-        #else
-        let textAttributes = [
-                     NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize)),
-                     NSAttributedString.Key.foregroundColor: UIColor.white
-                 ]
-                 let attributedString = NSAttributedString(string: _titleText ?? "", attributes: textAttributes)
-#endif
-
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.alignment = .center
-
-            let alignedString = NSMutableAttributedString(attributedString: attributedString)
-
-                alignedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: alignedString.length ))
-
-            titleView?.attributedText = alignedString
             }
     }
 
@@ -156,7 +161,7 @@ class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
     }
 
     func walkthroughDidScroll(_ position: CGFloat, withOffset offset: CGFloat) {
-        for i in 0..<subsWeights.count {
+        for i in 0..<subviewsSpeed.count {
             // Perform Transition/Scale/Rotate animations
             switch animationType {
             case .linear:
@@ -189,9 +194,8 @@ class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
     func animationCurve(with index: Int, withOffset offset: CGFloat) {
         var transform = CATransform3DIdentity
         let x = (1.0 - offset) * 10
-        transform = CATransform3DTranslate(transform, (pow(x, 3) - (x * 25)) * subsWeights[index].x, (pow(x, 3) - (x * 20)) * subsWeights[index].y, 0)
-        let cView = view.subviews[index]
-        cView.layer.transform = transform
+        transform = CATransform3DTranslate(transform, (pow(x,3) - (x * 25)) * subviewsSpeed[index].x, (pow(x,3) - (x * 20)) * subviewsSpeed[index].y, 0 )
+        applyTransform(index, transform: transform)
     }
 
     func animationZoom(with index: Int, withOffset offset: CGFloat) {
@@ -202,17 +206,15 @@ class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
             tmpOffset = 1.0 + (1.0 - tmpOffset)
         }
         let scale = 1.0 - tmpOffset
-        transform = CATransform3DScale(transform, 1 - scale, 1 - scale, 1.0)
-        let cView = view.subviews[index]
-        cView.layer.transform = transform
+        transform = CATransform3DScale(transform, 1 - scale , 1 - scale, 1.0)
+        applyTransform(index, transform: transform)
     }
 
     func animationLinear(with index: Int, withOffset offset: CGFloat) {
         var transform = CATransform3DIdentity
         let mx = (1.0 - offset) * 100
-        transform = CATransform3DTranslate(transform, mx * subsWeights[index].x, mx * subsWeights[index].y, 0)
-        let cView = view.subviews[index]
-        cView.layer.transform = transform
+        transform = CATransform3DTranslate(transform, mx * subviewsSpeed[index].x, mx * subviewsSpeed[index].y, 0 )
+        applyTransform(index, transform: transform)
     }
 
     func animationInOut(with index: Int, withOffset offset: CGFloat) {
@@ -222,11 +224,15 @@ class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPage {
         if tmpOffset > 1.0 {
             tmpOffset = 1.0 + (1.0 - tmpOffset)
         }
-        transform = CATransform3DTranslate(transform, (1.0 - tmpOffset) * subsWeights[index].x * 100, (1.0 - tmpOffset) * subsWeights[index].y * 100, 0)
-        let cView = view.subviews[index]
-        cView.layer.transform = transform
+        transform = CATransform3DTranslate(transform, (1.0 - tmpOffset) * subviewsSpeed[index].x * 100, (1.0 - tmpOffset) * subviewsSpeed[index].y * 100, 0)
+        applyTransform(index, transform: transform)
     }
-
+    private func applyTransform(_ index:Int, transform: CATransform3D){
+        let subview = view.subviews[index]
+        if !notAnimatableViews.contains(subview.tag){
+            view.subviews[index].layer.transform = transform
+        }
+    }
     func isValidEmail(_ pEmail: String?, strict pStrictFilter: Bool) -> Bool {
         let stricterFilterString = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
         let laxString = ".+@.+\\.[A-Za-z]{2}[A-Za-z]*"
