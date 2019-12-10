@@ -2,9 +2,9 @@ Steps for release
 
 1. Make all changes
 2. Test
-3. Update @version in podspec, e.g. @version = "1.1.21"
-4. Commit to git with the note "Release 1.1.21"
-5. Add tag to commit "1.1.21"
+3. Update @version in podspec, e.g. @version = "1.1.22"
+4. Commit to git with the note "Release 1.1.22"
+5. Add tag to commit "1.1.22"
 6. push
 7. pod trunk push VXWalkthroughViewController-Swift.podspec --allow-warnings
 
