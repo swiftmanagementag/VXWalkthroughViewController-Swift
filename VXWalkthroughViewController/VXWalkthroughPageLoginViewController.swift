@@ -155,17 +155,17 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
             super.item = item
 
             if let item = item {
-                if let t = item[VXWalkthroughViewController.kError] as? String {
+                if let t = item[VXWalkthroughField.error] as? String {
                     stopAnimating()
 
                     self.titleText = t
 
                     // Assumber user denied request
                     self.enableActionButton(true)
-                    if let t = item[VXWalkthroughViewController.kIsScanEnabled] as? String, !t.isEmpty {
+                    if let t = item[VXWalkthroughField.isScanEnabled] as? String, !t.isEmpty {
                         self.enableScanButton(true)
                     }
-                } else if let t = item[VXWalkthroughViewController.kSuccess] as? String {
+                } else if let t = item[VXWalkthroughField.success] as? String {
                     stopAnimating()
 
                     self.titleText = t
@@ -185,29 +185,29 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
                     self.enableScanButton(false)
 
                     // setup fields
-                    if let t = item[VXWalkthroughViewController.kButtonTitle] as? String {
+                    if let t = item[VXWalkthroughField.buttonTitle] as? String {
                         self.actionButton?.setTitle(t, for: .normal)
                     }
                     // setup fields
-                    if let t = item[VXWalkthroughViewController.kLoginPrompt] as? String {
+                    if let t = item[VXWalkthroughField.loginPrompt] as? String {
                         self.loginLabel?.text = t
                     }
-                    if let t = item[VXWalkthroughViewController.kPasswordPrompt] as? String {
+                    if let t = item[VXWalkthroughField.passwordPrompt] as? String {
                         self.passwordLabel?.text = t
                     }
-                    if let t = item[VXWalkthroughViewController.kLoginValue] as? String {
+                    if let t = item[VXWalkthroughField.loginValue] as? String {
                         self.loginField?.text = t
                     }
-                    if let t = item[VXWalkthroughViewController.kPasswordValue] as? String {
+                    if let t = item[VXWalkthroughField.passwordValue] as? String {
                         self.passwordField?.text = t
                     }
-                    if let t = item[VXWalkthroughViewController.kPlaceholderValue] as? String {
+                    if let t = item[VXWalkthroughField.placeholderValue] as? String {
                         self.passwordField?.autocapitalizationType = .allCharacters
                         self.passwordField?.placeholder = t
                     }
 
                     #if canImport(QRCodeReader)
-                    if let t = item[VXWalkthroughViewController.kIsScanEnabled] as? Bool, t == true {
+                    if let t = item[VXWalkthroughField.isScanEnabled] as? Bool, t == true {
                         enableScanButton(true)
                     }
                     #endif
@@ -226,8 +226,8 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
         }) { finished in
             // start process
             let item: [String: Any] = [
-                VXWalkthroughViewController.kLoginValue: self.loginField?.text ?? "",
-                VXWalkthroughViewController.kPasswordValue: self.passwordField?.text ?? ""
+                VXWalkthroughField.loginValue: self.loginField?.text ?? "",
+                VXWalkthroughField.passwordValue: self.passwordField?.text ?? ""
             ]
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
         }

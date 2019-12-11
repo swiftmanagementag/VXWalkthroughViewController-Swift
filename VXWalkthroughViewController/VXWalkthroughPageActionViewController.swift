@@ -39,14 +39,14 @@ public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewControl
             super.item = item
 
             if let item = item {
-                if let t = item[VXWalkthroughViewController.kError] as? String {
+                if let t = item[VXWalkthroughField.error] as? String {
                     stopAnimating()
 
                     self.titleText = t
 
                     // Assumber user denied request
                     self.actionButton?.isHidden = true
-                } else if let t = item[VXWalkthroughViewController.kSuccess] as? String {
+                } else if let t = item[VXWalkthroughField.success] as? String {
                     stopAnimating()
 
                     self.titleText = t
@@ -57,7 +57,7 @@ public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewControl
                     self.enableActionButton(true)
 
                     // setup fields
-                    if let t = item[VXWalkthroughViewController.kButtonTitle] as? String {
+                    if let t = item[VXWalkthroughField.buttonTitle] as? String {
                         self.actionButton?.setTitle(t, for: .normal)
                     }
                 }

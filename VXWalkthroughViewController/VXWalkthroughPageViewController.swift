@@ -38,10 +38,10 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
     public var item: [String : Any]? {
         didSet {
             if let item = item {
-                if let t = item[VXWalkthroughViewController.kTitle] as? String {
+                if let t = item[VXWalkthroughField.title] as? String {
                     self.titleText = t
                 }
-                if let t = item[VXWalkthroughViewController.kImage] as? String {
+                if let t = item[VXWalkthroughField.image] as? String {
                     self.imageName = t
                 }
             }
@@ -99,14 +99,14 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize)),
                          NSAttributedString.Key.foregroundColor: UIColor.white
                     ]
-                    if let a = self.styles?[VXWalkthroughViewController.kRegular] as? [NSAttributedString.Key: Any] {
+                    if let a = self.styles?[VXWalkthroughField.regular] as? [NSAttributedString.Key: Any] {
                         regularAttributes = regularAttributes.merging(a) { (_, new) in new }
                     }
                     var boldAttributes: [NSAttributedString.Key: Any] = [
                          NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: CGFloat(fontSize)),
                          NSAttributedString.Key.foregroundColor: UIColor.white
                     ]
-                    if let a = self.styles?[VXWalkthroughViewController.kBold] as? [NSAttributedString.Key: Any] {
+                    if let a = self.styles?[VXWalkthroughField.bold] as? [NSAttributedString.Key: Any] {
                         boldAttributes = regularAttributes.merging(a) { (_, new) in new }
                     }
 

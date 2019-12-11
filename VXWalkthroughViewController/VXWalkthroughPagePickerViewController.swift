@@ -18,7 +18,7 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
         didSet {
             if activeOption < self.options.count {
                 let selectedItem = options[activeOption]
-                if let i = selectedItem[VXWalkthroughViewController.kImage] as? String {
+                if let i = selectedItem[VXWalkthroughField.image] as? String {
                     self.imageName = i
                 }
 
@@ -28,17 +28,17 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                 self.nextButton?.isHidden = activeOption >= (options.count - 1)
 
                 if activeOption == selectedOption {
-                    if let t = self.item?[VXWalkthroughViewController.kTitle] as? String, let st = selectedItem[VXWalkthroughViewController.kTitle] as? String {
+                    if let t = self.item?[VXWalkthroughField.title] as? String, let st = selectedItem[VXWalkthroughField.title] as? String {
                         titleText = String(format: t, st)
                     }
 
                     self.actionButton?.isHidden = true
                 } else {
-                    if let t = selectedItem[VXWalkthroughViewController.kTitle] as? String {
+                    if let t = selectedItem[VXWalkthroughField.title] as? String {
                         titleText = t
                     }
                     var isAvailable = false
-                    if let t = selectedItem[VXWalkthroughViewController.kAvailable] as? Int, t > 0 {
+                    if let t = selectedItem[VXWalkthroughField.isAvailable] as? Bool, t == true {
                         isAvailable = true
                     }
                     self.actionButton?.isHidden = false
@@ -97,12 +97,12 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
            super.item = item
 
            if let item = item {
-               if let t = item[VXWalkthroughViewController.kError] as? String {
+               if let t = item[VXWalkthroughField.error] as? String {
                    stopAnimating()
 
                    self.titleText = t
 
-               } else if let t = item[VXWalkthroughViewController.kSuccess] as? String {
+               } else if let t = item[VXWalkthroughField.success] as? String {
                    stopAnimating()
                 self.imageView?.layer.borderWidth = 6
 
@@ -113,11 +113,11 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                } else {
                     self.enableActionButton(true)
                     self.selectedOption = 0
-                    self.options = item[VXWalkthroughViewController.kOptions] as? [[String: Any]] ??  [[String: Any]]()
+                    self.options = item[VXWalkthroughField.options] as? [[String: Any]] ??  [[String: Any]]()
 
-                    if let pickerValue = item[VXWalkthroughViewController.kPickerValue] as? String {
+                    if let pickerValue = item[VXWalkthroughField.pickerValue] as? String {
                         if let selected = options.firstIndex(where: { (dict) -> Bool in
-                            dict[VXWalkthroughViewController.kKey] as? String == pickerValue
+                            dict[VXWalkthroughField.key] as? String == pickerValue
                         }) {
                             self.selectedOption = selected
                         }
@@ -126,7 +126,7 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                     self.activeOption = selectedOption
 
                    // setup fields
-                   if let t = item[VXWalkthroughViewController.kButtonTitle] as? String {
+                   if let t = item[VXWalkthroughField.buttonTitle] as? String {
                        self.actionButton?.setTitle(t, for: .normal)
                    }
                }
@@ -147,9 +147,9 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                 let selectedItem = self.options[self.selectedOption]
 
                 var itemResult: [String : Any]? = nil
-                if let selected = selectedItem[VXWalkthroughViewController.kKey] {
+                if let selected = selectedItem[VXWalkthroughField.key] {
                     itemResult = [
-                        VXWalkthroughViewController.kPickerValue: selected
+                        VXWalkthroughField.pickerValue: selected
                     ]
                 }
 

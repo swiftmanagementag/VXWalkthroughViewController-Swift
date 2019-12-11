@@ -29,37 +29,37 @@ public protocol VXWalkthroughPage: AnyObject {
     @objc func walkthroughDidScroll(_ position: CGFloat, withOffset offset: CGFloat) // Called when the main Scrollview...scroll
     var key: String? { get }
 }
-
-public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
+public struct VXWalkthroughField {
     // - MARK: Constants
-    public static let kTitle = "title"
-    public static let kImage = "image"
-    public static let kStoryBoardID = "storyboardID"
-    public static let kOptions = "options"
+    public static let title = "title"
+    public static let image = "image"
+    public static let storyBoardID = "storyboardID"
+    public static let options = "options"
 
-    public static let kPickerValue = "pickerValue"
-    public static let kLoginValue = "loginValue"
-    public static let kEmailValue = "emailValue"
-    public static let kPasswordValue = "passwordValue"
+    public static let pickerValue = "pickerValue"
+    public static let loginValue = "loginValue"
+    public static let emailValue = "emailValue"
+    public static let passwordValue = "passwordValue"
 
-    public static let kEmailPrompt = "emailPrompt"
-    public static let kLoginPrompt = "loginPrompt"
-    public static let kPasswordPrompt = "passwordPrompt"
-    public static let kButtonTitle = "buttonTitle"
-    public static let kPlaceholderValue = "placeholderValue"
-    public static let kIsScanEnabled = "scanenabled"
+    public static let emailPrompt = "emailPrompt"
+    public static let loginPrompt = "loginPrompt"
+    public static let passwordPrompt = "passwordPrompt"
+    public static let buttonTitle = "buttonTitle"
+    public static let placeholderValue = "placeholderValue"
+    public static let isScanEnabled = "scanenabled"
 
-    public static let kSuccess = "success"
-    public static let kError = "error"
+    public static let success = "success"
+    public static let error = "error"
 
-    public static let kKey = "key"
-    public static let kSort = "sort"
-    public static let kAvailable = "available"
+    public static let key = "key"
+    public static let sort = "sort"
+    public static let isAvailable = "isAvailable"
 
-    public static let kRegular = "regular"
-    public static let kBold = "bold"
-
-    // - MARK: Walkthrough Delegate
+    public static let regular = "regular"
+    public static let bold = "bold"
+}
+public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
+     // - MARK: Walkthrough Delegate
     // This delegate performs basic operations such as dismissing the Walkthrough or call whatever action on page change.
     // Probably the Walkthrough is presented by this delegate.
     weak var delegate: VXWalkthroughViewControllerDelegate?
@@ -220,11 +220,11 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         let imageName = key
 
         let itemMore: [String : Any] = [
-            VXWalkthroughViewController.kKey: key,
-            VXWalkthroughViewController.kTitle: text,
-            VXWalkthroughViewController.kImage: imageName,
-            VXWalkthroughViewController.kSort: 1,
-            VXWalkthroughViewController.kButtonTitle: buttonTitle
+            VXWalkthroughField.key: key,
+            VXWalkthroughField.title: text,
+            VXWalkthroughField.image: imageName,
+            VXWalkthroughField.sort: 1,
+            VXWalkthroughField.buttonTitle: buttonTitle
         ]
 
         var itemResult = itemMore
@@ -249,10 +249,10 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
 
             while !stepText.isEmpty && !(stepText == stepKey) {
                 let item: [String : Any] = [
-                    VXWalkthroughViewController.kKey: stepKey,
-                    VXWalkthroughViewController.kTitle: stepText,
-                    VXWalkthroughViewController.kImage: stepKey,
-                    VXWalkthroughViewController.kSort: NSNumber(value: step * 10)
+                    VXWalkthroughField.key: stepKey,
+                    VXWalkthroughField.title: stepText,
+                    VXWalkthroughField.image: stepKey,
+                    VXWalkthroughField.sort: step * 10
                 ]
                 items[stepKey] = item
 
@@ -274,7 +274,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
                 guard let d1 = $0.1 as? [String: Any], let d2 = $1.1 as? [String: Any] else {
                     return false
                 }
-                guard let s1 = d1[VXWalkthroughViewController.kSort], let s2 = d2[VXWalkthroughViewController.kSort] else {
+                guard let s1 = d1[VXWalkthroughField.sort], let s2 = d2[VXWalkthroughField.sort] else {
                     return false
                 }
                 guard let v1 = s1 as? Int, let v2 = s2 as? Int else {
