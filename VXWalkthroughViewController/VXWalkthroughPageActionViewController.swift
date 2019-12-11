@@ -34,7 +34,7 @@ public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewControl
         self.enableActionButton(true)
         self.pulse(imageView, toSize: 0.8, withDuration: 0.0)
     }
-    override var item: [String : Any]? {
+    override public var item: [String : Any]? {
         didSet {
             super.item = item
 
@@ -75,7 +75,7 @@ public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewControl
         }
     }
 
-    override class var storyboardID: String {
+    override public class var storyboardID: String {
         return "WalkthroughPageAction"
     }
 }

@@ -35,7 +35,7 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
         }
     }
     public var key: String?
-    var item: [String : Any]? {
+    public var item: [String : Any]? {
         didSet {
             if let item = item {
                 if let t = item[VXWalkthroughViewController.kTitle] as? String {
@@ -63,7 +63,7 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    class var storyboardID: String {
+    public class var storyboardID: String {
         return "WalkthroughPage"
     }
     override public func viewDidLoad() {
@@ -95,14 +95,20 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
                 if let t = titleText {
                     let fontSize = 24.0
 
-                    let regularAttributes = [
+                    var regularAttributes: [NSAttributedString.Key: Any] = [
                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize)),
                          NSAttributedString.Key.foregroundColor: UIColor.white
                     ]
-                    let boldAttributes = [
+                    if let a = self.styles?[VXWalkthroughViewController.kRegular] as? [NSAttributedString.Key: Any] {
+                        regularAttributes = regularAttributes.merging(a) { (_, new) in new }
+                    }
+                    var boldAttributes: [NSAttributedString.Key: Any] = [
                          NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: CGFloat(fontSize)),
                          NSAttributedString.Key.foregroundColor: UIColor.white
                     ]
+                    if let a = self.styles?[VXWalkthroughViewController.kBold] as? [NSAttributedString.Key: Any] {
+                        boldAttributes = regularAttributes.merging(a) { (_, new) in new }
+                    }
 
                     let attributedString = NSMutableAttributedString(string: t, attributes: regularAttributes)
 

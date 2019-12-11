@@ -38,7 +38,7 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                         titleText = t
                     }
                     var isAvailable = false
-                    if let t = selectedItem[VXWalkthroughViewController.kAvailabe] as? Int, t > 0 {
+                    if let t = selectedItem[VXWalkthroughViewController.kAvailable] as? Int, t > 0 {
                         isAvailable = true
                     }
                     self.actionButton?.isHidden = false
@@ -49,7 +49,7 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
     }
     var selectedOption: Int = 0
 
-    override class var storyboardID: String {
+    override public class var storyboardID: String {
         return "WalkthroughPagePicker"
     }
 
@@ -92,7 +92,7 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
         self.enableActionButton(true)
         self.pulse(imageView, toSize: 0.8, withDuration: 0.0)
     }
-    override var item: [String : Any]? {
+    override public var item: [String : Any]? {
        didSet {
            super.item = item
 

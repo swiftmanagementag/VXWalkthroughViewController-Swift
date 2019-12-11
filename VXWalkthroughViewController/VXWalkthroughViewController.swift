@@ -54,7 +54,10 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
 
     public static let kKey = "key"
     public static let kSort = "sort"
-    public static let kAvailabe = "available"
+    public static let kAvailable = "available"
+
+    public static let kRegular = "regular"
+    public static let kBold = "bold"
 
     // - MARK: Walkthrough Delegate
     // This delegate performs basic operations such as dismissing the Walkthrough or call whatever action on page change.
@@ -69,7 +72,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     @IBOutlet var closeButton: UIButton?
 
     // - MARK: Properties
-    var items = [String : Any]()
+    public var items = [String : Any]()
 
     var group: String?
     var roundImages = false
@@ -101,11 +104,11 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         return v
     }()
 
-    class var storyboardName: String {
+    public class var storyboardName: String {
         return "VXWalkthroughViewController"
     }
 
-    class var storyboardID: String {
+    public class var storyboardID: String {
         return "Walkthrough"
     }
     // The index of the current page (readonly)
@@ -289,7 +292,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
 
         self.view.backgroundColor = backgroundColor
     }
-    func controller(key: String) -> UIViewController? {
+    public func controller(_ key: String) -> UIViewController? {
         let controller = self.controllers.first { (vc) -> Bool in
             if let wvc = vc as? VXWalkthroughPage {
                 return wvc.key == key

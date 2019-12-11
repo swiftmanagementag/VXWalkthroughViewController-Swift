@@ -16,7 +16,7 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
 
     var keyboardIsVisible = false
 
-    override class var storyboardID: String {
+    override public class var storyboardID: String {
         return "WalkthroughPageSignup"
     }
 
@@ -113,7 +113,7 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
 
         return true
     }
-    override var item: [String : Any]? {
+    override public var item: [String : Any]? {
         didSet {
             super.item = item
 
