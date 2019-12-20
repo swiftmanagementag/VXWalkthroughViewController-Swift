@@ -113,28 +113,29 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
                     let attributedString = NSMutableAttributedString(string: t, attributes: regularAttributes)
 
                     // add bold handling
-                    if t.contains("*") {
+                    if t.contains("*") || t.contains("<b>") {
                         var shift = 0 // number of characters removed so far
-                        let pattern = "(\\*)(.*?)(\\*)"
+                        let patterns = ["(\\*)(.*?)(\\*)", "(<b>)(.*?)(<.b>)"]
+                        for pattern in patterns {
+                            if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
+                                regex.enumerateMatches(in: t, options: [], range: NSMakeRange(0, t.count)) { result, flags, stop in
 
-                        if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
-                            regex.enumerateMatches(in: t, options: [], range: NSMakeRange(0, t.count)) { result, flags, stop in
+                                    if let r = result {
+                                        var r1 = r.range(at: 1) // Location of the leading delimiter
+                                        var r2 = r.range(at: 2) // Location of the string between the delimiters
+                                        var r3 = r.range(at: 3) // Location of the trailing delimiter
+                                        // Adjust locations according to the string modifications:
+                                        r1.location -= shift
+                                        r2.location -= shift
+                                        r3.location -= shift
 
-                                if let r = result {
-                                    var r1 = r.range(at: 1) // Location of the leading delimiter
-                                    var r2 = r.range(at: 2) // Location of the string between the delimiters
-                                    var r3 = r.range(at: 3) // Location of the trailing delimiter
-                                    // Adjust locations according to the string modifications:
-                                    r1.location -= shift
-                                    r2.location -= shift
-                                    r3.location -= shift
+                                        attributedString.addAttributes(boldAttributes, range: r2)
 
-                                    attributedString.addAttributes(boldAttributes, range: r2)
-
-                                    attributedString.mutableString.deleteCharacters(in: r3)
-                                    attributedString.mutableString.deleteCharacters(in: r1)
-                                    // Update offset:
-                                    shift += r1.length + r3.length
+                                        attributedString.mutableString.deleteCharacters(in: r3)
+                                        attributedString.mutableString.deleteCharacters(in: r1)
+                                        // Update offset:
+                                        shift += r1.length + r3.length
+                                    }
                                 }
                             }
                         }
