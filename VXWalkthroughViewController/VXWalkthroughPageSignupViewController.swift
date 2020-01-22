@@ -117,15 +117,15 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
         didSet {
             super.item = item
 
+            self.stopAnimating()
+            
             if let item = item {
                 if let t = item[VXWalkthroughField.error] as? String {
-                    stopAnimating()
 
                     self.titleText = t
 
                     self.enableActionButton(true)
                 } else if let t = item[VXWalkthroughField.success] as? String {
-                    stopAnimating()
 
                     self.titleText = t
 

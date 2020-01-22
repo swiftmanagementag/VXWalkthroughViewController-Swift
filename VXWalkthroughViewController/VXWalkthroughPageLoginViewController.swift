@@ -154,10 +154,11 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
         didSet {
             super.item = item
 
-            if let item = item {
-                if let t = item[VXWalkthroughField.error] as? String {
-                    stopAnimating()
+            self.stopAnimating()
 
+            if let item = item {
+
+                if let t = item[VXWalkthroughField.error] as? String {
                     self.titleText = t
 
                     // Assumber user denied request
@@ -166,8 +167,6 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
                         self.enableScanButton(true)
                     }
                 } else if let t = item[VXWalkthroughField.success] as? String {
-                    stopAnimating()
-
                     self.titleText = t
 
                     // there was success, hide fields

@@ -38,17 +38,16 @@ public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewControl
         didSet {
             super.item = item
 
-            if let item = item {
-                if let t = item[VXWalkthroughField.error] as? String {
-                    stopAnimating()
+            self.stopAnimating()
 
+            if let item = item {
+
+                if let t = item[VXWalkthroughField.error] as? String {
                     self.titleText = t
 
                     // Assumber user denied request
                     self.actionButton?.isHidden = true
                 } else if let t = item[VXWalkthroughField.success] as? String {
-                    stopAnimating()
-
                     self.titleText = t
 
                     // Assumber user denied request
@@ -70,7 +69,7 @@ public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewControl
             self.startAnimating()
         }) { finished in
             // start process
-            let item: [String : Any] = [:]
+            let item: [String : Any] = self.item ?? [:]
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
         }
     }

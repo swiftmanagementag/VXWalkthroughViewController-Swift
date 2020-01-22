@@ -207,6 +207,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
             vc.parentController = self
             vc.view.backgroundColor = self.backgroundColor
             vc.view.isOpaque = false
+            vc.key = key
             vc.item = item
             return vc
         }

@@ -96,15 +96,13 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
        didSet {
            super.item = item
 
+            self.stopAnimating()
+
            if let item = item {
                if let t = item[VXWalkthroughField.error] as? String {
-                   stopAnimating()
-
-                   self.titleText = t
-
+                    self.titleText = t
                } else if let t = item[VXWalkthroughField.success] as? String {
-                   stopAnimating()
-                self.imageView?.layer.borderWidth = 6
+                    self.imageView?.layer.borderWidth = 6
 
                    self.titleText = t
 
@@ -155,7 +153,6 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
 
                 self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: itemResult)
             }
-
         }
     }
 
