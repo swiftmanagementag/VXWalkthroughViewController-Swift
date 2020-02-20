@@ -198,7 +198,6 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         let bundle = Bundle(for: self.classForCoder)
 
         let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
-        //    stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: nil)
 
         let storyboardID = (item?["storyboardID"] as? String) ?? VXWalkthroughPageViewController.storyboardID
         if let vc = stb.instantiateViewController(withIdentifier: storyboardID) as? VXWalkthroughPageViewController {
@@ -207,6 +206,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
             vc.parentController = self
             vc.view.backgroundColor = self.backgroundColor
             vc.view.isOpaque = false
+
             vc.key = key
             vc.item = item
             return vc
@@ -340,6 +340,12 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     // To have information about the current position of the page in the walkthrough add a UIVIewController which implements BWWalkthroughPage
 
     func add(_ vc: UIViewController) {
+        if let v = vc.view {
+            v.backgroundColor = UIColor.clear
+            v.isOpaque = false
+            v.clipsToBounds = false
+        }
+
         controllers.append(vc)
         self.addChild(vc)
         vc.didMove(toParent: self)
@@ -350,7 +356,6 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         if let view = vc.view {
             scrollview.addSubview(view)
             // Constraints
-
             let metricDict: [String: Any] = [
                 "w": vc.view.bounds.size.width,
                 "h": vc.view.bounds.size.height
@@ -410,6 +415,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         for i in 0..<controllers.count {
+
             if let vc = controllers[i] as? VXWalkthroughPage{
                 let mx = ((scrollView.contentOffset.x + view.bounds.size.width) - (view.bounds.size.width * CGFloat(i))) / view.bounds.size.width
 
