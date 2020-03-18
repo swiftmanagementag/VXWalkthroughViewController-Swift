@@ -154,8 +154,8 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     }
 
     override public func viewWillAppear(_ animated: Bool) {
-       super.viewWillAppear(animated)
-
+        super.viewWillAppear(animated)
+        self.setNeedsStatusBarAppearanceUpdate()
         self.pageControl?.numberOfPages = self.controllers.count
         self.pageControl?.currentPage = 0
 
@@ -464,5 +464,8 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
 
     override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         adjustOffsetForTransition()
+    }
+    override public var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
 }
