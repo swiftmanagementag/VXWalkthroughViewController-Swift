@@ -14,15 +14,17 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
 
         if !VXWalkthroughViewController.walkthroughShown() {
             // this is to avoid timing issues
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
                 // show the walkthrough
                 self.showWalkthrough()
-            })
+            }
         }
     }
+
     @IBAction func present() {
         showWalkthrough()
     }
+
     func showWalkthrough() {
         let backgroundColor = UIColor(red: 167.0 / 255.0, green: 131.0 / 255.0, blue: 82.0 / 255.0, alpha: 1.0)
 
@@ -36,12 +38,12 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
             //    walkthrough.pageStoryboardID = @"WalkthroughPageFull";
             walkthrough.populate()
 
-           var item = walkthrough.createItem("ITWALKTHROUGH_LOGIN", item: [
+            var item = walkthrough.createItem("ITWALKTHROUGH_LOGIN", item: [
                 VXWalkthroughViewController.kStoryBoardID: VXWalkthroughPageLoginViewController.storyboardID,
-                VXWalkthroughViewController.kLoginPrompt:  NSLocalizedString("Email", comment: "Email"),
+                VXWalkthroughViewController.kLoginPrompt: NSLocalizedString("Email", comment: "Email"),
                 VXWalkthroughViewController.kPasswordPrompt: NSLocalizedString("Password", comment: "Password"),
-                VXWalkthroughViewController.kPlaceholderValue: "xxxx-xxxx-xxxx"
-                ])
+                VXWalkthroughViewController.kPlaceholderValue: "xxxx-xxxx-xxxx",
+            ])
 
             item?[VXWalkthroughViewController.kImage] = "walkthrough_0"
             item?[VXWalkthroughViewController.kTitle] = "Long Title"
@@ -49,21 +51,21 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
             item?[VXWalkthroughViewController.kIsScanEnabled] = true
 
             walkthrough.items[VXWalkthroughViewController.kKey] = item
-            //if let vc = self.createPageViewController("", item: ) {
+            // if let vc = self.createPageViewController("", item: ) {
             //    walkthrough.add(vc)
-            //}
+            // }
 
             // show it
             walkthrough.modalPresentationStyle = .fullScreen
-            self.present(walkthrough, animated: true)
+            present(walkthrough, animated: true)
         }
-
     }
 
-    func walkthroughCloseButtonPressed(_ sender: Any?) {
+    func walkthroughCloseButtonPressed(_: Any?) {
         // delegate for handling close button
         dismiss(animated: true)
     }
+
     func walkthroughNextButtonPressed() {
         //
     }
@@ -72,17 +74,15 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
         //
     }
 
-    func walkthroughPageDidChange(_ pageNumber: Int) {
+    func walkthroughPageDidChange(_: Int) {
         //
     }
 
-    func walkthroughActionButtonPressed(_ pSender: Any?, item: [String : Any]?) {
+    func walkthroughActionButtonPressed(_: Any?, item _: [String: Any]?) {
         //
     }
-
 
     override var shouldAutorotate: Bool {
         return true
     }
-
 }

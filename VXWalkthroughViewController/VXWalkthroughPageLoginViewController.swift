@@ -8,16 +8,16 @@
 import Foundation
 import UIKit
 #if canImport(QRCodeReader)
-import QRCodeReader
+    import QRCodeReader
 #endif
 
 public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewController, UITextFieldDelegate {
-    @IBOutlet weak var loginField: UITextField?
-    @IBOutlet weak var passwordField: UITextField?
-    @IBOutlet weak var loginLabel: UILabel?
-    @IBOutlet weak var passwordLabel: UILabel?
-    @IBOutlet weak var actionButton: UIButton?
-    @IBOutlet weak var scanButton: UIButton?
+    @IBOutlet var loginField: UITextField?
+    @IBOutlet var passwordField: UITextField?
+    @IBOutlet var loginLabel: UILabel?
+    @IBOutlet var passwordLabel: UILabel?
+    @IBOutlet var actionButton: UIButton?
+    @IBOutlet var scanButton: UIButton?
 
     @IBOutlet var actionTrailingMargin: NSLayoutConstraint?
 
@@ -34,49 +34,47 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        self.keyboardIsVisible = false
+        keyboardIsVisible = false
 
-        self.loginField?.placeholder = "info@domain.com"
-        self.loginField?.keyboardType = .emailAddress
-        self.loginField?.autocapitalizationType = .none
-        self.loginField?.autocorrectionType = .no
-        self.loginField?.spellCheckingType = .no
-        self.loginField?.returnKeyType = .next
-        self.loginField?.delegate = self
-        self.loginField?.textContentType = .emailAddress
+        loginField?.placeholder = "info@domain.com"
+        loginField?.keyboardType = .emailAddress
+        loginField?.autocapitalizationType = .none
+        loginField?.autocorrectionType = .no
+        loginField?.spellCheckingType = .no
+        loginField?.returnKeyType = .next
+        loginField?.delegate = self
+        loginField?.textContentType = .emailAddress
 
-        self.passwordField?.keyboardType = .asciiCapable
-        self.passwordField?.autocorrectionType = .no
-        self.passwordField?.spellCheckingType = .no
-        self.passwordField?.returnKeyType = .done
-        self.passwordField?.delegate = self
-        self.passwordField?.textContentType = .password
+        passwordField?.keyboardType = .asciiCapable
+        passwordField?.autocorrectionType = .no
+        passwordField?.spellCheckingType = .no
+        passwordField?.returnKeyType = .done
+        passwordField?.delegate = self
+        passwordField?.textContentType = .password
 
-        self.loginField?.addTarget(self, action: #selector(validateInput), for: .editingChanged)
-        self.passwordField?.addTarget(self, action: #selector(validateInput), for: .editingChanged)
-        self.passwordField?.addTarget(self, action: #selector(textFieldFinished(_:)), for: .editingDidEndOnExit)
+        loginField?.addTarget(self, action: #selector(validateInput), for: .editingChanged)
+        passwordField?.addTarget(self, action: #selector(validateInput), for: .editingChanged)
+        passwordField?.addTarget(self, action: #selector(textFieldFinished(_:)), for: .editingDidEndOnExit)
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
 
         if let i = UIImage(named: "VXWalkthroughController.bundle/VXWalkthroughViewControllerScan@2x.png") {
-            self.scanButton?.setImage(i, for: .normal)
+            scanButton?.setImage(i, for: .normal)
         }
 
-        self.enableActionButton(false)
+        enableActionButton(false)
 
-        self.enableScanButton(false)
-
+        enableScanButton(false)
     }
 
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        self.actionButton?.layer.masksToBounds = true
-        self.actionButton?.layer.cornerRadius = (self.actionButton?.frame.size.height ?? 44.0) * 0.25
-        self.scanButton?.layer.masksToBounds = true
-        self.scanButton?.layer.cornerRadius = (self.actionButton?.frame.size.height ?? 44.0) * 0.25
-
+        actionButton?.layer.masksToBounds = true
+        actionButton?.layer.cornerRadius = (actionButton?.frame.size.height ?? 44.0) * 0.25
+        scanButton?.layer.masksToBounds = true
+        scanButton?.layer.cornerRadius = (actionButton?.frame.size.height ?? 44.0) * 0.25
     }
 
     @IBAction func textFieldFinished(_ sender: UITextField) {
@@ -84,25 +82,25 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
     }
 
     func startAnimating() {
-        self.enableActionButton(false)
-        self.pulse(imageView, toSize: 0.8, withDuration: 2.0)
+        enableActionButton(false)
+        pulse(imageView, toSize: 0.8, withDuration: 2.0)
     }
 
     func stopAnimating() {
-        self.enableActionButton(true)
-        self.pulse(imageView, toSize: 0.8, withDuration: 0.0)
+        enableActionButton(true)
+        pulse(imageView, toSize: 0.8, withDuration: 0.0)
     }
 
     func enableActionButton(_ isEnabled: Bool) {
-        self.actionButton?.isEnabled = isEnabled
-        self.actionButton?.alpha = isEnabled ? 1.0 : 0.5
+        actionButton?.isEnabled = isEnabled
+        actionButton?.alpha = isEnabled ? 1.0 : 0.5
     }
 
     func enableScanButton(_ isEnabled: Bool) {
-        self.scanButton?.isHidden = !isEnabled
-        self.scanButton?.isEnabled = isEnabled
-        self.scanButton?.alpha = isEnabled ? 1.0 : 0.5
-        self.actionTrailingMargin?.constant = isEnabled ? -(12.0 + (self.scanButton?.frame.size.width ?? 44.0)) : 0.0
+        scanButton?.isHidden = !isEnabled
+        scanButton?.isEnabled = isEnabled
+        scanButton?.alpha = isEnabled ? 1.0 : 0.5
+        actionTrailingMargin?.constant = isEnabled ? -(12.0 + (scanButton?.frame.size.width ?? 44.0)) : 0.0
     }
 
     @objc func keyboardWillShow(_ notification: Notification?) {
@@ -140,8 +138,8 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
     @objc func validateInput() -> Bool {
         // enable button if input valid
         enableActionButton(false)
-        if let login = self.loginField?.text, !login.isEmpty {
-            if let password = self.passwordField?.text, !password.isEmpty {
+        if let login = loginField?.text, !login.isEmpty {
+            if let password = passwordField?.text, !password.isEmpty {
                 if isValidEmail(login, strict: true) {
                     enableActionButton(true)
                 }
@@ -150,141 +148,143 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
 
         return true
     }
-    override public var item: [String : Any]? {
+
+    override public var item: [String: Any]? {
         didSet {
             super.item = item
 
-            self.stopAnimating()
+            stopAnimating()
 
             if let item = item {
-
                 if let t = item[VXWalkthroughField.error] as? String {
-                    self.titleText = t
+                    titleText = t
 
                     // Assumber user denied request
-                    self.enableActionButton(true)
+                    enableActionButton(true)
                     if let t = item[VXWalkthroughField.isScanEnabled] as? String, !t.isEmpty {
-                        self.enableScanButton(true)
+                        enableScanButton(true)
                     }
                 } else if let t = item[VXWalkthroughField.success] as? String {
-                    self.titleText = t
+                    titleText = t
 
                     // there was success, hide fields
-                    self.actionButton?.isHidden = true
+                    actionButton?.isHidden = true
 
-                    self.loginLabel?.isHidden = true
-                    self.passwordLabel?.isHidden = true
+                    loginLabel?.isHidden = true
+                    passwordLabel?.isHidden = true
 
-                    self.loginField?.isHidden = true
-                    self.passwordField?.isHidden = true
-                    self.scanButton?.isHidden = true
+                    loginField?.isHidden = true
+                    passwordField?.isHidden = true
+                    scanButton?.isHidden = true
 
                 } else {
-                    self.enableActionButton(true)
-                    self.enableScanButton(false)
+                    enableActionButton(true)
+                    enableScanButton(false)
 
                     // setup fields
                     if let t = item[VXWalkthroughField.buttonTitle] as? String {
-                        self.actionButton?.setTitle(t, for: .normal)
+                        actionButton?.setTitle(t, for: .normal)
                     }
                     // setup fields
                     if let t = item[VXWalkthroughField.loginPrompt] as? String {
-                        self.loginLabel?.text = t
+                        loginLabel?.text = t
                     }
                     if let t = item[VXWalkthroughField.passwordPrompt] as? String {
-                        self.passwordLabel?.text = t
+                        passwordLabel?.text = t
                     }
                     if let t = item[VXWalkthroughField.loginValue] as? String {
-                        self.loginField?.text = t
+                        loginField?.text = t
                     }
                     if let t = item[VXWalkthroughField.passwordValue] as? String {
-                        self.passwordField?.text = t
+                        passwordField?.text = t
                     }
                     if let t = item[VXWalkthroughField.placeholderValue] as? String {
-                        self.passwordField?.autocapitalizationType = .allCharacters
-                        self.passwordField?.placeholder = t
+                        passwordField?.autocapitalizationType = .allCharacters
+                        passwordField?.placeholder = t
                     }
 
                     #if canImport(QRCodeReader)
-                    if let t = item[VXWalkthroughField.isScanEnabled] as? Bool, t == true {
-                        enableScanButton(true)
-                    }
+                        if let t = item[VXWalkthroughField.isScanEnabled] as? Bool, t == true {
+                            enableScanButton(true)
+                        }
                     #endif
                 }
-
             }
         }
     }
 
-    @IBAction func actionClicked(_ sender: Any) {
-        self.loginField?.resignFirstResponder()
-        self.passwordField?.resignFirstResponder()
+    @IBAction func actionClicked(_: Any) {
+        loginField?.resignFirstResponder()
+        passwordField?.resignFirstResponder()
 
         UIView.animate(withDuration: 0.1, animations: {
             self.startAnimating()
-        }) { finished in
+        }) { _ in
             // start process
             let item: [String: Any] = [
                 VXWalkthroughField.loginValue: self.loginField?.text ?? "",
-                VXWalkthroughField.passwordValue: self.passwordField?.text ?? ""
+                VXWalkthroughField.passwordValue: self.passwordField?.text ?? "",
             ]
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
         }
     }
+
     #if canImport(QRCodeReader)
-    lazy var readerVC: QRCodeReaderViewController = {
-        let builder = QRCodeReaderViewControllerBuilder {
-            $0.reader = QRCodeReader(metadataObjectTypes: [.qr], captureDevicePosition: .back)
+        lazy var readerVC: QRCodeReaderViewController = {
+            let builder = QRCodeReaderViewControllerBuilder {
+                $0.reader = QRCodeReader(metadataObjectTypes: [.qr], captureDevicePosition: .back)
 
-            // Configure the view controller (optional)
-            $0.startScanningAtLoad    = true
-            $0.showTorchButton        = true
-            $0.showSwitchCameraButton = true
-            $0.showCancelButton       = true
-            $0.cancelButtonTitle      = NSLocalizedString("cancel", comment: "cancel")
+                // Configure the view controller (optional)
+                $0.startScanningAtLoad = true
+                $0.showTorchButton = true
+                $0.showSwitchCameraButton = true
+                $0.showCancelButton = true
+                $0.cancelButtonTitle = NSLocalizedString("cancel", comment: "cancel")
 
-            // $0.showOverlayView        = true
-            //$0.rectOfInterest         = CGRect(x: 0.2, y: 0.2, width: 0.6, height: 0.6)
-        }
-        return QRCodeReaderViewController(builder: builder)
-    }()
-    @IBAction func scanClicked(_ sender: Any) {
-        if let supportsQR = try? QRCodeReader.supportsMetadataObjectTypes([.qr]), supportsQR {
-            readerVC.completionBlock = { (result: QRCodeReaderResult?) in
-                if let qrCode = result?.value {
-                    print("\(qrCode)")
-                    //https://truck.app.link/truck?voucher=JOPJ-OI6I-VWKO&teacher=L025&flavor=ch_truck_premium
+                // $0.showOverlayView        = true
+                // $0.rectOfInterest         = CGRect(x: 0.2, y: 0.2, width: 0.6, height: 0.6)
+            }
+            return QRCodeReaderViewController(builder: builder)
+        }()
 
-                    if qrCode.hasPrefix("http") || qrCode.hasPrefix("https") {
-                        let urlComponents = URLComponents(string: qrCode)
-                        let queryItems = urlComponents?.queryItems
-                        for item in queryItems ?? [] {
-                            print("\(item)")
-                            if (item.name == "voucher") {
-                                self.passwordField?.text = item.value
-                            } else if (item.name == "teacher") {
-                                UserDefaults.standard.set(item.value, forKey: "teacher_preference")
-                                UserDefaults.standard.synchronize()
+        @IBAction func scanClicked(_: Any) {
+            if let supportsQR = try? QRCodeReader.supportsMetadataObjectTypes([.qr]), supportsQR {
+                readerVC.completionBlock = { (result: QRCodeReaderResult?) in
+                    if let qrCode = result?.value {
+                        print("\(qrCode)")
+                        // https://truck.app.link/truck?voucher=JOPJ-OI6I-VWKO&teacher=L025&flavor=ch_truck_premium
+
+                        if qrCode.hasPrefix("http") || qrCode.hasPrefix("https") {
+                            let urlComponents = URLComponents(string: qrCode)
+                            let queryItems = urlComponents?.queryItems
+                            for item in queryItems ?? [] {
+                                print("\(item)")
+                                if item.name == "voucher" {
+                                    self.passwordField?.text = item.value
+                                } else if item.name == "teacher" {
+                                    UserDefaults.standard.set(item.value, forKey: "teacher_preference")
+                                    UserDefaults.standard.synchronize()
+                                }
                             }
+                        } else {
+                            self.passwordField?.text = qrCode
                         }
-                    } else {
-                        self.passwordField?.text = qrCode
-                    }
-                    self.readerVC.dismiss(animated: true) {
-                        _ = self.validateInput()
+                        self.readerVC.dismiss(animated: true) {
+                            _ = self.validateInput()
+                        }
                     }
                 }
+
+                readerVC.modalPresentationStyle = .fullScreen
+
+                parentController?.present(readerVC, animated: true, completion: nil)
             }
-
-            readerVC.modalPresentationStyle = .fullScreen
-
-            self.parentController?.present(readerVC, animated: true, completion: nil)
         }
-    }
-    func readerDidCancel(_ reader: QRCodeReaderViewController) {
-      reader.stopScanning()
 
-      dismiss(animated: true, completion: nil)
-    }
+        func readerDidCancel(_ reader: QRCodeReaderViewController) {
+            reader.stopScanning()
+
+            dismiss(animated: true, completion: nil)
+        }
     #endif
 }

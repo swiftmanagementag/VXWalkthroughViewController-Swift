@@ -9,10 +9,10 @@ import Foundation
 import UIKit
 
 public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewController, UITextFieldDelegate {
-    @IBOutlet weak var emailField: UITextField?
-    @IBOutlet weak var emailLabel: UILabel?
-    @IBOutlet weak var messageLabel: UILabel?
-    @IBOutlet weak var actionButton: UIButton?
+    @IBOutlet var emailField: UITextField?
+    @IBOutlet var emailLabel: UILabel?
+    @IBOutlet var messageLabel: UILabel?
+    @IBOutlet var actionButton: UIButton?
 
     var keyboardIsVisible = false
 
@@ -27,18 +27,18 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        self.keyboardIsVisible = false
+        keyboardIsVisible = false
 
-        self.emailField?.placeholder = "info@domain.com"
-        self.emailField?.keyboardType = .emailAddress
-        self.emailField?.autocapitalizationType = .none
-        self.emailField?.autocorrectionType = .no
-        self.emailField?.spellCheckingType = .no
-        self.emailField?.returnKeyType = .next
-        self.emailField?.delegate = self
-        self.emailField?.textContentType = .emailAddress
-        self.emailField?.addTarget(self, action: #selector(validateInput), for: .editingChanged)
-        self.emailField?.addTarget(self, action: #selector(textFieldFinished(_:)), for: .editingDidEndOnExit)
+        emailField?.placeholder = "info@domain.com"
+        emailField?.keyboardType = .emailAddress
+        emailField?.autocapitalizationType = .none
+        emailField?.autocorrectionType = .no
+        emailField?.spellCheckingType = .no
+        emailField?.returnKeyType = .next
+        emailField?.delegate = self
+        emailField?.textContentType = .emailAddress
+        emailField?.addTarget(self, action: #selector(validateInput), for: .editingChanged)
+        emailField?.addTarget(self, action: #selector(textFieldFinished(_:)), for: .editingDidEndOnExit)
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -47,9 +47,8 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        self.actionButton?.layer.masksToBounds = true
-        self.actionButton?.layer.cornerRadius = (self.actionButton?.frame.size.height ?? 44.0) * 0.25
-
+        actionButton?.layer.masksToBounds = true
+        actionButton?.layer.cornerRadius = (actionButton?.frame.size.height ?? 44.0) * 0.25
     }
 
     @IBAction func textFieldFinished(_ sender: UITextField) {
@@ -57,18 +56,18 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
     }
 
     func startAnimating() {
-        self.enableActionButton(false)
-        self.pulse(imageView, toSize: 0.8, withDuration: 2.0)
+        enableActionButton(false)
+        pulse(imageView, toSize: 0.8, withDuration: 2.0)
     }
 
     func stopAnimating() {
-        self.enableActionButton(true)
-        self.pulse(imageView, toSize: 0.8, withDuration: 0.0)
+        enableActionButton(true)
+        pulse(imageView, toSize: 0.8, withDuration: 0.0)
     }
 
     func enableActionButton(_ isEnabled: Bool) {
-        self.actionButton?.isEnabled = isEnabled
-        self.actionButton?.alpha = isEnabled ? 1.0 : 0.5
+        actionButton?.isEnabled = isEnabled
+        actionButton?.alpha = isEnabled ? 1.0 : 0.5
     }
 
     @objc func keyboardWillShow(_ notification: Notification?) {
@@ -102,10 +101,11 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
         })
         keyboardIsVisible = false
     }
+
     @objc func validateInput() -> Bool {
         // enable button if input valid
         enableActionButton(false)
-        if let email = self.emailField?.text, !email.isEmpty {
+        if let email = emailField?.text, !email.isEmpty {
             if isValidEmail(email, strict: true) {
                 enableActionButton(true)
             }
@@ -113,58 +113,56 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
 
         return true
     }
-    override public var item: [String : Any]? {
+
+    override public var item: [String: Any]? {
         didSet {
             super.item = item
 
-            self.stopAnimating()
-            
+            stopAnimating()
+
             if let item = item {
                 if let t = item[VXWalkthroughField.error] as? String {
+                    titleText = t
 
-                    self.titleText = t
-
-                    self.enableActionButton(true)
+                    enableActionButton(true)
                 } else if let t = item[VXWalkthroughField.success] as? String {
-
-                    self.titleText = t
+                    titleText = t
 
                     // there was success, hide fields
-                    self.actionButton?.isHidden = true
-                    self.emailField?.isHidden = true
-                    self.emailLabel?.isHidden = true
+                    actionButton?.isHidden = true
+                    emailField?.isHidden = true
+                    emailLabel?.isHidden = true
                 } else {
-                    self.enableActionButton(true)
+                    enableActionButton(true)
 
                     // setup fields
                     if let t = item[VXWalkthroughField.buttonTitle] as? String {
-                        self.actionButton?.setTitle(t, for: .normal)
+                        actionButton?.setTitle(t, for: .normal)
                     }
                     // setup fields
                     if let t = item[VXWalkthroughField.emailPrompt] as? String {
-                        self.emailLabel?.text = t
+                        emailLabel?.text = t
                     }
                     if let t = item[VXWalkthroughField.emailValue] as? String {
-                        self.emailField?.text = t
+                        emailField?.text = t
                     }
                     if let t = item[VXWalkthroughField.placeholderValue] as? String {
-                        self.emailField?.placeholder = t
+                        emailField?.placeholder = t
                     }
                 }
-
             }
         }
     }
 
-    @IBAction func actionClicked(_ sender: Any) {
-        self.emailField?.resignFirstResponder()
+    @IBAction func actionClicked(_: Any) {
+        emailField?.resignFirstResponder()
 
         UIView.animate(withDuration: 0.1, animations: {
             self.startAnimating()
-        }) { finished in
+        }) { _ in
             // start process
             let item: [String: Any] = [
-                VXWalkthroughField.emailValue: self.emailField?.text ?? ""
+                VXWalkthroughField.emailValue: self.emailField?.text ?? "",
             ]
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
         }

@@ -9,9 +9,9 @@ import Foundation
 import UIKit
 
 public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewController {
-    @IBOutlet weak var previousButton: UIButton?
-    @IBOutlet weak var nextButton: UIButton?
-    @IBOutlet weak var actionButton: UIButton?
+    @IBOutlet var previousButton: UIButton?
+    @IBOutlet var nextButton: UIButton?
+    @IBOutlet var actionButton: UIButton?
 
     var options = [[String: Any]]()
     var activeOption = 0 {
@@ -47,6 +47,7 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
             }
         }
     }
+
     var selectedOption: Int = 0
 
     override public class var storyboardID: String {
@@ -56,98 +57,94 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
     override public func viewDidLoad() {
         super.viewDidLoad()
 
-        self.nextButton?.backgroundColor = self.actionButton?.backgroundColor
-        self.previousButton?.backgroundColor = self.actionButton?.backgroundColor
+        nextButton?.backgroundColor = actionButton?.backgroundColor
+        previousButton?.backgroundColor = actionButton?.backgroundColor
 
-        self.nextButton?.layer.borderColor = UIColor.white.cgColor
-        self.previousButton?.layer.borderColor = UIColor.white.cgColor
+        nextButton?.layer.borderColor = UIColor.white.cgColor
+        previousButton?.layer.borderColor = UIColor.white.cgColor
 
-        self.nextButton?.layer.borderWidth = 2.0
-        self.previousButton?.layer.borderWidth = 2.0
+        nextButton?.layer.borderWidth = 2.0
+        previousButton?.layer.borderWidth = 2.0
 
-        self.nextButton?.alpha = 1.0
-        self.previousButton?.alpha = 1.0
+        nextButton?.alpha = 1.0
+        previousButton?.alpha = 1.0
     }
 
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        self.actionButton?.layer.masksToBounds = true
-        self.actionButton?.layer.cornerRadius = (self.actionButton?.frame.size.height ?? 44.0) * 0.25
-
+        actionButton?.layer.masksToBounds = true
+        actionButton?.layer.cornerRadius = (actionButton?.frame.size.height ?? 44.0) * 0.25
     }
 
     func enableActionButton(_ isEnabled: Bool) {
-        self.actionButton?.isEnabled = isEnabled
-        self.actionButton?.alpha = isEnabled ? 1.0 : 0.5
-
+        actionButton?.isEnabled = isEnabled
+        actionButton?.alpha = isEnabled ? 1.0 : 0.5
     }
 
     func startAnimating() {
-        self.enableActionButton(false)
-        self.pulse(imageView, toSize: 0.8, withDuration: 2.0)
+        enableActionButton(false)
+        pulse(imageView, toSize: 0.8, withDuration: 2.0)
     }
 
     func stopAnimating() {
-        self.enableActionButton(true)
-        self.pulse(imageView, toSize: 0.8, withDuration: 0.0)
+        enableActionButton(true)
+        pulse(imageView, toSize: 0.8, withDuration: 0.0)
     }
-    override public var item: [String : Any]? {
-       didSet {
-           super.item = item
 
-            self.stopAnimating()
+    override public var item: [String: Any]? {
+        didSet {
+            super.item = item
 
-           if let item = item {
-               if let t = item[VXWalkthroughField.error] as? String {
-                    self.titleText = t
-               } else if let t = item[VXWalkthroughField.success] as? String {
-                    self.imageView?.layer.borderWidth = 6
+            stopAnimating()
 
-                   self.titleText = t
+            if let item = item {
+                if let t = item[VXWalkthroughField.error] as? String {
+                    titleText = t
+                } else if let t = item[VXWalkthroughField.success] as? String {
+                    imageView?.layer.borderWidth = 6
 
-                   // Assumber user denied request
-                   self.actionButton?.isHidden = true
-               } else {
-                    self.enableActionButton(true)
-                    self.selectedOption = 0
-                    self.options = item[VXWalkthroughField.options] as? [[String: Any]] ??  [[String: Any]]()
+                    titleText = t
+
+                    // Assumber user denied request
+                    actionButton?.isHidden = true
+                } else {
+                    enableActionButton(true)
+                    selectedOption = 0
+                    options = item[VXWalkthroughField.options] as? [[String: Any]] ?? [[String: Any]]()
 
                     if let pickerValue = item[VXWalkthroughField.pickerValue] as? String {
                         if let selected = options.firstIndex(where: { (dict) -> Bool in
                             dict[VXWalkthroughField.key] as? String == pickerValue
                         }) {
-                            self.selectedOption = selected
+                            selectedOption = selected
                         }
                     }
 
-                    self.activeOption = selectedOption
+                    activeOption = selectedOption
 
-                   // setup fields
-                   if let t = item[VXWalkthroughField.buttonTitle] as? String {
-                       self.actionButton?.setTitle(t, for: .normal)
-                   }
-               }
+                    // setup fields
+                    if let t = item[VXWalkthroughField.buttonTitle] as? String {
+                        actionButton?.setTitle(t, for: .normal)
+                    }
+                }
+            }
+        }
+    }
 
-           }
-       }
-   }
-
-
-
-    @IBAction func actionClicked(_ sender: Any) {
+    @IBAction func actionClicked(_: Any) {
         UIView.animate(withDuration: 0.1, animations: {
             self.startAnimating()
-        }) { finished in
+        }) { _ in
             // start process
             if self.activeOption < self.options.count {
                 self.selectedOption = self.activeOption
                 let selectedItem = self.options[self.selectedOption]
 
-                var itemResult: [String : Any]? = nil
+                var itemResult: [String: Any]?
                 if let selected = selectedItem[VXWalkthroughField.key] {
                     itemResult = [
-                        VXWalkthroughField.pickerValue: selected
+                        VXWalkthroughField.pickerValue: selected,
                     ]
                 }
 
@@ -156,16 +153,15 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
         }
     }
 
-    @IBAction func nextClicked(_ sender: Any) {
-        if self.activeOption < (self.options.count - 1) {
-            self.activeOption += 1
+    @IBAction func nextClicked(_: Any) {
+        if activeOption < (options.count - 1) {
+            activeOption += 1
         }
     }
 
-    @IBAction func previousClicked(_ sender: Any) {
-        if self.activeOption > 0 {
-            self.activeOption -= 1
+    @IBAction func previousClicked(_: Any) {
+        if activeOption > 0 {
+            activeOption -= 1
         }
     }
-
 }

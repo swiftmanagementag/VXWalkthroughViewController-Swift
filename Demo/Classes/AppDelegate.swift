@@ -13,9 +13,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     @IBOutlet var window: UIWindow?
     @IBOutlet var navigationController: UINavigationController!
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        self.window?.rootViewController = navigationController
-        self.window?.makeKeyAndVisible()
+    func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
 
         return true
     }
