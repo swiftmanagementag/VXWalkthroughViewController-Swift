@@ -204,7 +204,7 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
                     }
 
                     #if canImport(QRCodeReader)
-                        if let t = item[VXWalkthroughField.isScanEnabled] as? Bool, t == true {
+                        if let t = item[VXWalkthroughField.isScanEnabled] as? Bool, t {
                             enableScanButton(true)
                         }
                     #endif
@@ -272,6 +272,8 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
                         self.readerVC.dismiss(animated: true) {
                             _ = self.validateInput()
                         }
+                    } else {
+                        self.readerVC.dismiss(animated: true, completion: nil)
                     }
                 }
 
@@ -283,8 +285,9 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
 
         func readerDidCancel(_ reader: QRCodeReaderViewController) {
             reader.stopScanning()
-
-            dismiss(animated: true, completion: nil)
+            reader.dismiss(animated: true, completion: nil)
+            
+            //dismiss(animated: true, completion: nil)
         }
     #endif
 }

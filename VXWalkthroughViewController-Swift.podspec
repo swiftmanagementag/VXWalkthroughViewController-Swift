@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.swift_version   = '5.0'
   s.module_name   = 'VXWalkthrough'
   s.source_files 	= 'VXWalkthroughViewController/**/*.swift'
-  s.resources 		= 'VXWalkthroughViewController/**/*.{bundle,xib,png,lproj,storyboard}'
+  s.resources 		= 'VXWalkthroughViewController/**/*.{bundle,xib,lproj,storyboard,png}'
   #s.resource_bundles = {
   #  'VXWalkthroughViewController' => ['VXWalkthroughViewController/**/*.{bundle,xib,png,lproj,storyboard}']
   #}

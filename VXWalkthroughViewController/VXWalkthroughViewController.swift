@@ -448,8 +448,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         // Get the current page before the transition occurs, otherwise the new size of content will change the index
         let currentPage = self.currentPage
 
-        let popTime = DispatchTime.now() + Double(Int64(Double(NSEC_PER_SEC) * 0.1)) / Double(NSEC_PER_SEC)
-        DispatchQueue.main.asyncAfter(deadline: popTime) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             [weak self] in
             self?.gotoPage(currentPage)
         }

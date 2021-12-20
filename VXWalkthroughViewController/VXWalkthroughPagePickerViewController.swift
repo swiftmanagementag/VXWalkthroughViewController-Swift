@@ -38,7 +38,7 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                         titleText = t
                     }
                     var isAvailable = false
-                    if let t = selectedItem[VXWalkthroughField.isAvailable] as? Bool, t == true {
+                    if let t = selectedItem[VXWalkthroughField.isAvailable] as? Bool, t {
                         isAvailable = true
                     }
                     self.actionButton?.isHidden = false
