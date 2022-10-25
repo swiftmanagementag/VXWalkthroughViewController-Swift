@@ -30,7 +30,7 @@ public protocol VXWalkthroughPage: AnyObject {
     var key: String? { get }
 }
 
-public struct VXWalkthroughField {
+public enum VXWalkthroughField {
     // - MARK: Constants
     public static let title = "title"
     public static let image = "image"
@@ -95,11 +95,11 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         self.view.insertSubview(v, at: 0)
 
         self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[scrollview]-0-|", options: [], metrics: nil, views: [
-            "scrollview": v,
+            "scrollview": v
         ]))
 
         self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[scrollview]-0-|", options: [], metrics: nil, views: [
-            "scrollview": v,
+            "scrollview": v
         ]))
 
         return v
@@ -136,10 +136,13 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        if let i = UIImage(named: "VXWalkthroughController.bundle/VXWalkthroughViewControllerLeftArrow@2x.png") {
+
+        let b = Bundle(for: VXWalkthroughViewController.self)
+
+        if let i = UIImage(named: "VXWalkthroughViewControllerLeftArrow@2x.png", in: b, with: nil) {
             prevButton?.setImage(i, for: .normal)
         }
-        if let i = UIImage(named: "VXWalkthroughController.bundle/VXWalkthroughViewControllerRightArrow@2x.png") {
+        if let i = UIImage(named: "VXWalkthroughViewControllerRightArrow@2x.png", in: b, with: nil) {
             nextButton?.setImage(i, for: .normal)
         }
         pageControl?.addTarget(self, action: #selector(pageControlDidTouch), for: UIControl.Event.touchUpInside)
@@ -221,7 +224,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
             VXWalkthroughField.title: text,
             VXWalkthroughField.image: imageName,
             VXWalkthroughField.sort: 1,
-            VXWalkthroughField.buttonTitle: buttonTitle,
+            VXWalkthroughField.buttonTitle: buttonTitle
         ]
 
         var itemResult = itemMore
@@ -249,7 +252,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
                     VXWalkthroughField.key: stepKey,
                     VXWalkthroughField.title: stepText,
                     VXWalkthroughField.image: stepKey,
-                    VXWalkthroughField.sort: step * 10,
+                    VXWalkthroughField.sort: step * 10
                 ]
                 items[stepKey] = item
 
@@ -291,7 +294,7 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     }
 
     public func controller(_ key: String) -> UIViewController? {
-        let controller = controllers.first { (vc) -> Bool in
+        let controller = controllers.first { vc -> Bool in
             if let wvc = vc as? VXWalkthroughPage {
                 return wvc.key == key
             } else {
@@ -305,6 +308,8 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         if currentPage + 1 < controllers.count {
             delegate?.walkthroughNextButtonPressed?()
             gotoPage(currentPage + 1)
+        } else {
+            delegate?.walkthroughCloseButtonPressed?(self)
         }
     }
 
@@ -356,11 +361,11 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
             // Constraints
             let metricDict: [String: Any] = [
                 "w": vc.view.bounds.size.width,
-                "h": vc.view.bounds.size.height,
+                "h": vc.view.bounds.size.height
             ]
             let viewsDict: [String: Any] = [
                 "view": view,
-                "container": scrollview,
+                "container": scrollview
             ]
 
             // - Generic cnst
@@ -396,10 +401,20 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         // Notify delegate about the new page
         delegate?.walkthroughPageDidChange?(currentPage)
 
+        let b = Bundle(for: VXWalkthroughViewController.self)
+        
         // Hide/Show navigation buttons
         if currentPage == controllers.count - 1 || controllers.count == 1 {
-            nextButton?.isHidden = true
+            if let i = UIImage(named: "VXWalkthroughViewControllerGo@2x.png", in: b, with: nil) {
+                nextButton?.setImage(i, for: .normal)
+                nextButton?.isHidden = false
+            } else {
+                nextButton?.isHidden = true
+            }
         } else {
+            if let i = UIImage(named: "VXWalkthroughViewControllerRightArrow@2x.png", in: b, with: nil) {
+                nextButton?.setImage(i, for: .normal)
+            }
             nextButton?.isHidden = false
         }
 

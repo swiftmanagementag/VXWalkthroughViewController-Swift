@@ -39,18 +39,18 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
             walkthrough.populate()
 
             var item = walkthrough.createItem("ITWALKTHROUGH_LOGIN", item: [
-                VXWalkthroughViewController.kStoryBoardID: VXWalkthroughPageLoginViewController.storyboardID,
-                VXWalkthroughViewController.kLoginPrompt: NSLocalizedString("Email", comment: "Email"),
-                VXWalkthroughViewController.kPasswordPrompt: NSLocalizedString("Password", comment: "Password"),
-                VXWalkthroughViewController.kPlaceholderValue: "xxxx-xxxx-xxxx",
+                VXWalkthroughViewController.storyboardID: VXWalkthroughPageLoginViewController.storyboardID,
+                VXWalkthroughField.loginPrompt: NSLocalizedString("Email", comment: "Email"),
+                VXWalkthroughField.passwordPrompt: NSLocalizedString("Password", comment: "Password"),
+                VXWalkthroughField.placeholderValue: "xxxx-xxxx-xxxx"
             ])
 
-            item?[VXWalkthroughViewController.kImage] = "walkthrough_0"
-            item?[VXWalkthroughViewController.kTitle] = "Long Title"
-            item?[VXWalkthroughViewController.kSort] = 1
-            item?[VXWalkthroughViewController.kIsScanEnabled] = true
+            item?[VXWalkthroughField.image] = "walkthrough_0"
+            item?[VXWalkthroughField.title] = "Long Title"
+            item?[VXWalkthroughField.sort] = 1
+            item?[VXWalkthroughField.isScanEnabled] = true
 
-            walkthrough.items[VXWalkthroughViewController.kKey] = item
+            walkthrough.items[VXWalkthroughField.key] = item
             // if let vc = self.createPageViewController("", item: ) {
             //    walkthrough.add(vc)
             // }

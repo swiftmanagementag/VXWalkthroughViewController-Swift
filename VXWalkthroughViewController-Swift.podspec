@@ -1,4 +1,4 @@
-@version = "1.1.23"
+@version = "1.1.24"
 
 Pod::Spec.new do |s|
   s.name         	= 'VXWalkthroughViewController-Swift'
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.license			= { :type => 'MIT', :file => 'LICENSE' }
   s.author       	= { 'Graham Lancashire' => 'lancashire@swift.ch' }
   s.source       	= { :git => 'https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift.git', :tag => s.version.to_s }
-  s.platform     	= :ios, '11.0'
+  s.platform     	= :ios, '14.0'
   s.swift_version   = '5.0'
   s.module_name   = 'VXWalkthrough'
   s.source_files 	= 'VXWalkthroughViewController/**/*.swift'

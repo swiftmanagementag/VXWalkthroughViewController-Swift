@@ -27,7 +27,7 @@
 import AVFoundation
 import UIKit
 
-protocol QRCodeReaderLifeCycleDelegate: class {
+protocol QRCodeReaderLifeCycleDelegate: AnyObject {
     func readerDidStartScanning()
     func readerDidStopScanning()
 }
@@ -161,7 +161,7 @@ public final class QRCodeReader: NSObject, AVCaptureMetadataOutputObjectsDelegat
         metadataOutput.setMetadataObjectsDelegate(self, queue: metadataObjectsQueue)
 
         let allTypes = Set(metadataOutput.availableMetadataObjectTypes)
-        let filtered = metadataObjectTypes.filter { (mediaType) -> Bool in
+        let filtered = metadataObjectTypes.filter { mediaType -> Bool in
             allTypes.contains(mediaType)
         }
 
@@ -359,7 +359,7 @@ public final class QRCodeReader: NSObject, AVCaptureMetadataOutputObjectsDelegat
         }
 
         for metadataObjectType in metadataObjectTypes! {
-            if !output.availableMetadataObjectTypes.contains { $0 == metadataObjectType } {
+            if !output.availableMetadataObjectTypes.contains(where: { $0 == metadataObjectType }) {
                 return false
             }
         }

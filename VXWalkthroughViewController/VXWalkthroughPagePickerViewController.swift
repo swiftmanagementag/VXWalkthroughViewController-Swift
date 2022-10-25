@@ -16,23 +16,23 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
     var options = [[String: Any]]()
     var activeOption = 0 {
         didSet {
-            if activeOption < self.options.count {
+            if activeOption < options.count {
                 let selectedItem = options[activeOption]
                 if let i = selectedItem[VXWalkthroughField.image] as? String {
-                    self.imageName = i
+                    imageName = i
                 }
 
-                self.imageView?.layer.borderWidth = (self.selectedOption == selectedOption) ? 6 : 3
+                imageView?.layer.borderWidth = (selectedOption == selectedOption) ? 6 : 3
 
-                self.previousButton?.isHidden = activeOption == 0
-                self.nextButton?.isHidden = activeOption >= (options.count - 1)
+                previousButton?.isHidden = activeOption == 0
+                nextButton?.isHidden = activeOption >= (options.count - 1)
 
                 if activeOption == selectedOption {
-                    if let t = self.item?[VXWalkthroughField.title] as? String, let st = selectedItem[VXWalkthroughField.title] as? String {
+                    if let t = item?[VXWalkthroughField.title] as? String, let st = selectedItem[VXWalkthroughField.title] as? String {
                         titleText = String(format: t, st)
                     }
 
-                    self.actionButton?.isHidden = true
+                    actionButton?.isHidden = true
                 } else {
                     if let t = selectedItem[VXWalkthroughField.title] as? String {
                         titleText = t
@@ -41,8 +41,8 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                     if let t = selectedItem[VXWalkthroughField.isAvailable] as? Bool, t {
                         isAvailable = true
                     }
-                    self.actionButton?.isHidden = false
-                    self.enableActionButton(isAvailable)
+                    actionButton?.isHidden = false
+                    enableActionButton(isAvailable)
                 }
             }
         }
@@ -114,7 +114,7 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                     options = item[VXWalkthroughField.options] as? [[String: Any]] ?? [[String: Any]]()
 
                     if let pickerValue = item[VXWalkthroughField.pickerValue] as? String {
-                        if let selected = options.firstIndex(where: { (dict) -> Bool in
+                        if let selected = options.firstIndex(where: { dict -> Bool in
                             dict[VXWalkthroughField.key] as? String == pickerValue
                         }) {
                             selectedOption = selected
@@ -144,7 +144,7 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                 var itemResult: [String: Any]?
                 if let selected = selectedItem[VXWalkthroughField.key] {
                     itemResult = [
-                        VXWalkthroughField.pickerValue: selected,
+                        VXWalkthroughField.pickerValue: selected
                     ]
                 }
 

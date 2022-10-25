@@ -29,20 +29,20 @@ import UIKit
 /// The toggle torch button.
 @IBDesignable
 public final class ToggleTorchButton: UIButton {
-    @IBInspectable var edgeColor: UIColor = UIColor.white {
+    @IBInspectable var edgeColor: UIColor = .white {
         didSet {
             setNeedsDisplay()
         }
     }
 
-    @IBInspectable var fillColor: UIColor = UIColor.lightGray {
+    @IBInspectable var fillColor: UIColor = .lightGray {
         didSet {
             setNeedsDisplay()
         }
     }
 
-    @IBInspectable var edgeHighlightedColor: UIColor = UIColor.white
-    @IBInspectable var fillHighlightedColor: UIColor = UIColor.darkGray
+    @IBInspectable var edgeHighlightedColor: UIColor = .white
+    @IBInspectable var fillHighlightedColor: UIColor = .darkGray
 
     override public func draw(_ rect: CGRect) {
         // Colors

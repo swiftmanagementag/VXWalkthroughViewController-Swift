@@ -114,7 +114,7 @@ public final class QRCodeReaderViewControllerBuilder {
 
       The value of this property is a CGRect that determines the receiver's rectangle of interest for each frame of video. The rectangle's origin is top left and is relative to the coordinate space of the device providing the metadata. Specifying a rectOfInterest may improve detection performance for certain types of metadata. The default value of this property is the value CGRectMake(0, 0, 1, 1). Metadata objects whose bounds do not intersect with the rectOfInterest will not be returned.
      */
-    public var rectOfInterest: CGRect = CGRect(x: 0, y: 0, width: 1, height: 1) {
+    public var rectOfInterest: CGRect = .init(x: 0, y: 0, width: 1, height: 1) {
         didSet {
             reader.metadataOutput.rectOfInterest = CGRect(
                 x: min(max(rectOfInterest.origin.x, 0), 1),

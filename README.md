@@ -6,7 +6,7 @@ Your onboarding tutorial can include text, images and even simple html.
 
 ![VXWalkthroughViewController](https://cloud.githubusercontent.com/assets/314516/5762993/a2ec59da-9ce6-11e4-9c93-690b48eb93b5.png)
 
-**VXWalkthroughViewController features:**
+**VXWalkthroughViewController-Swift features:**
 
 * Simple to integrate
 * Uses existing localisation for configuration
@@ -18,12 +18,7 @@ Your onboarding tutorial can include text, images and even simple html.
 ### CocoaPods
 
 If you want to use VXWalkthroughViewController with CocoaPods
-`pod 'VXWalkthroughViewController', :head`
-
-### Manually
-
-* Drag the `VXWalkthroughViewController/VXWalkthroughViewController` folder into your project.
-* `#import "VXWalkthroughViewController.h"`
+`pod 'VXWalkthroughViewController-Swift', :head`
 
 ## Usage
 

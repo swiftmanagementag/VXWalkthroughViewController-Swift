@@ -48,7 +48,7 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
                 }
             }
 
-            if let v = imageView, self.roundImages {
+            if let v = imageView, roundImages {
                 v.layer.borderWidth = 3.0
                 v.layer.borderColor = UIColor.white.cgColor
                 v.layer.shadowColor = UIColor.gray.cgColor
@@ -102,14 +102,14 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
 
                 var regularAttributes: [NSAttributedString.Key: Any] = [
                     NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize)),
-                    NSAttributedString.Key.foregroundColor: UIColor.white,
+                    NSAttributedString.Key.foregroundColor: UIColor.white
                 ]
                 if let a = self.styles?[VXWalkthroughField.regular] as? [NSAttributedString.Key: Any] {
                     regularAttributes = regularAttributes.merging(a) { _, new in new }
                 }
                 var boldAttributes: [NSAttributedString.Key: Any] = [
                     NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: CGFloat(fontSize)),
-                    NSAttributedString.Key.foregroundColor: UIColor.white,
+                    NSAttributedString.Key.foregroundColor: UIColor.white
                 ]
                 if let a = self.styles?[VXWalkthroughField.bold] as? [NSAttributedString.Key: Any] {
                     boldAttributes = regularAttributes.merging(a) { _, new in new }
@@ -123,7 +123,7 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
                     let patterns = ["(\\*)(.*?)(\\*)", "(<b>)(.*?)(<.b>)"]
                     for pattern in patterns {
                         if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
-                            regex.enumerateMatches(in: t, options: [], range: NSMakeRange(0, t.count)) { result, _, _ in
+                            regex.enumerateMatches(in: t, options: [], range: NSRange(location: 0, length: t.count)) { result, _, _ in
 
                                 if let r = result {
                                     var r1 = r.range(at: 1) // Location of the leading delimiter
@@ -147,6 +147,10 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
 
                     let paragraphStyle = NSMutableParagraphStyle()
                     paragraphStyle.alignment = .center
+                    if #available(iOS 15.0, *), UIDevice.current.systemVersion >= "15.0" {
+                        paragraphStyle.usesDefaultHyphenation = true
+                        paragraphStyle.allowsDefaultTighteningForTruncation = true
+                    }
 
                     attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
                 }

@@ -98,7 +98,7 @@ public final class ReaderOverlayView: UIView {
         layer.addSublayer(overlay)
     }
 
-    var rectOfInterest: CGRect = CGRect(x: 0, y: 0, width: 1, height: 1) {
+    var rectOfInterest: CGRect = .init(x: 0, y: 0, width: 1, height: 1) {
         didSet {
             setNeedsDisplay()
         }

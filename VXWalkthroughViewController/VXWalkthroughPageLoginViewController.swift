@@ -59,7 +59,9 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
 
-        if let i = UIImage(named: "VXWalkthroughController.bundle/VXWalkthroughViewControllerScan@2x.png") {
+        let b = Bundle(for: VXWalkthroughViewController.self)
+
+        if let i = UIImage(named: "VXWalkthroughViewControllerScan@2x.png", in: b, with: nil) {
             scanButton?.setImage(i, for: .normal)
         }
 
@@ -223,7 +225,7 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
             // start process
             let item: [String: Any] = [
                 VXWalkthroughField.loginValue: self.loginField?.text ?? "",
-                VXWalkthroughField.passwordValue: self.passwordField?.text ?? "",
+                VXWalkthroughField.passwordValue: self.passwordField?.text ?? ""
             ]
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
         }
@@ -286,8 +288,8 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
         func readerDidCancel(_ reader: QRCodeReaderViewController) {
             reader.stopScanning()
             reader.dismiss(animated: true, completion: nil)
-            
-            //dismiss(animated: true, completion: nil)
+
+            // dismiss(animated: true, completion: nil)
         }
     #endif
 }
