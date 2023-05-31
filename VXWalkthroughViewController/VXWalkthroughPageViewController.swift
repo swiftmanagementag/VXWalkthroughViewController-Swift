@@ -147,11 +147,13 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
 
                     let paragraphStyle = NSMutableParagraphStyle()
                     paragraphStyle.alignment = .center
-                    if #available(iOS 15.0, *), UIDevice.current.systemVersion >= "15.0" {
+                    if #available(iOS 15.0, *) {
                         paragraphStyle.usesDefaultHyphenation = true
-                        paragraphStyle.allowsDefaultTighteningForTruncation = true
+                    } else {
+                        // Fallback on earlier versions
                     }
-
+                    paragraphStyle.allowsDefaultTighteningForTruncation = true
+                
                     attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
                 }
                 titleView?.attributedText = attributedString
