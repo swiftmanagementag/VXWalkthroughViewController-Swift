@@ -160,10 +160,14 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
 
         updateUI()
 
+        VXWalkthroughViewController.setWalkthroughShown(true)
+    }
+    public class func setWalkthroughShown(_ shown: Bool = true) {
+        // check if the startup info has been shown for the current release
         let appVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String
         let startInfoKey = "vxwalkthroughshown_\(appVersion ?? "")"
 
-        UserDefaults.standard.set(true, forKey: startInfoKey)
+        UserDefaults.standard.set(shown, forKey: startInfoKey)
         UserDefaults.standard.synchronize()
     }
 
