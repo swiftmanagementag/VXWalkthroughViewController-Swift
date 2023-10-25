@@ -141,14 +141,13 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
                 self.selectedOption = self.activeOption
                 let selectedItem = self.options[self.selectedOption]
 
-                var itemResult: [String: Any]?
+                var item: [String: Any] = self.item ?? [:]
+
                 if let selected = selectedItem[VXWalkthroughField.key] {
-                    itemResult = [
-                        VXWalkthroughField.pickerValue: selected
-                    ]
+                    item[VXWalkthroughField.pickerValue] = selected
                 }
 
-                self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: itemResult)
+                self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
             }
         }
     }

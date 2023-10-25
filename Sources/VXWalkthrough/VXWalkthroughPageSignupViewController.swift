@@ -161,9 +161,9 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
             self.startAnimating()
         }) { _ in
             // start process
-            let item: [String: Any] = [
-                VXWalkthroughField.emailValue: self.emailField?.text ?? ""
-            ]
+            var item: [String: Any] = self.item ?? [:]
+
+            item[VXWalkthroughField.emailValue] = self.emailField?.text ?? ""
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
         }
     }

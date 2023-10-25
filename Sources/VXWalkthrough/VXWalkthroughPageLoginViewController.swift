@@ -44,13 +44,14 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
         loginField?.returnKeyType = .next
         loginField?.delegate = self
         loginField?.textContentType = .emailAddress
-
+        loginField?.tag = 1
         passwordField?.keyboardType = .asciiCapable
         passwordField?.autocorrectionType = .no
         passwordField?.spellCheckingType = .no
         passwordField?.returnKeyType = .done
         passwordField?.delegate = self
         passwordField?.textContentType = .password
+        loginField?.tag = 2
 
         loginField?.addTarget(self, action: #selector(validateInput), for: .editingChanged)
         passwordField?.addTarget(self, action: #selector(validateInput), for: .editingChanged)
@@ -69,7 +70,6 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
 
         enableScanButton(false)
     }
-
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
@@ -82,6 +82,16 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
     @IBAction func textFieldFinished(_ sender: UITextField) {
         sender.resignFirstResponder()
     }
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if (textField === loginField) {
+            passwordField?.becomeFirstResponder()
+        } else {
+            self.actionClicked(textField)
+        }
+
+        return true
+    }
+
 
     func startAnimating() {
         enableActionButton(false)
@@ -102,7 +112,7 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
         scanButton?.isHidden = !isEnabled
         scanButton?.isEnabled = isEnabled
         scanButton?.alpha = isEnabled ? 1.0 : 0.5
-        actionTrailingMargin?.constant = isEnabled ? -(12.0 + (scanButton?.frame.size.width ?? 44.0)) : 0.0
+        actionTrailingMargin?.constant = isEnabled ? +(12.0 + (scanButton?.frame.size.width ?? 44.0)) : 0.0
     }
 
     @objc func keyboardWillShow(_ notification: Notification?) {
@@ -131,7 +141,8 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
 
         UIView.animate(withDuration: 0.2, animations: {
             var f = self.view.frame
-            f.origin.y += kbSize.height
+            f.origin.y = 0
+            //f.origin.y += kbSize.height - 45.0
             self.view.frame = f
         })
         keyboardIsVisible = false
@@ -206,9 +217,9 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
                     }
 
                     #if canImport(QRCodeReader)
-                        if let t = item[VXWalkthroughField.isScanEnabled] as? Bool, t {
-                            enableScanButton(true)
-                        }
+                    if let t = item[VXWalkthroughField.isScanEnabled] as? String, !t.isEmpty {
+                        enableScanButton(true)
+                    }
                     #endif
                 }
             }
@@ -223,10 +234,10 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
             self.startAnimating()
         }) { _ in
             // start process
-            let item: [String: Any] = [
-                VXWalkthroughField.loginValue: self.loginField?.text ?? "",
-                VXWalkthroughField.passwordValue: self.passwordField?.text ?? ""
-            ]
+            var item: [String: Any] = self.item ?? [:]
+
+            item[VXWalkthroughField.loginValue] = self.loginField?.text ?? ""
+            item[VXWalkthroughField.passwordValue] = self.passwordField?.text ?? ""
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
         }
     }
