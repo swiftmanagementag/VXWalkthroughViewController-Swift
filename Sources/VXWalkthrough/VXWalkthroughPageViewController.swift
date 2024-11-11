@@ -37,7 +37,7 @@ public class VXWalkthroughPageViewController: UIViewController, VXWalkthroughPag
     }
 
     public var key: String?
-    public var item: [String: Any]? {
+    public var item: [String: any Sendable]? {
         didSet {
             if let item = item {
                 if let t = item[VXWalkthroughField.title] as? String {

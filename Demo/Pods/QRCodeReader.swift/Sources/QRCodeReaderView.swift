@@ -151,7 +151,7 @@ public final class QRCodeReaderView: UIView, QRCodeReaderDisplayable {
             let application = UIApplication.shared
             let orientation = UIDevice.current.orientation
 
-            if let w = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
+            if let w = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
                 let supportedInterfaceOrientations = application.supportedInterfaceOrientations(for: w)
                 connection.videoOrientation = QRCodeReader.videoOrientation(deviceOrientation: orientation, withSupportedOrientations: supportedInterfaceOrientations, fallbackOrientation: connection.videoOrientation)
             }

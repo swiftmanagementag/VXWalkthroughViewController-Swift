@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewController {
+public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewController, Sendable {
     @IBOutlet var previousButton: UIButton?
     @IBOutlet var nextButton: UIButton?
     @IBOutlet var actionButton: UIButton?
@@ -92,23 +92,23 @@ public class VXWalkthroughPagePickerViewController: VXWalkthroughPageViewControl
         pulse(imageView, toSize: 0.8, withDuration: 0.0)
     }
 
-    override public var item: [String: Any]? {
+    override public var item: [String: any Sendable]? {
         didSet {
             super.item = item
 
             stopAnimating()
 
             if let item = item {
-                if let t = item[VXWalkthroughField.error] as? String {
-                    titleText = t
-                } else if let t = item[VXWalkthroughField.success] as? String {
-                    imageView?.layer.borderWidth = 6
+				if let t = item[VXWalkthroughField.success] as? String {
+					imageView?.layer.borderWidth = 6
 
-                    titleText = t
+					titleText = t
 
-                    // Assumber user denied request
-                    actionButton?.isHidden = true
-                } else {
+					// Assumber user denied request
+					actionButton?.isHidden = true
+				} else if let t = item[VXWalkthroughField.error] as? String {
+					titleText = t
+				} else {
                     enableActionButton(true)
                     selectedOption = 0
                     options = item[VXWalkthroughField.options] as? [[String: Any]] ?? [[String: Any]]()

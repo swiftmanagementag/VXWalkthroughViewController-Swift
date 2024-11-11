@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewController {
+public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewController, Sendable {
     @IBOutlet var actionButton: UIButton?
 
     override public func viewDidLayoutSubviews() {
@@ -33,23 +33,23 @@ public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewControl
         pulse(imageView, toSize: 0.8, withDuration: 0.0)
     }
 
-    override public var item: [String: Any]? {
+    override public var item: [String: any Sendable]? {
         didSet {
             super.item = item
 
             stopAnimating()
 
             if let item = item {
-                if let t = item[VXWalkthroughField.error] as? String {
-                    titleText = t
+				if let t = item[VXWalkthroughField.success] as? String {
+					titleText = t
 
-                    // Assumber user denied request
-                    actionButton?.isHidden = true
-                } else if let t = item[VXWalkthroughField.success] as? String {
-                    titleText = t
+					// Assumber user denied request
+					actionButton?.isHidden = true
+				} else if let t = item[VXWalkthroughField.error] as? String {
+						titleText = t
 
-                    // Assumber user denied request
-                    actionButton?.isHidden = true
+						// Assumber user denied request
+						actionButton?.isHidden = true
                 } else {
                     enableActionButton(true)
 
@@ -67,7 +67,7 @@ public class VXWalkthroughPageActionViewController: VXWalkthroughPageViewControl
             self.startAnimating()
         }) { _ in
             // start process
-            let item: [String: Any] = self.item ?? [:]
+            let item: [String: any Sendable] = self.item ?? [:]
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
         }
     }

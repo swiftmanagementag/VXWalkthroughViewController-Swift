@@ -10,11 +10,11 @@ import UIKit
 
 @objc
 public protocol VXWalkthroughViewControllerDelegate: NSObjectProtocol {
-    @objc optional func walkthroughCloseButtonPressed(_ sender: Any?) // If the skipRequest(sender:) action is connected to a button, this function is called when that button is pressed.
+    @objc optional func walkthroughCloseButtonPressed(_ pSender: UIViewController?) // If the skipRequest(sender:) action is connected to a button, this function is called when that button is pressed.
     @objc optional func walkthroughNextButtonPressed() //
     @objc optional func walkthroughPrevButtonPressed() //
     @objc optional func walkthroughPageDidChange(_ pageNumber: Int) // Called when current page changes
-    @objc optional func walkthroughActionButtonPressed(_ pSender: Any?, item: [String: Any]?)
+    @objc optional func walkthroughActionButtonPressed(_ pSender: UIViewController?, item: [String: any Sendable]?)
 }
 
 // Walkthrough Page:
@@ -60,7 +60,7 @@ public enum VXWalkthroughField {
     public static let bold = "bold"
 }
 
-public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate {
+public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate, Sendable {
     // - MARK: Walkthrough Delegate
     // This delegate performs basic operations such as dismissing the Walkthrough or call whatever action on page change.
     // Probably the Walkthrough is presented by this delegate.

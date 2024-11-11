@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewController, UITextFieldDelegate {
+public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewController, UITextFieldDelegate, Sendable {
     @IBOutlet var emailField: UITextField?
     @IBOutlet var emailLabel: UILabel?
     @IBOutlet var messageLabel: UILabel?
@@ -114,25 +114,26 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
         return true
     }
 
-    override public var item: [String: Any]? {
+    override public var item: [String: any Sendable]? {
         didSet {
             super.item = item
 
             stopAnimating()
 
             if let item = item {
-                if let t = item[VXWalkthroughField.error] as? String {
-                    titleText = t
+				if let t = item[VXWalkthroughField.success] as? String {
+					titleText = t
 
-                    enableActionButton(true)
-                } else if let t = item[VXWalkthroughField.success] as? String {
-                    titleText = t
+					// there was success, hide fields
+					actionButton?.isHidden = true
+					emailField?.isHidden = true
+					emailLabel?.isHidden = true
+				} else if let t = item[VXWalkthroughField.error] as? String {
+					titleText = t
 
-                    // there was success, hide fields
-                    actionButton?.isHidden = true
-                    emailField?.isHidden = true
-                    emailLabel?.isHidden = true
-                } else {
+					enableActionButton(true)
+
+				} else {
                     enableActionButton(true)
 
                     // setup fields
@@ -161,7 +162,7 @@ public class VXWalkthroughPageSignupViewController: VXWalkthroughPageViewControl
             self.startAnimating()
         }) { _ in
             // start process
-            var item: [String: Any] = self.item ?? [:]
+            var item: [String: any Sendable] = self.item ?? [:]
 
             item[VXWalkthroughField.emailValue] = self.emailField?.text ?? ""
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)

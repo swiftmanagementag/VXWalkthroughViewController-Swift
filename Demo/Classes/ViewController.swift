@@ -42,7 +42,7 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
                 VXWalkthroughViewController.storyboardID: VXWalkthroughPageLoginViewController.storyboardID,
                 VXWalkthroughField.loginPrompt: NSLocalizedString("Email", comment: "Email"),
                 VXWalkthroughField.passwordPrompt: NSLocalizedString("Password", comment: "Password"),
-                VXWalkthroughField.placeholderValue: "xxxx-xxxx-xxxx"
+                VXWalkthroughField.placeholderValue: "xxxx-xxxx-xxxx",
             ])
 
             item?[VXWalkthroughField.image] = "walkthrough_0"

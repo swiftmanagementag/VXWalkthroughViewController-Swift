@@ -11,7 +11,7 @@ import UIKit
     import QRCodeReader
 #endif
 
-public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewController, UITextFieldDelegate {
+public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewController, UITextFieldDelegate, Sendable {
     @IBOutlet var loginField: UITextField?
     @IBOutlet var passwordField: UITextField?
     @IBOutlet var loginLabel: UILabel?
@@ -136,8 +136,8 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
             return
         }
 
-        let info = notification?.userInfo
-        let kbSize = (info?[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue.size
+        // let info = notification?.userInfo
+        // let kbSize = (info?[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue.size
 
         UIView.animate(withDuration: 0.2, animations: {
             var f = self.view.frame
@@ -162,14 +162,26 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
         return true
     }
 
-    override public var item: [String: Any]? {
+    override public var item: [String: any Sendable]? {
         didSet {
             super.item = item
 
             stopAnimating()
 
             if let item = item {
-                if let t = item[VXWalkthroughField.error] as? String {
+				if let t = item[VXWalkthroughField.success] as? String {
+					titleText = t
+
+					// there was success, hide fields
+					actionButton?.isHidden = true
+
+					loginLabel?.isHidden = true
+					passwordLabel?.isHidden = true
+
+					loginField?.isHidden = true
+					passwordField?.isHidden = true
+					scanButton?.isHidden = true
+				} else if let t = item[VXWalkthroughField.error] as? String {
                     titleText = t
 
                     // Assumber user denied request
@@ -177,19 +189,6 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
                     if let t = item[VXWalkthroughField.isScanEnabled] as? String, !t.isEmpty {
                         enableScanButton(true)
                     }
-                } else if let t = item[VXWalkthroughField.success] as? String {
-                    titleText = t
-
-                    // there was success, hide fields
-                    actionButton?.isHidden = true
-
-                    loginLabel?.isHidden = true
-                    passwordLabel?.isHidden = true
-
-                    loginField?.isHidden = true
-                    passwordField?.isHidden = true
-                    scanButton?.isHidden = true
-
                 } else {
                     enableActionButton(true)
                     enableScanButton(false)
@@ -234,7 +233,7 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
             self.startAnimating()
         }) { _ in
             // start process
-            var item: [String: Any] = self.item ?? [:]
+            var item: [String: any Sendable] = self.item ?? [:]
 
             item[VXWalkthroughField.loginValue] = self.loginField?.text ?? ""
             item[VXWalkthroughField.passwordValue] = self.passwordField?.text ?? ""
