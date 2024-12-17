@@ -138,10 +138,10 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         super.viewDidLoad()
 
         let b = Bundle(for: VXWalkthroughViewController.self)
-
-        if let i = UIImage(named: "VXWalkthroughViewControllerLeftArrow@2x.png", in: b, with: nil) {
+		if let i = UIImage(named: "VXWalkthroughViewControllerLeftArrow@2x.png", in: b, with: nil) {
             prevButton?.setImage(i, for: .normal)
-        }
+		}
+
         if let i = UIImage(named: "VXWalkthroughViewControllerRightArrow@2x.png", in: b, with: nil) {
             nextButton?.setImage(i, for: .normal)
         }
@@ -182,11 +182,18 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     }
 
     public class func create(delegate: VXWalkthroughViewControllerDelegate, backgroundColor: UIColor?, styles: [String: Any]? = nil) -> VXWalkthroughViewController? {
-        let bundle = Bundle(for: VXWalkthroughViewController.self)
+		// let bundle = Bundle(for: VXWalkthroughViewController.self)
 
-        let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
+		let bundleName = "VXWalkthroughViewController-Swift_VXWalkthrough"
+		guard let bundleURL = Bundle.main.url(forResource: bundleName, withExtension: "bundle")  else {
+			return nil
+		}
+		let bundle = Bundle(url: bundleURL) ?? Bundle(identifier: "")
 
-        let walkthrough = stb.instantiateViewController(withIdentifier: VXWalkthroughViewController.storyboardID) as? VXWalkthroughViewController
+		let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
+		// let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
+
+		let walkthrough = stb.instantiateViewController(withIdentifier: VXWalkthroughViewController.storyboardID) as? VXWalkthroughViewController
 
         walkthrough?.backgroundColor = backgroundColor
         walkthrough?.delegate = delegate
@@ -198,7 +205,12 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     }
 
     public func createPageViewController(_ key: String, item: [String: Any]?) -> VXWalkthroughPageViewController? {
-        let bundle = Bundle(for: classForCoder)
+        // let bundle = Bundle(for: classForCoder)
+		let bundleName = "VXWalkthroughViewController-Swift_VXWalkthrough"
+		guard let bundleURL = Bundle.main.url(forResource: bundleName, withExtension: "bundle")  else {
+			return nil
+		}
+		let bundle = Bundle(url: bundleURL) ?? Bundle(identifier: "")
 
         let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
 

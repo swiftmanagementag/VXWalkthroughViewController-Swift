@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import VXWalkthrough
 
 class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
     override public func viewDidLoad() {
@@ -60,11 +61,9 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
             present(walkthrough, animated: true)
         }
     }
-
-    func walkthroughCloseButtonPressed(_: Any?) {
-        // delegate for handling close button
-        dismiss(animated: true)
-    }
+	func walkthroughCloseButtonPressed(_ pSender: UIViewController?) {
+		dismiss(animated: true)
+	}
 
     func walkthroughNextButtonPressed() {
         //
@@ -78,7 +77,7 @@ class ViewController: UIViewController, VXWalkthroughViewControllerDelegate {
         //
     }
 
-    func walkthroughActionButtonPressed(_: Any?, item _: [String: Any]?) {
+    func walkthroughActionButtonPressed(item _: [String: Any]?) {
         //
     }
 

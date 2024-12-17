@@ -13,15 +13,26 @@ let package = Package(
             targets: ["VXWalkthrough"]
         ),
     ],
-    targets: [
+	dependencies: [
+		.package(url: "https://github.com/yannickl/QRCodeReader.swift", from: "10.0.1")
+	],
+	targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "VXWalkthrough"),
-        .testTarget(
-            name: "VXWalkthroughTests",
-            dependencies: ["VXWalkthrough"]
-        ),
-    ],
-    swiftLanguageVersions: [.v5]
+            name: "VXWalkthrough",
+			dependencies: [
+				.product(name: "QRCodeReader", package: "QRCodeReader.swift")
+			],
+			resources: [
+				// .copy("Resources/Media.assets"),
+				// .copy("Media.xcassets"),
+				.process("Resources"),
+				// .process("Resources/VXWalkthroughViewControllerGo@2x.png"),
+				// .process("Resources/VXWalkthroughViewControllerLeftArrow@2x.png"),
+				// .process("Resources/VXWalkthroughViewControllerRightArrow@2x.png"),
+				// .process("Resources/VXWalkthroughViewControllerScan@2x.png"),
+			]),
+	],
+	swiftLanguageVersions: [.v5]
 )
