@@ -25,13 +25,7 @@ let package = Package(
 				.product(name: "QRCodeReader", package: "QRCodeReader.swift")
 			],
 			resources: [
-				// .copy("Resources/Media.assets"),
-				// .copy("Media.xcassets"),
 				.process("Resources"),
-				// .process("Resources/VXWalkthroughViewControllerGo@2x.png"),
-				// .process("Resources/VXWalkthroughViewControllerLeftArrow@2x.png"),
-				// .process("Resources/VXWalkthroughViewControllerRightArrow@2x.png"),
-				// .process("Resources/VXWalkthroughViewControllerScan@2x.png"),
 			]),
 	],
 	swiftLanguageVersions: [.v5]

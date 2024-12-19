@@ -188,10 +188,11 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
 		guard let bundleURL = Bundle.main.url(forResource: bundleName, withExtension: "bundle")  else {
 			return nil
 		}
-		let bundle = Bundle(url: bundleURL) ?? Bundle(identifier: "")
+		guard let bundle = Bundle(url: bundleURL) else {
+			return nil
+		}
 
 		let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
-		// let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
 
 		let walkthrough = stb.instantiateViewController(withIdentifier: VXWalkthroughViewController.storyboardID) as? VXWalkthroughViewController
 
@@ -210,7 +211,9 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
 		guard let bundleURL = Bundle.main.url(forResource: bundleName, withExtension: "bundle")  else {
 			return nil
 		}
-		let bundle = Bundle(url: bundleURL) ?? Bundle(identifier: "")
+		guard let bundle = Bundle(url: bundleURL) else {
+			return nil
+		}
 
         let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
 
