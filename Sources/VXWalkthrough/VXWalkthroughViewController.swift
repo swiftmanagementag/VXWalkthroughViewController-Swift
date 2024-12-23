@@ -112,7 +112,16 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     public class var storyboardID: String {
         return "Walkthrough"
     }
-
+	public class var bundle: Bundle {
+		let bundleName = "VXWalkthroughViewController-Swift_VXWalkthrough"
+		guard let bundleURL = Bundle.main.url(forResource: bundleName, withExtension: "bundle")  else {
+			return Bundle(for: VXWalkthroughViewController.self)
+		}
+		guard let bundle = Bundle(url: bundleURL) else {
+			return Bundle(for: VXWalkthroughViewController.self)
+		}
+		return bundle
+	}
     // The index of the current page (readonly)
     open var currentPage: Int {
         let page = Int(scrollview.contentOffset.x / view.bounds.size.width)
@@ -137,7 +146,8 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     override public func viewDidLoad() {
         super.viewDidLoad()
 
-        let b = Bundle(for: VXWalkthroughViewController.self)
+        let b = VXWalkthroughViewController.bundle
+
 		if let i = UIImage(named: "VXWalkthroughViewControllerLeftArrow@2x.png", in: b, with: nil) {
             prevButton?.setImage(i, for: .normal)
 		}
@@ -182,17 +192,9 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     }
 
     public class func create(delegate: VXWalkthroughViewControllerDelegate, backgroundColor: UIColor?, styles: [String: Any]? = nil) -> VXWalkthroughViewController? {
-		// let bundle = Bundle(for: VXWalkthroughViewController.self)
+		let b = VXWalkthroughViewController.bundle
 
-		let bundleName = "VXWalkthroughViewController-Swift_VXWalkthrough"
-		guard let bundleURL = Bundle.main.url(forResource: bundleName, withExtension: "bundle")  else {
-			return nil
-		}
-		guard let bundle = Bundle(url: bundleURL) else {
-			return nil
-		}
-
-		let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
+		let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: b)
 
 		let walkthrough = stb.instantiateViewController(withIdentifier: VXWalkthroughViewController.storyboardID) as? VXWalkthroughViewController
 
@@ -206,16 +208,9 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
     }
 
     public func createPageViewController(_ key: String, item: [String: Any]?) -> VXWalkthroughPageViewController? {
-        // let bundle = Bundle(for: classForCoder)
-		let bundleName = "VXWalkthroughViewController-Swift_VXWalkthrough"
-		guard let bundleURL = Bundle.main.url(forResource: bundleName, withExtension: "bundle")  else {
-			return nil
-		}
-		guard let bundle = Bundle(url: bundleURL) else {
-			return nil
-		}
+		let b = VXWalkthroughViewController.bundle
 
-        let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: bundle)
+        let stb = UIStoryboard(name: VXWalkthroughViewController.storyboardName, bundle: b)
 
         let storyboardID = (item?["storyboardID"] as? String) ?? VXWalkthroughPageViewController.storyboardID
         if let vc = stb.instantiateViewController(withIdentifier: storyboardID) as? VXWalkthroughPageViewController {
@@ -420,8 +415,8 @@ public class VXWalkthroughViewController: UIViewController, UIScrollViewDelegate
         // Notify delegate about the new page
         delegate?.walkthroughPageDidChange?(currentPage)
 
-        let b = Bundle(for: VXWalkthroughViewController.self)
-        
+		let b = VXWalkthroughViewController.bundle
+
         // Hide/Show navigation buttons
         if currentPage == controllers.count - 1 || controllers.count == 1 {
             if let i = UIImage(named: "VXWalkthroughViewControllerGo@2x.png", in: b, with: nil) {

@@ -214,7 +214,6 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
                         passwordField?.autocapitalizationType = .allCharacters
                         passwordField?.placeholder = t
                     }
-
                     #if canImport(QRCodeReader)
                     if let t = item[VXWalkthroughField.isScanEnabled] as? String, !t.isEmpty {
                         enableScanButton(true)
@@ -240,7 +239,6 @@ public class VXWalkthroughPageLoginViewController: VXWalkthroughPageViewControll
             self.parentController?.delegate?.walkthroughActionButtonPressed?(self, item: item)
         }
     }
-
     #if canImport(QRCodeReader)
         lazy var readerVC: QRCodeReaderViewController = {
             let builder = QRCodeReaderViewControllerBuilder {
