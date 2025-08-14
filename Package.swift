@@ -5,10 +5,10 @@ import PackageDescription
 
 let package = Package(
     name: "VXWalkthroughViewController-Swift",
-	platforms: [
-		.iOS(.v15),
-		.macCatalyst(.v14),
-		],
+    platforms: [
+        .iOS(.v16),
+        .macCatalyst(.v14),
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
@@ -16,19 +16,20 @@ let package = Package(
             targets: ["VXWalkthrough"]
         ),
     ],
-	dependencies: [
-		.package(url: "https://github.com/swiftmanagementag/QRCodeReader.swift", branch: "master")
-	],
-	targets: [
+    dependencies: [
+        .package(url: "https://github.com/swiftmanagementag/QRCodeReader.swift", branch: "master"),
+    ],
+    targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "VXWalkthrough",
-			dependencies: [
-				.product(name: "QRCodeReader", package: "QRCodeReader.swift")
-			],
-			resources: [
-				.process("Resources"),
-			]),
-	]
+            dependencies: [
+                .product(name: "QRCodeReader", package: "QRCodeReader.swift"),
+            ],
+            resources: [
+                .process("Resources"),
+            ]
+        ),
+    ]
 )
