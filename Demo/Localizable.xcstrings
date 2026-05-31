@@ -1,0 +1,36 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "walkthrough_0" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See *No* Evil"
+          }
+        }
+      }
+    },
+    "walkthrough_1" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hear No Evil"
+          }
+        }
+      }
+    },
+    "walkthrough_2" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speak *Evil*"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
