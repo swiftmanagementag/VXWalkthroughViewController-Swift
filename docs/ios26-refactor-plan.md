@@ -24,7 +24,8 @@ across multiple apps:
 | Build toolchain | Swift 5.8 (tools) | **Swift 6.x (6.4 toolchain, Xcode 26 / iOS 26 SDK)** |
 | Language mode | Swift 5 | **Swift 6 language mode** (full strict concurrency) |
 | UI | UIKit + `.storyboard`/`.xib` | **SwiftUI** (declarative, multiplatform) |
-| Min deployment | iOS 16 / Catalyst 14 | **iOS 17 / iPadOS 17 / Mac Catalyst 17** |
+| Min deployment | iOS 16 / Catalyst 14 | **iOS 17 / iPadOS 17 / Mac Catalyst 17** (confirmed floor) |
+| Build SDK | iOS 16 SDK | **iOS 26 SDK**; adopt iOS 26 features (Liquid Glass) behind `if #available(iOS 26, *)` with iOS 17 fallbacks |
 | Distribution | SPM (+ legacy CocoaPods notes) | **SPM-first**; CocoaPods deprecated |
 | Dependencies | forked `QRCodeReader.swift` | **Zero required deps**; QR via AVFoundation/VisionKit in an optional target |
 
@@ -128,9 +129,8 @@ Sources/
 ├─ VXWalkthroughScanner/            # OPTIONAL target (AVFoundation/VisionKit QR)
 │  └─ ScannerView.swift             # DataScannerViewController wrapper
 │
-└─ VXWalkthroughUIKit/              # OPTIONAL interop + back-compat shim
-   ├─ WalkthroughHostingController.swift   # UIHostingController convenience
-   └─ LegacyItemAdapter.swift              # [String:Any] → WalkthroughStep bridge
+└─ VXWalkthroughUIKit/              # OPTIONAL UIKit interop (no legacy config bridge)
+   └─ WalkthroughHostingController.swift   # UIHostingController convenience
 
 Tests/
 ├─ VXWalkthroughTests/              # Swift Testing — models, builder, gate, markup
@@ -221,7 +221,8 @@ present(vc, animated: true)
 
 - `WalkthroughTheme`: background, accent, title/body fonts, `imageStyle`
   (`.round` / `.fullBleed` / `.card`), motion profile, button shape. Injected via
-  the SwiftUI environment. Optional iOS 26 **Liquid Glass** styling for chrome.
+  the SwiftUI environment. iOS 26 **Liquid Glass** chrome is adopted behind
+  `if #available(iOS 26, *)`, falling back to a neutral material on iOS 17–18.
 - Respect `@Environment(\.accessibilityReduceMotion)` to disable parallax.
 - Dynamic Type, VoiceOver labels, and stable `accessibilityIdentifier`s on all
   interactive controls (next/prev/close/fields/buttons) for UI testing.
@@ -259,21 +260,25 @@ Phased delivery with tests after each phase (lowers integration risk).
 
 ### Phase 4 — Auth + permissions
 - `LoginPage`, `SignupPage` (email validation via modern `/^…$/` regex literal),
-  `PermissionPage` with `PermissionRequesting` protocol (notifications, camera,
-  location, ATT) and default system implementations.
-- **Exit:** login/signup/permission flows validated.
+  `PermissionPage` with `PermissionRequesting` protocol and default system
+  implementations. The full permission set ships in v1: notifications, camera,
+  microphone, photo library, location (when-in-use), contacts, and ATT.
+- **Exit:** login/signup and every permission flow validated.
 
 ### Phase 5 — Optional scanner module
 - `VXWalkthroughScanner` using VisionKit `DataScannerViewController` (fallback
   `AVCaptureMetadataOutput`); `LoginPage.scanEnabled` integrates when linked.
 - **Exit:** QR scan works; core builds without the scanner target.
 
-### Phase 6 — Public API + UIKit interop + back-compat
-- Finalize public surface; `WalkthroughHostingController`; `LegacyItemAdapter`
-  mapping old `[String:Any]` + `VXWalkthroughField` keys → typed steps so
-  existing call sites migrate incrementally.
-- Mark old symbols `@available(*, deprecated, message:)` where a shim exists.
-- **Exit:** an existing app can adopt with minimal changes.
+### Phase 6 — Public API + UIKit interop
+- Finalize public surface; `WalkthroughHostingController` (`UIHostingController`
+  convenience) for UIKit hosts.
+- No `[String:Any]` / `VXWalkthroughField` back-compat adapter: the old
+  dictionary config is removed and dependent apps migrate to the typed
+  `Walkthrough` DSL. This is a breaking change (see `CHANGELOG.md`); provide a
+  migration guide in the docs instead of a runtime shim.
+- **Exit:** UIKit hosts can present via `WalkthroughHostingController`; migration
+  guide published.
 
 ### Phase 7 — Demo, docs, release
 - Rewrite `Demo/` as a SwiftUI multiplatform app (iOS + Catalyst); delete
@@ -285,35 +290,42 @@ Phased delivery with tests after each phase (lowers integration risk).
 
 ---
 
-## 5. Key decisions (made, revisit if needed)
+## 5. Key decisions (confirmed)
 
-1. **iOS 17 minimum** (per request). Drops iOS 16; unlocks Observation + scroll
+1. **iOS 17 minimum — CONFIRMED.** Drops iOS 16; unlocks Observation + scroll
    transitions without back-deployment shims.
-2. **SPM-first; CocoaPods deprecated.** No `.podspec` currently exists; document
+2. **Build against the iOS 26 SDK.** Adopt iOS 26 features (Liquid Glass chrome,
+   latest SwiftUI) behind `if #available(iOS 26, *)` with iOS 17–18 fallbacks.
+   iOS 26 is NOT the deployment floor.
+3. **SPM-first; CocoaPods deprecated.** No `.podspec` currently exists; document
    SPM as the only supported channel.
-3. **Zero required dependencies.** QR scanning isolated in an optional target via
+4. **Zero required dependencies.** QR scanning isolated in an optional target via
    first-party AVFoundation/VisionKit (removes the `QRCodeReader.swift` fork).
-4. **Keep the `VXWalkthrough` module name** for import compatibility; add a
-   `VXWalkthroughUIKit` shim rather than breaking every call site at once.
-5. **Storyboards/xibs removed entirely** in favor of SwiftUI.
-6. **Swift Testing** (not XCTest) for new tests.
+5. **Keep the `VXWalkthrough` module name** for import compatibility. Add a
+   `VXWalkthroughUIKit` interop target (`UIHostingController` convenience) only —
+   no legacy config bridge.
+6. **No `[String:Any]` back-compat adapter.** The dictionary config and
+   `VXWalkthroughField` keys are removed; dependent apps migrate to the typed
+   `Walkthrough` DSL. This is a **breaking change** documented in `CHANGELOG.md`,
+   accompanied by a migration guide.
+7. **Full v1 feature set.** All built-in page types ship in v1, plus the full
+   permission set (notifications, camera, microphone, photo library, location,
+   contacts, ATT). Localized `walkthrough_0…n` auto-population is retained as an
+   opt-in loader alongside the explicit DSL.
+8. **Storyboards/xibs removed entirely** in favor of SwiftUI.
+9. **Swift Testing** (not XCTest) for new tests.
 
 ## 6. Open questions for the maintainer
 
-- Confirm **iOS 17** floor (vs 18) — affects available SwiftUI APIs.
-- Is the **`[String:Any]` legacy adapter** required, or can dependent apps move
-  straight to the typed DSL? (Drives Phase 6 scope.)
-- Which **permissions** must ship in v1 (notifications / camera / location / ATT)?
-- Retain the **localized `walkthrough_0…n` auto-population** convention, or make
-  the explicit DSL the only path?
-- Branding/theme: adopt **iOS 26 Liquid Glass** chrome by default, or keep a
-  neutral themeable look?
+All prior blocking questions (iOS floor, legacy adapter, permission scope,
+localized auto-population, Liquid Glass) are now resolved — see Section 5. No
+open questions remain; raise new ones here as they surface during implementation.
 
 ## 7. Risks & mitigations
 
 | Risk | Mitigation |
 | --- | --- |
-| Breaking change for dependent apps | `VXWalkthroughUIKit` shim + `LegacyItemAdapter`; phased deprecations |
+| Breaking change for dependent apps | Documented in `CHANGELOG.md` + migration guide; `WalkthroughHostingController` eases UIKit presentation; major version bump |
 | Parallax fidelity vs UIKit `CATransform3D` | Recreate via `scrollTransition`; gate behind reduce-motion; visual QA |
 | Catalyst-specific layout/permission quirks | Build + smoke test Catalyst every phase in CI |
 | Scanner camera entitlements/privacy strings | Document required `Info.plist` keys; keep scanner optional |
