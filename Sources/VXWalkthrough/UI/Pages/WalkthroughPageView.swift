@@ -18,8 +18,12 @@ struct WalkthroughPageView: View {
         switch step.kind {
         case .info:
             InfoPageView(step: step)
+        case let .input(spec):
+            InputPageView(step: step, spec: spec, proxy: proxy)
         case let .action(spec):
             ActionPageView(step: step, buttonTitle: spec.buttonTitle, proxy: proxy)
+        case let .picker(spec):
+            PickerPageView(step: step, spec: spec, proxy: proxy)
         case let .custom(contentID):
             if let provider = customProviders[contentID] {
                 provider(proxy)
@@ -27,17 +31,16 @@ struct WalkthroughPageView: View {
                 InfoPageView(step: step)
             }
         default:
-            // Functional placeholder until the kind's dedicated view ships.
+            // Functional placeholder until the kind's dedicated view ships
+            // (login / signup / permission land in Phase 4).
             ActionPageView(step: step, buttonTitle: fallbackButtonTitle, proxy: proxy)
         }
     }
 
     private var fallbackButtonTitle: String {
         switch step.kind {
-        case let .input(spec): spec.buttonTitle
         case let .login(spec): spec.buttonTitle
         case let .signup(spec): spec.buttonTitle
-        case let .picker(spec): spec.buttonTitle
         case let .permission(spec): spec.buttonTitle
         default: "Continue"
         }
