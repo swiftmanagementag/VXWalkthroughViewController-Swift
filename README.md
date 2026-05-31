@@ -97,6 +97,10 @@ WalkthroughView(walkthrough)   // a LoginPage with scanEnabled: true
     .walkthroughQRScanner()
 ```
 
+On capable devices this uses VisionKit's `DataScannerViewController`, falling
+back automatically to an AVFoundation scanner on Mac Catalyst or older hardware.
+Voucher URLs are parsed as before (the `voucher` query item becomes the value).
+
 ### UIKit hosts
 
 ```swift

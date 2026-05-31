@@ -36,11 +36,8 @@ private struct ScannerSheet: View {
     var body: some View {
         #if os(iOS)
             ZStack(alignment: .top) {
-                QRScannerView(
-                    onResult: { onFinish($0) },
-                    onError: { onFinish(nil) }
-                )
-                .ignoresSafeArea()
+                scannerView
+                    .ignoresSafeArea()
 
                 HStack {
                     Text(prompt)
@@ -64,4 +61,31 @@ private struct ScannerSheet: View {
             .padding(40)
         #endif
     }
+
+    #if os(iOS)
+        /// Prefers VisionKit's data scanner on capable devices, falling back to
+        /// the AVFoundation scanner (e.g. on Mac Catalyst or older hardware).
+        @ViewBuilder
+        private var scannerView: some View {
+            #if !targetEnvironment(macCatalyst)
+                if #available(iOS 16.0, *), DataScannerView.isSupportedAndAvailable {
+                    DataScannerView(
+                        onResult: { onFinish($0) },
+                        onError: { onFinish(nil) }
+                    )
+                } else {
+                    avFoundationScanner
+                }
+            #else
+                avFoundationScanner
+            #endif
+        }
+
+        private var avFoundationScanner: some View {
+            QRScannerView(
+                onResult: { onFinish($0) },
+                onError: { onFinish(nil) }
+            )
+        }
+    #endif
 }
