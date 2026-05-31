@@ -5,12 +5,13 @@ All notable changes to VXWalkthrough are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0]
+## [2.0.0] - 2026-05-31
 
 This release is a full rewrite of the framework from UIKit + Storyboards to a
 declarative SwiftUI framework targeting Swift 6. See
 [docs/ios26-refactor-plan.md](docs/ios26-refactor-plan.md) for the design and
-migration plan. A dedicated migration guide will accompany the final release.
+migration plan and [docs/migration-guide.md](docs/migration-guide.md) for the
+1.x -> 2.0 migration guide.
 
 ### Breaking changes
 
