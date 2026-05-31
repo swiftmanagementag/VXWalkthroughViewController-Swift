@@ -24,25 +24,18 @@ struct WalkthroughPageView: View {
             ActionPageView(step: step, buttonTitle: spec.buttonTitle, proxy: proxy)
         case let .picker(spec):
             PickerPageView(step: step, spec: spec, proxy: proxy)
+        case let .login(spec):
+            LoginPageView(step: step, spec: spec, proxy: proxy)
+        case let .signup(spec):
+            SignupPageView(step: step, spec: spec, proxy: proxy)
+        case let .permission(spec):
+            PermissionPageView(step: step, spec: spec, proxy: proxy)
         case let .custom(contentID):
             if let provider = customProviders[contentID] {
                 provider(proxy)
             } else {
                 InfoPageView(step: step)
             }
-        default:
-            // Functional placeholder until the kind's dedicated view ships
-            // (login / signup / permission land in Phase 4).
-            ActionPageView(step: step, buttonTitle: fallbackButtonTitle, proxy: proxy)
-        }
-    }
-
-    private var fallbackButtonTitle: String {
-        switch step.kind {
-        case let .login(spec): spec.buttonTitle
-        case let .signup(spec): spec.buttonTitle
-        case let .permission(spec): spec.buttonTitle
-        default: "Continue"
         }
     }
 }

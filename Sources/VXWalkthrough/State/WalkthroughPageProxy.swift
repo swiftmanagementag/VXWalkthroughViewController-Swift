@@ -41,4 +41,14 @@ public struct WalkthroughPageProxy {
     public func setState(_ state: StepState) {
         model.setState(state, for: stepID)
     }
+
+    /// Notifies the host's fire-and-forget action observer.
+    public func emit(_ payload: WalkthroughAction.Payload) {
+        model.notify(WalkthroughAction(stepID: stepID, payload: payload))
+    }
+
+    /// Applies an outcome to this page directly (state + navigation).
+    public func apply(_ outcome: StepOutcome) {
+        model.applyOutcome(outcome, to: stepID)
+    }
 }

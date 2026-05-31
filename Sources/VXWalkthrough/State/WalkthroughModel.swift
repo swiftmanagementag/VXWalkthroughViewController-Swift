@@ -107,6 +107,17 @@ public final class WalkthroughModel {
         apply(outcome, to: action.stepID)
     }
 
+    /// Notifies the fire-and-forget action observer without invoking the async
+    /// handler (used by self-resolving pages such as permissions).
+    public func notify(_ action: WalkthroughAction) {
+        onAction?(action)
+    }
+
+    /// Applies an outcome to a step directly (used by self-resolving pages).
+    public func applyOutcome(_ outcome: StepOutcome, to stepID: String) {
+        apply(outcome, to: stepID)
+    }
+
     private func apply(_ outcome: StepOutcome, to stepID: String) {
         switch outcome {
         case let .success(message):
