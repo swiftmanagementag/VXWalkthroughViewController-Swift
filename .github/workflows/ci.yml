@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [master, ios26_refactor]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spm:
+    name: SwiftPM build & test (macOS host)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.app || true
+      - name: Swift version
+        run: swift --version
+      - name: Build
+        run: swift build -v
+      - name: Test
+        run: swift test -v
+
+  ios-build:
+    name: iOS build (xcodebuild)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.app || true
+      - name: Build for iOS Simulator
+        run: >
+          xcodebuild build
+          -scheme VXWalkthrough
+          -destination 'generic/platform=iOS Simulator'
+          -skipPackagePluginValidation
