@@ -41,6 +41,12 @@ struct WalkthroughContainer: View {
                 // Rotation / window resize: re-derive the circle diameter.
                 updateCircleDiameter(containerSize: newSize)
             }
+            .onChange(of: geo.size.width) { _, _ in
+                // Rotation / window resize changes the page width, which leaves
+                // the paging scroll view sitting between pages. Re-snap to the
+                // current page at the new width so the content stays aligned.
+                realignToCurrentPage()
+            }
             .environment(\.walkthroughResolvedCircleDiameter, resolvedCircleDiameter)
         }
         .environment(\.walkthroughTheme, theme)
@@ -52,6 +58,23 @@ struct WalkthroughContainer: View {
         .onChange(of: scrolledID) { _, newValue in
             // User-driven swipe: sync the model.
             model.syncIndex(toStepID: newValue)
+        }
+    }
+
+    /// Re-aligns the pager to the current page after a size change. Clearing
+    /// then restoring the bound id (on the next runloop tick, once the pages
+    /// have re-laid-out at the new width) forces the paging scroll view to
+    /// re-snap to the safe-area-aware page boundary — assigning the same id
+    /// would be a no-op. Animation is disabled so the correction is invisible.
+    private func realignToCurrentPage() {
+        let target = model.currentStepID
+        scrolledID = nil
+        DispatchQueue.main.async {
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+                scrolledID = target
+            }
         }
     }
 
@@ -97,6 +120,11 @@ struct WalkthroughContainer: View {
         .scrollTargetBehavior(.paging)
         .scrollPosition(id: $scrolledID)
         .scrollIndicators(.hidden)
-        .ignoresSafeArea(edges: theme.imageStyle == .fullBleed ? .all : [])
+        // Span the full width so each page equals the viewport and paging snaps
+        // edge-to-edge. Respecting the horizontal safe area would make pages
+        // narrower than the viewport (e.g. the landscape notch inset), leaving
+        // a sliver of the adjacent page and misaligning content. Page content
+        // keeps clear of the notch via its own horizontal padding.
+        .ignoresSafeArea(edges: theme.imageStyle == .fullBleed ? .all : .horizontal)
     }
 }

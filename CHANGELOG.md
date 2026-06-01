@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.1] - 2026-06-01
+
+### Fixed
+
+- Walkthrough content was misaligned after a device rotation or window resize
+  (iPad multitasking, Mac Catalyst). The pager now spans the full width so pages
+  snap edge-to-edge (previously the horizontal safe-area inset made pages
+  narrower than the viewport, leaving a sliver of the adjacent page in
+  landscape), and it re-snaps to the current page when the width changes.
+
 ## [2.2.0] - 2026-06-01
 
 ### Added
