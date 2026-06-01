@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master, ios26_refactor]
+    branches: [master, ios26_refactor, "feature/**"]
   pull_request:
 
 concurrency:
@@ -17,10 +17,28 @@ jobs:
       - uses: actions/checkout@v4
       - name: Swift version
         run: swift --version
-      - name: Build
+      - name: Build (default — traits off)
         run: swift build -v
-      - name: Test
+      - name: Test (default — traits off)
         run: swift test -v
+      - name: Test (all traits on)
+        run: swift test -v --enable-all-traits
+      - name: Acceptance — core & scanner reference no opt-in privacy frameworks
+        run: |
+          set -euo pipefail
+          dirty=0
+          echo "Checking core (VXWalkthrough) for privacy-sensitive APIs…"
+          if grep -REn "import (UserNotifications|AVFoundation|Photos|Contacts|CoreLocation|AppTrackingTransparency)|CNContactStore|PHPhotoLibrary|CLLocationManager|ATTrackingManager|AVCaptureDevice|UNUserNotificationCenter" Sources/VXWalkthrough; then
+            echo "::error::Core product references a privacy-sensitive framework; these must live in VXWalkthroughPermissions."
+            dirty=1
+          fi
+          echo "Checking scanner (VXWalkthroughScanner) for Contacts/Photos/Location/Tracking…"
+          if grep -REn "import (Photos|Contacts|CoreLocation|AppTrackingTransparency)|CNContactStore|PHPhotoLibrary|CLLocationManager|ATTrackingManager" Sources/VXWalkthroughScanner; then
+            echo "::error::Scanner product references a forbidden privacy framework (camera/AVFoundation is allowed)."
+            dirty=1
+          fi
+          if [ "$dirty" -eq 0 ]; then echo "OK: core and scanner link no opt-in privacy frameworks."; fi
+          exit $dirty
 
   ios-build:
     name: iOS build (all products + demo)
@@ -68,6 +86,16 @@ jobs:
           xcodebuild build -scheme VXWalkthroughUIKit
           -destination 'generic/platform=iOS Simulator'
           -skipPackagePluginValidation
+      - name: Build VXWalkthroughPermissions (iOS, all traits)
+        if: steps.xcode.outputs.found == 'true'
+        # xcodebuild has no trait flag; SwiftPM surfaces traits to the compiler
+        # as active compilation conditions, so we inject every trait's flag to
+        # compile-verify all permission backends under the iOS SDK.
+        run: >
+          xcodebuild build -scheme VXWalkthroughPermissions
+          -destination 'generic/platform=iOS Simulator'
+          -skipPackagePluginValidation
+          OTHER_SWIFT_FLAGS='-D PermissionsNotifications -D PermissionsCamera -D PermissionsMicrophone -D PermissionsPhotos -D PermissionsLocation -D PermissionsContacts -D PermissionsTracking'
       - name: Test on iOS Simulator
         if: steps.xcode.outputs.found == 'true'
         run: >
