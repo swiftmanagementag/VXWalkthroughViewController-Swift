@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `ImageStyle.fit` now renders the full-width, aspect-fit image with rounded
+  corners (16pt), restoring the pre-2.x full-width look. No app-side change
+  required.
+
 ## [2.1.0] - 2026-06-01
 
 ### Breaking changes

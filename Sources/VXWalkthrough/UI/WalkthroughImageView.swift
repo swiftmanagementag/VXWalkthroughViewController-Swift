@@ -98,9 +98,11 @@ struct WalkthroughImageView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             case .fit:
                 // Full width, aspect-fit: the entire image is visible, never
-                // clipped or cropped. Height follows the image's aspect ratio.
+                // cropped. Height follows the image's aspect ratio. Corners are
+                // rounded to match the pre-2.x full-width look.
                 content
                     .frame(maxWidth: .infinity)
+                    .clipShape(.rect(cornerRadius: 16))
             }
         }
     }

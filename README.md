@@ -187,7 +187,7 @@ WalkthroughView(walkthrough)
 ```
 
 Set the image style on your `WalkthroughTheme`. Use `.fit` for wide artwork that
-should be shown in full (aspect-fit, no cropping):
+should be shown in full (aspect-fit, no cropping, with rounded corners):
 
 ```swift
 WalkthroughTheme(imageStyle: .fit)   // or .round (default) / .card / .fullBleed
