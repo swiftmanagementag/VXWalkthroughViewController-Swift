@@ -1,45 +1,91 @@
 //
 //  SystemPermissionRequester.swift
-//  VXWalkthrough
+//  VXWalkthroughPermissions
 //
-//  Default `PermissionRequesting` implementation backed by the system
-//  frameworks. iOS / Mac Catalyst only; other platforms report `.unavailable`.
+//  `PermissionRequesting` implementation backed by the system frameworks.
+//  Each backend is compiled only when its SwiftPM trait is enabled, so a
+//  consumer links exactly the privacy-sensitive frameworks it opts into:
+//
+//    PermissionsNotifications, PermissionsCamera, PermissionsMicrophone,
+//    PermissionsPhotos, PermissionsLocation, PermissionsContacts,
+//    PermissionsTracking
+//
+//  Kinds whose trait is disabled (and every kind on non-iOS platforms) resolve
+//  to `.unavailable` — which `PermissionResolver` maps to `.advance`.
 //
 
 import Foundation
+import VXWalkthrough
 
-#if canImport(UserNotifications)
+#if PermissionsNotifications && canImport(UserNotifications)
     import UserNotifications
 #endif
-#if canImport(AVFoundation)
+#if (PermissionsCamera || PermissionsMicrophone) && canImport(AVFoundation)
     import AVFoundation
 #endif
-#if canImport(Photos)
+#if PermissionsPhotos && canImport(Photos)
     import Photos
 #endif
-#if canImport(Contacts)
+#if PermissionsContacts && canImport(Contacts)
     import Contacts
 #endif
-#if canImport(CoreLocation)
+#if PermissionsLocation && canImport(CoreLocation)
     import CoreLocation
 #endif
-#if canImport(AppTrackingTransparency)
+#if PermissionsTracking && canImport(AppTrackingTransparency)
     import AppTrackingTransparency
 #endif
 
+/// System-backed permission requester. Only the permission kinds whose traits
+/// are enabled reference their underlying framework.
 public struct SystemPermissionRequester: PermissionRequesting {
     public init() {}
 
     public func status(for kind: PermissionKind) async -> PermissionStatus {
         #if os(iOS)
             switch kind {
-            case .notifications: return await notificationStatus()
-            case .camera: return captureStatus(for: .video)
-            case .microphone: return captureStatus(for: .audio)
-            case .photoLibrary: return photoStatus()
-            case .locationWhenInUse: return locationStatus()
-            case .contacts: return contactsStatus()
-            case .tracking: return trackingStatus()
+            case .notifications:
+                #if PermissionsNotifications
+                    return await notificationStatus()
+                #else
+                    return .unavailable
+                #endif
+            case .camera:
+                #if PermissionsCamera
+                    return captureStatus(for: .video)
+                #else
+                    return .unavailable
+                #endif
+            case .microphone:
+                #if PermissionsMicrophone
+                    return captureStatus(for: .audio)
+                #else
+                    return .unavailable
+                #endif
+            case .photoLibrary:
+                #if PermissionsPhotos
+                    return photoStatus()
+                #else
+                    return .unavailable
+                #endif
+            case .locationWhenInUse:
+                #if PermissionsLocation
+                    return locationStatus()
+                #else
+                    return .unavailable
+                #endif
+            case .contacts:
+                #if PermissionsContacts
+                    return contactsStatus()
+                #else
+                    return .unavailable
+                #endif
+            case .tracking:
+                #if PermissionsTracking
+                    return trackingStatus()
+                #else
+                    return .unavailable
+                #endif
             }
         #else
             return .unavailable
@@ -50,13 +96,48 @@ public struct SystemPermissionRequester: PermissionRequesting {
     public func request(_ kind: PermissionKind) async -> PermissionStatus {
         #if os(iOS)
             switch kind {
-            case .notifications: return await requestNotifications()
-            case .camera: return await requestCapture(.video)
-            case .microphone: return await requestCapture(.audio)
-            case .photoLibrary: return await requestPhotos()
-            case .locationWhenInUse: return await requestLocation()
-            case .contacts: return await requestContacts()
-            case .tracking: return await requestTracking()
+            case .notifications:
+                #if PermissionsNotifications
+                    return await requestNotifications()
+                #else
+                    return .unavailable
+                #endif
+            case .camera:
+                #if PermissionsCamera
+                    return await requestCapture(.video)
+                #else
+                    return .unavailable
+                #endif
+            case .microphone:
+                #if PermissionsMicrophone
+                    return await requestCapture(.audio)
+                #else
+                    return .unavailable
+                #endif
+            case .photoLibrary:
+                #if PermissionsPhotos
+                    return await requestPhotos()
+                #else
+                    return .unavailable
+                #endif
+            case .locationWhenInUse:
+                #if PermissionsLocation
+                    return await requestLocation()
+                #else
+                    return .unavailable
+                #endif
+            case .contacts:
+                #if PermissionsContacts
+                    return await requestContacts()
+                #else
+                    return .unavailable
+                #endif
+            case .tracking:
+                #if PermissionsTracking
+                    return await requestTracking()
+                #else
+                    return .unavailable
+                #endif
             }
         #else
             return .unavailable
@@ -64,9 +145,9 @@ public struct SystemPermissionRequester: PermissionRequesting {
     }
 }
 
-#if os(iOS)
+// MARK: Notifications
 
-    // MARK: Notifications
+#if os(iOS) && PermissionsNotifications
 
     private extension SystemPermissionRequester {
         func notificationStatus() async -> PermissionStatus {
@@ -90,7 +171,11 @@ public struct SystemPermissionRequester: PermissionRequesting {
         }
     }
 
-    // MARK: Camera / Microphone
+#endif
+
+// MARK: Camera / Microphone
+
+#if os(iOS) && (PermissionsCamera || PermissionsMicrophone)
 
     private extension SystemPermissionRequester {
         func captureStatus(for media: AVMediaType) -> PermissionStatus {
@@ -109,7 +194,11 @@ public struct SystemPermissionRequester: PermissionRequesting {
         }
     }
 
-    // MARK: Photos
+#endif
+
+// MARK: Photos
+
+#if os(iOS) && PermissionsPhotos
 
     private extension SystemPermissionRequester {
         func photoStatus() -> PermissionStatus {
@@ -132,7 +221,11 @@ public struct SystemPermissionRequester: PermissionRequesting {
         }
     }
 
-    // MARK: Contacts
+#endif
+
+// MARK: Contacts
+
+#if os(iOS) && PermissionsContacts
 
     private extension SystemPermissionRequester {
         func contactsStatus() -> PermissionStatus {
@@ -158,7 +251,11 @@ public struct SystemPermissionRequester: PermissionRequesting {
         }
     }
 
-    // MARK: Tracking (ATT)
+#endif
+
+// MARK: Tracking (ATT)
+
+#if os(iOS) && PermissionsTracking
 
     private extension SystemPermissionRequester {
         func trackingStatus() -> PermissionStatus {
@@ -181,7 +278,11 @@ public struct SystemPermissionRequester: PermissionRequesting {
         }
     }
 
-    // MARK: Location
+#endif
+
+// MARK: Location
+
+#if os(iOS) && PermissionsLocation
 
     private extension SystemPermissionRequester {
         func locationStatus() -> PermissionStatus {

@@ -1,5 +1,6 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
+// 6.1 is required for package traits (used to make system permissions opt-in).
 
 import PackageDescription
 
@@ -20,6 +21,10 @@ let package = Package(
             targets: ["VXWalkthrough"]
         ),
         .library(
+            name: "VXWalkthroughPermissions",
+            targets: ["VXWalkthroughPermissions"]
+        ),
+        .library(
             name: "VXWalkthroughScanner",
             targets: ["VXWalkthroughScanner"]
         ),
@@ -28,12 +33,32 @@ let package = Package(
             targets: ["VXWalkthroughUIKit"]
         ),
     ],
+    // Per-permission traits (default: none enabled). Enabling a trait compiles
+    // the matching system backend in `VXWalkthroughPermissions` and links only
+    // that framework. With no traits enabled, the core references no
+    // privacy-sensitive APIs (avoids App Store ITMS-90683 for unused strings).
+    traits: [
+        "PermissionsNotifications",
+        "PermissionsCamera",
+        "PermissionsMicrophone",
+        "PermissionsPhotos",
+        "PermissionsLocation",
+        "PermissionsContacts",
+        "PermissionsTracking",
+    ],
     targets: [
         .target(
             name: "VXWalkthrough",
             resources: [
                 .process("Resources"),
             ],
+            swiftSettings: [
+                .swiftLanguageMode(.v6),
+            ]
+        ),
+        .target(
+            name: "VXWalkthroughPermissions",
+            dependencies: ["VXWalkthrough"],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
             ]
@@ -58,6 +83,13 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ],
+            swiftSettings: [
+                .swiftLanguageMode(.v6),
+            ]
+        ),
+        .testTarget(
+            name: "VXWalkthroughPermissionsTests",
+            dependencies: ["VXWalkthroughPermissions"],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
             ]

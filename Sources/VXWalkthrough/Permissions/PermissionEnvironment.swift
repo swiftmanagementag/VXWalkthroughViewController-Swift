@@ -6,7 +6,11 @@
 import SwiftUI
 
 private struct PermissionRequesterKey: EnvironmentKey {
-    static let defaultValue: any PermissionRequesting = SystemPermissionRequester()
+    // Defaults to a no-op so the core product references no privacy-sensitive
+    // frameworks. Inject `SystemPermissionRequester` from the optional
+    // `VXWalkthroughPermissions` product (with the relevant traits enabled) to
+    // request real system permissions.
+    static let defaultValue: any PermissionRequesting = NoopPermissionRequester()
 }
 
 public extension EnvironmentValues {
