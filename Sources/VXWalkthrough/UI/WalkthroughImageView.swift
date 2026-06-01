@@ -11,13 +11,19 @@ struct WalkthroughImageView: View {
     let style: WalkthroughTheme.ImageStyle
 
     @Environment(\.walkthroughImageBundle) private var imageBundle
+    @Environment(\.walkthroughTheme) private var theme
+    @Environment(\.walkthroughResolvedCircleDiameter) private var resolvedCircleDiameter
 
     /// `.fit` shows the whole image (aspect-fit, no crop); other styles fill.
     private var aspectFit: Bool { style == .fit }
 
     var body: some View {
         imageContent
-            .modifier(StyleModifier(style: style))
+            .modifier(StyleModifier(
+                style: style,
+                circle: theme.circleStyle,
+                circleDiameter: resolvedCircleDiameter
+            ))
             .accessibilityHidden(true)
     }
 
@@ -79,15 +85,30 @@ struct WalkthroughImageView: View {
 
     private struct StyleModifier: ViewModifier {
         let style: WalkthroughTheme.ImageStyle
+        let circle: WalkthroughTheme.CircleStyle
+        /// The diameter resolved by the container (largest circle that fits
+        /// across all pages). Falls back to a fixed size before measurement.
+        let circleDiameter: CGFloat?
+
+        private static let fallbackDiameter: CGFloat = 160
 
         func body(content: Content) -> some View {
             switch style {
             case .round:
+                let diameter = circleDiameter ?? Self.fallbackDiameter
                 content
-                    .frame(width: 160, height: 160)
+                    .frame(width: diameter, height: diameter)
                     .clipShape(.circle)
-                    .overlay(Circle().stroke(.white, lineWidth: 3))
-                    .shadow(color: .black.opacity(0.3), radius: 6)
+                    .overlay(
+                        Circle().stroke(
+                            circle.borderColor,
+                            lineWidth: circle.borderWidth
+                        )
+                    )
+                    .shadow(
+                        color: circle.showsShadow ? .black.opacity(0.3) : .clear,
+                        radius: circle.showsShadow ? 6 : 0
+                    )
             case .card:
                 content
                     .frame(maxWidth: 320, maxHeight: 320)

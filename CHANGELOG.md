@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-06-01
+
+### Added
+
+- Configurable circular images for `ImageStyle.round`. A new
+  `WalkthroughTheme.CircleStyle` (`maxDiameter`, `margin`, `borderWidth`,
+  `borderColor`, `showsShadow`) controls the circle's size cap and chrome, set
+  via the new `WalkthroughTheme(circleStyle:)` parameter.
+
+### Changed
+
+- `ImageStyle.round` now sizes the circle responsively: the diameter is the
+  largest that fits across **every** page (leaving a margin), applied uniformly,
+  and recalculated on rotation / window resize (iPad multitasking, Mac Catalyst).
+  Previously circles were a fixed 160pt. Existing apps get larger, responsive
+  circles automatically; cap them with `circleStyle.maxDiameter` to restore a
+  smaller fixed feel.
+
 ## [2.1.1] - 2026-06-01
 
 ### Changed

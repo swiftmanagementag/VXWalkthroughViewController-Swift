@@ -186,6 +186,18 @@ Walkthrough(theme: theme) { ... }
 Image styles: `.round` (default), `.card`, `.fullBleed`, and `.fit`
 (full-width, aspect-fit — shows wide artwork without cropping, added in 2.1).
 
+As of 2.2, `.round` sizes the circle responsively — the largest diameter that
+fits across all pages, recalculated on rotation/resize. Tune the cap and chrome
+with `CircleStyle`:
+
+```swift
+let theme = WalkthroughTheme(
+    imageStyle: .round,
+    circleStyle: .init(maxDiameter: 320, margin: 24, borderWidth: 3,
+                       borderColor: .white, showsShadow: true)
+)
+```
+
 ## 9. Custom pages
 
 ```swift

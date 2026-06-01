@@ -21,6 +21,44 @@ public struct WalkthroughTheme: Sendable, Equatable {
         case fit
     }
 
+    /// Styling for the circular (`ImageStyle.round`) image.
+    ///
+    /// The circle's diameter is resolved at runtime to the largest size that
+    /// fits across every page (leaving `margin` on all sides), capped by
+    /// `maxDiameter`, and recalculated on rotation / size change. These knobs
+    /// configure the cap, the margin, and the border/shadow chrome. Defaults
+    /// mirror the pre-2.x look (white border, soft shadow).
+    public struct CircleStyle: Sendable, Equatable {
+        /// Upper bound on the circle diameter. `nil` means uncapped (the circle
+        /// grows to fill the available space minus `margin`).
+        public var maxDiameter: CGFloat?
+        /// Space left around the circle on every side when sizing it.
+        public var margin: CGFloat
+        /// Border width (0 hides the border).
+        public var borderWidth: CGFloat
+        /// Border color.
+        public var borderColor: Color
+        /// Whether to draw a soft drop shadow behind the circle.
+        public var showsShadow: Bool
+
+        public init(
+            maxDiameter: CGFloat? = 320,
+            margin: CGFloat = 24,
+            borderWidth: CGFloat = 3,
+            borderColor: Color = .white,
+            showsShadow: Bool = true
+        ) {
+            self.maxDiameter = maxDiameter
+            self.margin = margin
+            self.borderWidth = borderWidth
+            self.borderColor = borderColor
+            self.showsShadow = showsShadow
+        }
+
+        /// The default circle style (responsive, white 3pt border, soft shadow).
+        public static let `default` = CircleStyle()
+    }
+
     /// Motion intensity for scroll-driven parallax effects.
     public enum MotionStyle: Sendable, Equatable {
         case none
@@ -35,6 +73,8 @@ public struct WalkthroughTheme: Sendable, Equatable {
     public var titleFont: Font
     public var bodyFont: Font
     public var imageStyle: ImageStyle
+    /// Styling for the circular (`ImageStyle.round`) image.
+    public var circleStyle: CircleStyle
     public var motion: MotionStyle
     public var buttonCornerRadius: CGFloat
     /// Adopt iOS 26 Liquid Glass chrome when available (falls back gracefully).
@@ -48,6 +88,7 @@ public struct WalkthroughTheme: Sendable, Equatable {
         titleFont: Font = .system(size: 24, weight: .regular),
         bodyFont: Font = .body,
         imageStyle: ImageStyle = .round,
+        circleStyle: CircleStyle = .default,
         motion: MotionStyle = .standard,
         buttonCornerRadius: CGFloat = 12,
         usesLiquidGlass: Bool = true
@@ -59,6 +100,7 @@ public struct WalkthroughTheme: Sendable, Equatable {
         self.titleFont = titleFont
         self.bodyFont = bodyFont
         self.imageStyle = imageStyle
+        self.circleStyle = circleStyle
         self.motion = motion
         self.buttonCornerRadius = buttonCornerRadius
         self.usesLiquidGlass = usesLiquidGlass

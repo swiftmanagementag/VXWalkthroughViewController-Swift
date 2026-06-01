@@ -18,21 +18,24 @@ struct InfoPageView: View {
                 WalkthroughImageView(image: step.image, style: theme.imageStyle)
             }
 
-            if !step.title.isEmpty {
-                Text(step.title.attributedString())
-                    .font(theme.titleFont)
-                    .foregroundStyle(theme.titleColor)
-                    .multilineTextAlignment(.center)
-                    .accessibilityIdentifier("walkthrough.page.title")
-            }
+            VStack(spacing: 24) {
+                if !step.title.isEmpty {
+                    Text(step.title.attributedString())
+                        .font(theme.titleFont)
+                        .foregroundStyle(theme.titleColor)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("walkthrough.page.title")
+                }
 
-            if let body = step.body, !body.isEmpty {
-                Text(body.attributedString())
-                    .font(theme.bodyFont)
-                    .foregroundStyle(theme.bodyColor)
-                    .multilineTextAlignment(.center)
-                    .accessibilityIdentifier("walkthrough.page.body")
+                if let body = step.body, !body.isEmpty {
+                    Text(body.attributedString())
+                        .font(theme.bodyFont)
+                        .foregroundStyle(theme.bodyColor)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("walkthrough.page.body")
+                }
             }
+            .measureWalkthroughContentHeight()
 
             Spacer(minLength: 0)
         }
