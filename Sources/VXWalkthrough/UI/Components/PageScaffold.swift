@@ -40,8 +40,10 @@ struct PageScaffold<Content: View>: View {
                 }
 
                 // The success/failure message replaces controls when terminal.
+                // Parsed through AttributedTitle so inline markup (*…* / <b>…</b>)
+                // renders bold, consistent with the title.
                 if state.isTerminal, let message = state.message, !message.isEmpty {
-                    Text(message)
+                    Text(AttributedTitle(message).attributedString())
                         .font(theme.bodyFont)
                         .foregroundStyle(isFailure ? .red : theme.bodyColor)
                         .multilineTextAlignment(.center)
