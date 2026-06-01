@@ -16,6 +16,9 @@ public struct WalkthroughTheme: Sendable, Equatable {
         case fullBleed
         /// Rounded-rectangle card.
         case card
+        /// Full-width, aspect-fit image: the whole illustration is shown
+        /// without cropping (ideal for wide artwork).
+        case fit
     }
 
     /// Motion intensity for scroll-driven parallax effects.

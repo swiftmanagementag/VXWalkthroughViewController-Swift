@@ -12,6 +12,9 @@ struct WalkthroughImageView: View {
 
     @Environment(\.walkthroughImageBundle) private var imageBundle
 
+    /// `.fit` shows the whole image (aspect-fit, no crop); other styles fill.
+    private var aspectFit: Bool { style == .fit }
+
     var body: some View {
         imageContent
             .modifier(StyleModifier(style: style))
@@ -29,7 +32,7 @@ struct WalkthroughImageView: View {
             AsyncImage(url: url) { phase in
                 switch phase {
                 case let .success(image):
-                    image.resizable().scaledToFill()
+                    scaled(image)
                 case .failure:
                     Color.clear
                 case .empty:
@@ -43,19 +46,29 @@ struct WalkthroughImageView: View {
         }
     }
 
+    /// Applies the resizing/content-mode appropriate for the current style.
+    @ViewBuilder
+    private func scaled(_ image: Image) -> some View {
+        if aspectFit {
+            image.resizable().scaledToFit()
+        } else {
+            image.resizable().scaledToFill()
+        }
+    }
+
     /// Resolves a named image through the bundle cascade (asset catalog, then
     /// loose `.png`/`.jpg`/`.jpeg`), falling back to `Color.clear` on a miss.
     @ViewBuilder
     private func namedImage(_ name: String) -> some View {
         #if canImport(UIKit)
             if let platformImage = WalkthroughImageLoader.loadImage(named: name, preferredBundle: imageBundle) {
-                Image(uiImage: platformImage).resizable().scaledToFill()
+                scaled(Image(uiImage: platformImage))
             } else {
                 Color.clear
             }
         #elseif canImport(AppKit)
             if let platformImage = WalkthroughImageLoader.loadImage(named: name, preferredBundle: imageBundle) {
-                Image(nsImage: platformImage).resizable().scaledToFill()
+                scaled(Image(nsImage: platformImage))
             } else {
                 Color.clear
             }
@@ -83,6 +96,11 @@ struct WalkthroughImageView: View {
             case .fullBleed:
                 content
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+            case .fit:
+                // Full width, aspect-fit: the entire image is visible, never
+                // clipped or cropped. Height follows the image's aspect ratio.
+                content
+                    .frame(maxWidth: .infinity)
             }
         }
     }

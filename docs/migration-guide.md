@@ -5,6 +5,15 @@ storyboards, the `[String: Any]` configuration, the `VXWalkthroughField` keys,
 and the `@objc` delegate are **removed**. This guide maps the old API to the new
 one.
 
+> [!IMPORTANT]
+> **Upgrading 2.0 -> 2.1?** System permissions are now **opt-in**. If your flow
+> includes a `PermissionPage`, you must add the `VXWalkthroughPermissions`
+> product, enable the matching package **traits**, and inject
+> `SystemPermissionRequester()`. See [Permissions](#7-permissions-opt-in-in-21).
+> If you don't, permission pages simply advance (no prompt). The upside: apps
+> without a `PermissionPage` no longer link Contacts/Photos/Location/Tracking
+> and don't need unused purpose strings (fixes App Store ITMS-90683).
+
 ## 1. Defining a walkthrough
 
 Before (dictionary + localized keys):
@@ -122,7 +131,9 @@ WalkthroughView(walkthrough)        // LoginPage(scanEnabled: true)
 Voucher URLs are parsed the same way as before (the `voucher` query item becomes
 the field value).
 
-## 7. Permissions (new)
+## 7. Permissions (opt-in in 2.1)
+
+Define the pages as before:
 
 ```swift
 Walkthrough {
@@ -131,8 +142,39 @@ Walkthrough {
 }
 ```
 
-Inject a custom requester for testing/analytics with
-`.walkthroughPermissionRequester(_:)`.
+To actually prompt, opt into the system backends (since 2.1):
+
+1. Enable the traits you need on the package dependency:
+
+```swift
+.package(
+    url: "https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift",
+    .upToNextMajor(from: "2.1.0"),
+    traits: ["PermissionsNotifications", "PermissionsCamera"]
+)
+```
+
+2. Add the `VXWalkthroughPermissions` product to your target and inject the
+   requester:
+
+```swift
+import VXWalkthroughPermissions
+
+WalkthroughView(walkthrough)
+    .walkthroughPermissionRequester(SystemPermissionRequester())
+```
+
+3. Add `NS…UsageDescription` keys to `Info.plist` **only for the traits you
+   enable**.
+
+Available traits (default: none): `PermissionsNotifications`,
+`PermissionsCamera`, `PermissionsMicrophone`, `PermissionsPhotos`,
+`PermissionsLocation`, `PermissionsContacts`, `PermissionsTracking`.
+
+Without a requester (or for a kind whose trait is off), a `PermissionPage`
+resolves to `.advance` and skips itself. You can still inject a custom
+requester conforming to `PermissionRequesting` for testing/analytics with
+`.walkthroughPermissionRequester(_:)` without the permissions product.
 
 ## 8. Theming
 
@@ -140,6 +182,9 @@ Inject a custom requester for testing/analytics with
 let theme = WalkthroughTheme(background: .black, accent: .blue, imageStyle: .round)
 Walkthrough(theme: theme) { ... }
 ```
+
+Image styles: `.round` (default), `.card`, `.fullBleed`, and `.fit`
+(full-width, aspect-fit — shows wide artwork without cropping, added in 2.1).
 
 ## 9. Custom pages
 
