@@ -144,4 +144,5 @@ Sam Vermette's SVWebViewController.
 
 ## License
 
-See the repository for license details.
+VXWalkthrough is released under the MIT License. See [LICENSE](LICENSE) for the
+full text.

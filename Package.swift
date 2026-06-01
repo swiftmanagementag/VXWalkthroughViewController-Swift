@@ -54,7 +54,10 @@ let package = Package(
         ),
         .testTarget(
             name: "VXWalkthroughTests",
-            dependencies: ["VXWalkthrough"],
+            dependencies: ["VXWalkthrough", "VXWalkthroughUIKit"],
+            resources: [
+                .process("Resources"),
+            ],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
             ]

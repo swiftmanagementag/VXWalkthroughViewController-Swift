@@ -25,15 +25,50 @@ jobs:
         run: swift test -v
 
   ios-build:
-    name: iOS build (xcodebuild)
+    name: iOS build (all products + demo)
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode_26.app || true
-      - name: Build for iOS Simulator
+      - name: Build VXWalkthrough (iOS)
+        run: >
+          xcodebuild build -scheme VXWalkthrough
+          -destination 'generic/platform=iOS Simulator'
+          -skipPackagePluginValidation
+      - name: Build VXWalkthroughScanner (iOS)
+        run: >
+          xcodebuild build -scheme VXWalkthroughScanner
+          -destination 'generic/platform=iOS Simulator'
+          -skipPackagePluginValidation
+      - name: Build VXWalkthroughUIKit (iOS)
+        run: >
+          xcodebuild build -scheme VXWalkthroughUIKit
+          -destination 'generic/platform=iOS Simulator'
+          -skipPackagePluginValidation
+      - name: Build Demo app (iOS)
         run: >
           xcodebuild build
-          -scheme VXWalkthrough
+          -project Demo/VXWalkthroughDemo.xcodeproj
+          -scheme VXWalkthroughDemo
           -destination 'generic/platform=iOS Simulator'
+          -skipPackagePluginValidation
+          CODE_SIGNING_ALLOWED=NO
+
+  catalyst-build:
+    name: Mac Catalyst build
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.app || true
+      - name: Build VXWalkthrough (Mac Catalyst)
+        run: >
+          xcodebuild build -scheme VXWalkthrough
+          -destination 'platform=macOS,variant=Mac Catalyst'
+          -skipPackagePluginValidation
+      - name: Build VXWalkthroughScanner (Mac Catalyst)
+        run: >
+          xcodebuild build -scheme VXWalkthroughScanner
+          -destination 'platform=macOS,variant=Mac Catalyst'
           -skipPackagePluginValidation
