@@ -61,4 +61,15 @@ struct AttributedTitleTests {
         #expect(title.plainText == "See *No Evil")
         #expect(boldSubstrings(title).isEmpty)
     }
+
+    @Test("Runtime-built state message renders inline markup bold")
+    func runtimeMessage() {
+        // Mirrors how a terminal StepState message (e.g. a login success built
+        // from `StepOutcome.success("... <b>%@</b> ...")`) is rendered by
+        // PageScaffold: constructed from a String at runtime, not a literal.
+        let message = "Unlocked the \(String(format: "<b>%@</b>", "Pro")) set"
+        let title = AttributedTitle(message)
+        #expect(title.plainText == "Unlocked the Pro set")
+        #expect(boldSubstrings(title) == ["Pro"])
+    }
 }

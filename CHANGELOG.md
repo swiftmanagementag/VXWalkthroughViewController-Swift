@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.2] - 2026-06-01
+
+### Fixed
+
+- The terminal success/failure state message on interactive pages now renders
+  inline markup (`*…*` / `<b>…</b>`) as bold, consistent with page titles.
+  Previously the message was shown as plain text, so markup appeared as literal
+  tags. Additive, no API change.
+
 ## [2.2.1] - 2026-06-01
 
 ### Fixed
