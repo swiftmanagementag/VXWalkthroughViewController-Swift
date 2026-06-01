@@ -10,6 +10,8 @@ struct WalkthroughImageView: View {
     let image: WalkthroughImage
     let style: WalkthroughTheme.ImageStyle
 
+    @Environment(\.walkthroughImageBundle) private var imageBundle
+
     var body: some View {
         imageContent
             .modifier(StyleModifier(style: style))
@@ -20,7 +22,7 @@ struct WalkthroughImageView: View {
     private var imageContent: some View {
         switch image {
         case let .named(name):
-            Image(name).resizable().scaledToFill()
+            namedImage(name)
         case let .system(name):
             Image(systemName: name).resizable().scaledToFit().padding(24)
         case let .remote(url):
@@ -39,6 +41,27 @@ struct WalkthroughImageView: View {
         case .none:
             Color.clear
         }
+    }
+
+    /// Resolves a named image through the bundle cascade (asset catalog, then
+    /// loose `.png`/`.jpg`/`.jpeg`), falling back to `Color.clear` on a miss.
+    @ViewBuilder
+    private func namedImage(_ name: String) -> some View {
+        #if canImport(UIKit)
+            if let platformImage = WalkthroughImageLoader.loadImage(named: name, preferredBundle: imageBundle) {
+                Image(uiImage: platformImage).resizable().scaledToFill()
+            } else {
+                Color.clear
+            }
+        #elseif canImport(AppKit)
+            if let platformImage = WalkthroughImageLoader.loadImage(named: name, preferredBundle: imageBundle) {
+                Image(nsImage: platformImage).resizable().scaledToFill()
+            } else {
+                Color.clear
+            }
+        #else
+            Color.clear
+        #endif
     }
 
     private struct StyleModifier: ViewModifier {

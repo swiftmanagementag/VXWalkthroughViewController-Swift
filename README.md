@@ -129,6 +129,19 @@ Define `walkthrough_0`, `walkthrough_1`, … in your string catalog and:
 let walkthrough = Walkthrough(steps: LocalizedStepsLoader().load())
 ```
 
+### Images (asset catalog or loose files)
+
+`.named("…")` resolves from an asset catalog **or** loose `.png`/`.jpg`/`.jpeg`
+files — handy for legacy projects whose `walkthrough_0…n` art ships as loose
+files. The host app bundle is searched before the library bundle, so loose
+images in your main bundle are found with no configuration. To point at a
+custom resource bundle:
+
+```swift
+WalkthroughView(walkthrough)
+    .walkthroughImageBundle(.myResources)
+```
+
 ## Documentation
 
 - [Migration guide (1.x -> 2.0)](docs/migration-guide.md)
