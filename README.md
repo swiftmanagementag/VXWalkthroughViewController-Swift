@@ -33,7 +33,7 @@ drop in your own custom pages — all from a type-safe result-builder DSL.
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift", branch: "master")
+.package(url: "https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift", .upToNextMajor(from: "2.0.0"))
 ```
 
 Products:
