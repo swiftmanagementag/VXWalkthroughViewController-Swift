@@ -5,6 +5,18 @@ All notable changes to VXWalkthrough are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Legacy loose-image fallback.** `WalkthroughImage.named(_:)` now resolves
+  from loose `.png`/`.jpg`/`.jpeg` files in a bundle when no asset-catalog entry
+  exists, restoring compatibility with projects that ship `walkthrough_0…n` art
+  as loose files. Resolution searches the host app bundle before the library
+  bundle (`preferred → Bundle.main → .module`). Use
+  `.walkthroughImageBundle(_:)` to point at a custom resource bundle. This is
+  additive and non-breaking — asset-catalog images are unaffected.
+
 ## [2.0.0] - 2026-05-31
 
 This release is a full rewrite of the framework from UIKit + Storyboards to a
