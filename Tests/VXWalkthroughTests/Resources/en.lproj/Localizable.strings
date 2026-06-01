@@ -1,0 +1,4 @@
+/* Test fixtures for LocalizedStepsLoader bundle-backed lookup. */
+"walkthrough_0" = "See *No* Evil";
+"walkthrough_1" = "Hear No Evil";
+"walkthrough_2" = "Speak No Evil";
