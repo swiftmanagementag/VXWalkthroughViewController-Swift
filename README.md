@@ -13,8 +13,9 @@ drop in your own custom pages — all from a type-safe result-builder DSL.
 - Declarative `Walkthrough { ... }` DSL — no storyboards, no dictionaries.
 - Built-in page types: **info**, **input**, **login**, **signup**, **action**,
   **picker**, and **permission**.
-- Full permission set: notifications, camera, microphone, photo library,
-  location, contacts, and App Tracking Transparency.
+- Opt-in permission set: notifications, camera, microphone, photo library,
+  location, contacts, and App Tracking Transparency — each gated by a SwiftPM
+  trait so you link only what you use (see [Permissions](#permissions-opt-in)).
 - Host-extensible: inject your own SwiftUI pages with `CustomPage`.
 - `async`/`await` action handling with a typed `StepOutcome` state machine.
 - Themeable, with optional iOS 26 **Liquid Glass** chrome.
@@ -33,12 +34,15 @@ drop in your own custom pages — all from a type-safe result-builder DSL.
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift", .upToNextMajor(from: "2.0.0"))
+.package(url: "https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift", .upToNextMajor(from: "2.1.0"))
 ```
 
 Products:
 
-- `VXWalkthrough` — the core SwiftUI framework.
+- `VXWalkthrough` — the core SwiftUI framework. References **no**
+  privacy-sensitive frameworks.
+- `VXWalkthroughPermissions` — optional, opt-in system permission backends
+  (see [Permissions](#permissions-opt-in)).
 - `VXWalkthroughScanner` — optional QR/barcode scanning.
 - `VXWalkthroughUIKit` — optional `UIHostingController` convenience.
 
@@ -87,6 +91,46 @@ if gate.shouldPresent {
     gate.setShown()
 }
 ```
+
+### Permissions (opt-in)
+
+System permission backends are **opt-in** so the core product links no
+privacy-sensitive frameworks — apps that don't request permissions are never
+forced to declare unused purpose strings. To request real permissions:
+
+1. Enable the **traits** you need on the package dependency (each trait links
+   only its framework):
+
+```swift
+.package(
+    url: "https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift",
+    .upToNextMajor(from: "2.1.0"),
+    traits: ["PermissionsNotifications", "PermissionsCamera"]
+)
+```
+
+   Available traits (default: none): `PermissionsNotifications`,
+   `PermissionsCamera`, `PermissionsMicrophone`, `PermissionsPhotos`,
+   `PermissionsLocation`, `PermissionsContacts`, `PermissionsTracking`.
+
+2. Add the `VXWalkthroughPermissions` product to your target and inject the
+   system requester:
+
+```swift
+import VXWalkthroughPermissions
+
+WalkthroughView(walkthrough)            // contains a PermissionPage
+    .walkthroughPermissionRequester(SystemPermissionRequester())
+```
+
+3. Add the matching `NS…UsageDescription` keys to your `Info.plist` **only for
+   the traits you enable**.
+
+Without an injected requester (or for a kind whose trait is disabled), a
+`PermissionPage` resolves to `.advance` and skips itself — so the flow still
+works, it just doesn't prompt. You can also supply your own requester
+conforming to `PermissionRequesting` (e.g. to add logging) without the
+permissions product at all.
 
 ### QR scanning
 
@@ -140,6 +184,13 @@ custom resource bundle:
 ```swift
 WalkthroughView(walkthrough)
     .walkthroughImageBundle(.myResources)
+```
+
+Set the image style on your `WalkthroughTheme`. Use `.fit` for wide artwork that
+should be shown in full (aspect-fit, no cropping):
+
+```swift
+WalkthroughTheme(imageStyle: .fit)   // or .round (default) / .card / .fullBleed
 ```
 
 ## Documentation

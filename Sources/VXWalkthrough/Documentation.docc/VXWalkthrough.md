@@ -54,11 +54,16 @@ WalkthroughView(
 
 ### Permissions
 
+System permission backends are opt-in via the separate `VXWalkthroughPermissions`
+product and per-kind SwiftPM traits. The core ships only the protocol and a
+no-op default (``NoopPermissionRequester``); inject `SystemPermissionRequester`
+from `VXWalkthroughPermissions` to prompt.
+
 - ``PermissionKind``
 - ``PermissionRequesting``
 - ``PermissionStatus``
 - ``PermissionResolver``
-- ``SystemPermissionRequester``
+- ``NoopPermissionRequester``
 
 ### Presentation gating & localization
 

@@ -4,8 +4,38 @@
 //
 
 import SwiftUI
+import UserNotifications
 import VXWalkthrough
 import VXWalkthroughScanner
+
+// The core no longer ships a system permission requester (so apps that don't
+// request permissions link no privacy frameworks). Production apps should add
+// the `VXWalkthroughPermissions` product with the traits they need and inject
+// `SystemPermissionRequester()`. This demo keeps its single dependency on the
+// core by providing a tiny inline notifications requester instead.
+private struct DemoNotificationsRequester: PermissionRequesting {
+    func status(for kind: PermissionKind) async -> PermissionStatus {
+        guard kind == .notifications else { return .unavailable }
+        switch await UNUserNotificationCenter.current().notificationSettings().authorizationStatus {
+        case .authorized, .provisional, .ephemeral: return .granted
+        case .denied: return .denied
+        case .notDetermined: return .notDetermined
+        @unknown default: return .notDetermined
+        }
+    }
+
+    @discardableResult
+    func request(_ kind: PermissionKind) async -> PermissionStatus {
+        guard kind == .notifications else { return .unavailable }
+        do {
+            let granted = try await UNUserNotificationCenter.current()
+                .requestAuthorization(options: [.alert, .badge, .sound])
+            return granted ? .granted : .denied
+        } catch {
+            return .denied
+        }
+    }
+}
 
 struct ContentView: View {
     @State private var showWalkthrough = false
@@ -50,7 +80,7 @@ struct ContentView: View {
                 }
                 .onPageChange { lastEvent = "page \($0)" }
                 .onFinish { showWalkthrough = false }
-                .walkthroughPermissionRequester(SystemPermissionRequester())
+                .walkthroughPermissionRequester(DemoNotificationsRequester())
                 .walkthroughQRScanner()
         }
     }
@@ -64,6 +94,15 @@ struct ContentView: View {
                 image: .system("eye.slash")
             )
             InfoPage("hear", title: "Hear No Evil", image: .system("ear"))
+
+            // Aspect-fit demo: wide artwork shows in full (no crop) because the
+            // theme uses `imageStyle: .fit`.
+            InfoPage(
+                "wide",
+                title: "Wide artwork, un-cropped",
+                body: "`ImageStyle.fit` shows the whole illustration.",
+                image: .system("photo.on.rectangle.angled")
+            )
 
             PickerPage(
                 "plan",
@@ -105,7 +144,8 @@ struct ContentView: View {
         WalkthroughTheme(
             background: Color(red: 0.05, green: 0.07, blue: 0.12),
             accent: .blue,
-            imageStyle: .round
+            // `.fit` renders wide artwork in full without cropping.
+            imageStyle: .fit
         )
     }
 }

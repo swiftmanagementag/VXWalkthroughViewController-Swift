@@ -7,7 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-06-01
+
+### Breaking changes
+
+> [!WARNING]
+> System permissions are now **opt-in**. Apps that present a `PermissionPage`
+> must add the new `VXWalkthroughPermissions` product, enable the relevant
+> package **traits**, and inject `SystemPermissionRequester()`. Without this,
+> permission pages resolve to `.advance` (they skip themselves) rather than
+> prompting. See [docs/migration-guide.md](docs/migration-guide.md).
+
+- **`SystemPermissionRequester` moved out of the core product** into the new
+  optional `VXWalkthroughPermissions` product. The core `VXWalkthrough` product
+  no longer references UserNotifications / AVFoundation / Photos / Contacts /
+  CoreLocation / AppTrackingTransparency, so apps that don't request permissions
+  are no longer forced to declare unused purpose strings (fixes App Store
+  rejection **ITMS-90683**).
+- The `walkthroughPermissionRequester` environment default is now
+  `NoopPermissionRequester` (reports every kind as `.unavailable`, which the
+  resolver maps to `.advance`).
+- Minimum tools version raised to **Swift 6.1** (required for package traits).
+
 ### Added
+
+- **`VXWalkthroughPermissions` product** with per-`PermissionKind` SwiftPM
+  **traits** (default: none): `PermissionsNotifications`, `PermissionsCamera`,
+  `PermissionsMicrophone`, `PermissionsPhotos`, `PermissionsLocation`,
+  `PermissionsContacts`, `PermissionsTracking`. Enabling a trait links only that
+  framework; disabled kinds (and all kinds on non-iOS) return `.unavailable`.
+- **`NoopPermissionRequester`** in core as the no-frameworks default.
+- **`ImageStyle.fit`** — a full-width, aspect-fit image style that renders wide
+  artwork without cropping. Additive; existing `.round`/`.card`/`.fullBleed`
+  styles are unchanged.
+
+### Added (previously unreleased)
 
 - **Legacy loose-image fallback.** `WalkthroughImage.named(_:)` now resolves
   from loose `.png`/`.jpg`/`.jpeg` files in a bundle when no asset-catalog entry
