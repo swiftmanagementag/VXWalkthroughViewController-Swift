@@ -193,6 +193,26 @@ should be shown in full (aspect-fit, no cropping, with rounded corners):
 WalkthroughTheme(imageStyle: .fit)   // or .round (default) / .card / .fullBleed
 ```
 
+### Circular images (`.round`)
+
+`.round` (the default) renders the illustration in a circle. The diameter is
+resolved automatically to the **largest circle that fits across every page**
+(leaving a margin), and recalculated on rotation, iPad multitasking, and Mac
+Catalyst window resizing. Tune it via `CircleStyle`:
+
+```swift
+WalkthroughTheme(
+    imageStyle: .round,
+    circleStyle: .init(
+        maxDiameter: 320,    // cap; pass nil to grow to the available space
+        margin: 24,          // breathing room kept around the circle
+        borderWidth: 3,
+        borderColor: .white,
+        showsShadow: true
+    )
+)
+```
+
 ## Documentation
 
 - [Migration guide (1.x -> 2.0)](docs/migration-guide.md)

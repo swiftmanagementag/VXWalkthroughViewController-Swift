@@ -23,31 +23,34 @@ struct PageScaffold<Content: View>: View {
                 WalkthroughImageView(image: step.image, style: theme.imageStyle)
             }
 
-            if !displayTitle.isEmpty {
-                Text(displayTitleAttributed)
-                    .font(theme.titleFont)
-                    .foregroundStyle(theme.titleColor)
-                    .multilineTextAlignment(.center)
-                    .accessibilityIdentifier("walkthrough.page.title")
-            }
+            VStack(spacing: 20) {
+                if !displayTitle.isEmpty {
+                    Text(displayTitleAttributed)
+                        .font(theme.titleFont)
+                        .foregroundStyle(theme.titleColor)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("walkthrough.page.title")
+                }
 
-            if let body = step.body, !body.isEmpty {
-                Text(body.attributedString())
-                    .font(theme.bodyFont)
-                    .foregroundStyle(theme.bodyColor)
-                    .multilineTextAlignment(.center)
-            }
+                if let body = step.body, !body.isEmpty {
+                    Text(body.attributedString())
+                        .font(theme.bodyFont)
+                        .foregroundStyle(theme.bodyColor)
+                        .multilineTextAlignment(.center)
+                }
 
-            // The success/failure message replaces controls when terminal.
-            if state.isTerminal, let message = state.message, !message.isEmpty {
-                Text(message)
-                    .font(theme.bodyFont)
-                    .foregroundStyle(isFailure ? .red : theme.bodyColor)
-                    .multilineTextAlignment(.center)
-                    .accessibilityIdentifier("walkthrough.page.stateMessage")
-            } else {
-                content()
+                // The success/failure message replaces controls when terminal.
+                if state.isTerminal, let message = state.message, !message.isEmpty {
+                    Text(message)
+                        .font(theme.bodyFont)
+                        .foregroundStyle(isFailure ? .red : theme.bodyColor)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("walkthrough.page.stateMessage")
+                } else {
+                    content()
+                }
             }
+            .measureWalkthroughContentHeight()
 
             Spacer(minLength: 0)
         }

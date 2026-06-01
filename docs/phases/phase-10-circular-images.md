@@ -33,16 +33,23 @@ From git history (commit `290e42d`, removed in the 2.0 rewrite):
   `min(minLeftoverHeight - 2*margin, width - 2*margin, maxDiameter ?? .infinity)`
   clamped to a minimum. Unit-testable; this is the cross-page "max that fits
   everywhere" logic.
+- Measure **content**, not a greedy image slot. An early greedy-slot prototype
+  pushed the title/body to the bottom of the screen (the slot won the flexible
+  split against the centering `Spacer`s). Instead each page measures the height
+  of its non-image content (title / body / controls) and reports it through a
+  `PageContentHeightPreferenceKey` (reduce = **max** → the most-constrained
+  page). Because the image is sized independently of that measurement, there is
+  no layout feedback loop, and the normal centered `Spacer`-based layout is
+  preserved.
 - `WalkthroughContainer`: `GeometryReader` for container width/height; eager
-  `HStack` (was `LazyHStack`) so all pages report up front; a
-  `CircleSlotHeightPreferenceKey` (reduce = min) collects the smallest leftover
-  image-slot height; `.onPreferenceChange` + `.onChange(of: size)` recompute the
-  resolved diameter (animated) and inject it via
-  `environment(\.walkthroughResolvedCircleDiameter)`.
-- `InfoPageView` / `PageScaffold`: for `.round`, wrap the image in a flexible
-  slot (`maxHeight: .infinity`) measured via `GeometryReader` background that
-  reports through the preference key; the circle is centered in the slot and
-  capped at the resolved diameter (so it never pushes layout — no feedback loop).
+  `HStack` (was `LazyHStack`) so all pages report up front;
+  `.onPreferenceChange` + `.onChange(of: size)` derive
+  `leftover = height - maxContentHeight - chromeReserve`, resolve the diameter
+  (animated), and inject it via `environment(\.walkthroughResolvedCircleDiameter)`.
+  `chromeReserve` keeps the page indicator / nav buttons clear.
+- `InfoPageView` / `PageScaffold`: the image renders at the resolved fixed
+  diameter inside the centered layout; the non-image content is wrapped in a
+  group tagged `measureWalkthroughContentHeight()`.
 - `WalkthroughImageView` `.round`: render at the resolved uniform diameter with
   configurable border/shadow from `CircleStyle` (fallback diameter when
   unmeasured).

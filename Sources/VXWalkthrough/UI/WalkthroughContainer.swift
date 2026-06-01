@@ -13,15 +13,35 @@ struct WalkthroughContainer: View {
     let customProviders: [String: @MainActor (WalkthroughPageProxy) -> AnyView]
 
     @State private var scrolledID: String?
+    // Tallest non-image content across pages, and the diameter resolved from
+    // it. Recomputed on measurement and on container size change (rotation,
+    // iPad multitasking, Mac Catalyst resize).
+    @State private var maxContentHeight: CGFloat = 0
+    @State private var resolvedCircleDiameter: CGFloat?
     @Environment(\.walkthroughTheme) private var theme
 
+    /// Vertical space reserved for the page chrome (page indicator + nav) and
+    /// the image-to-content spacing, kept clear when sizing the circle.
+    private static let chromeReserve: CGFloat = 140
+
     var body: some View {
-        ZStack {
-            theme.background.ignoresSafeArea()
+        GeometryReader { geo in
+            ZStack {
+                theme.background.ignoresSafeArea()
 
-            pager
+                pager
 
-            PageChrome(model: model, showsClose: showsClose)
+                PageChrome(model: model, showsClose: showsClose)
+            }
+            .onPreferenceChange(PageContentHeightPreferenceKey.self) { newValue in
+                maxContentHeight = newValue
+                updateCircleDiameter(containerSize: geo.size)
+            }
+            .onChange(of: geo.size) { _, newSize in
+                // Rotation / window resize: re-derive the circle diameter.
+                updateCircleDiameter(containerSize: newSize)
+            }
+            .environment(\.walkthroughResolvedCircleDiameter, resolvedCircleDiameter)
         }
         .environment(\.walkthroughTheme, theme)
         .onAppear { scrolledID = model.currentStepID }
@@ -35,9 +55,32 @@ struct WalkthroughContainer: View {
         }
     }
 
+    /// Resolves the uniform circle diameter for the current measurements: the
+    /// largest circle that fits in the space left after the most-constrained
+    /// page's content and the chrome reserve.
+    private func updateCircleDiameter(containerSize: CGSize) {
+        guard theme.imageStyle == .round, containerSize.height > 0 else {
+            resolvedCircleDiameter = nil
+            return
+        }
+        let leftover = containerSize.height - maxContentHeight - Self.chromeReserve
+        let diameter = CircleSizing.diameter(
+            minLeftoverHeight: leftover,
+            width: containerSize.width,
+            style: theme.circleStyle
+        )
+        guard resolvedCircleDiameter != diameter else { return }
+        withAnimation(.easeInOut(duration: 0.2)) {
+            resolvedCircleDiameter = diameter
+        }
+    }
+
     private var pager: some View {
         ScrollView(.horizontal) {
-            LazyHStack(spacing: 0) {
+            // Eager HStack (not Lazy) so every page is laid out and reports its
+            // image-slot height up front, letting the container pick a single
+            // circle diameter that fits across all pages.
+            HStack(spacing: 0) {
                 ForEach(model.steps) { step in
                     WalkthroughPageView(
                         step: step,
