@@ -29,17 +29,11 @@ struct LoginPageView: View {
         PageScaffold(step: step, state: proxy.state) {
             VStack(spacing: 16) {
                 labeledField(spec.loginPrompt) {
-                    TextField(spec.placeholder.isEmpty ? "info@domain.com" : spec.placeholder, text: $login)
-                        .focused($focus, equals: .login)
-                        .emailFieldConfiguration()
-                        .accessibilityIdentifier("walkthrough.login.email")
+                    loginField
                 }
 
                 labeledField(spec.passwordPrompt) {
-                    SecureField(spec.placeholder, text: $password)
-                        .focused($focus, equals: .password)
-                        .passwordFieldConfiguration()
-                        .accessibilityIdentifier("walkthrough.login.password")
+                    passwordField
                 }
 
                 HStack(spacing: 12) {
@@ -53,17 +47,7 @@ struct LoginPageView: View {
                     }
 
                     if showsScan {
-                        Button {
-                            Task { await scan() }
-                        } label: {
-                            Image(systemName: "qrcode.viewfinder")
-                                .font(.title2)
-                                .frame(width: 50, height: 50)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(theme.accent)
-                        .accessibilityIdentifier("walkthrough.login.scan")
-                        .accessibilityLabel("Scan code")
+                        scanButton
                     }
                 }
             }
@@ -72,6 +56,61 @@ struct LoginPageView: View {
             if login.isEmpty { login = spec.loginValue }
             if password.isEmpty { password = spec.passwordValue }
         }
+    }
+
+    private var loginPlaceholder: String {
+        let resolved = spec.resolvedLoginPlaceholder
+        return resolved.isEmpty ? "info@domain.com" : resolved
+    }
+
+    @ViewBuilder
+    private var loginField: some View {
+        if spec.loginSecure {
+            SecureField(loginPlaceholder, text: $login)
+                .focused($focus, equals: .login)
+                .accessibilityIdentifier("walkthrough.login.email")
+        } else {
+            TextField(loginPlaceholder, text: $login)
+                .focused($focus, equals: .login)
+                .emailFieldConfiguration()
+                .accessibilityIdentifier("walkthrough.login.email")
+        }
+    }
+
+    @ViewBuilder
+    private var passwordField: some View {
+        if spec.passwordSecure {
+            SecureField(spec.resolvedPasswordPlaceholder, text: $password)
+                .focused($focus, equals: .password)
+                .passwordFieldConfiguration()
+                .accessibilityIdentifier("walkthrough.login.password")
+        } else {
+            TextField(spec.resolvedPasswordPlaceholder, text: $password)
+                .focused($focus, equals: .password)
+                .accessibilityIdentifier("walkthrough.login.password")
+        }
+    }
+
+    @ViewBuilder
+    private var scanButton: some View {
+        Button {
+            Task { await scan() }
+        } label: {
+            if let scanTitle = spec.scanTitle, !scanTitle.isEmpty {
+                Label(scanTitle, systemImage: "qrcode.viewfinder")
+                    .font(.headline)
+                    .frame(minHeight: 50)
+                    .padding(.horizontal, 12)
+            } else {
+                Image(systemName: "qrcode.viewfinder")
+                    .font(.title2)
+                    .frame(width: 50, height: 50)
+            }
+        }
+        .buttonStyle(.bordered)
+        .tint(theme.accent)
+        .accessibilityIdentifier("walkthrough.login.scan")
+        .accessibilityLabel(spec.scanTitle.map { $0.isEmpty ? "Scan code" : $0 } ?? "Scan code")
     }
 
     private func scan() async {

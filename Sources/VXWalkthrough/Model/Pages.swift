@@ -15,23 +15,26 @@ public struct InfoPage: WalkthroughStepConvertible, Sendable {
     public var body: AttributedTitle?
     public var image: WalkthroughImage
     public var sort: Int
+    public var theme: WalkthroughTheme?
 
     public init(
         _ id: String,
         title: AttributedTitle = "",
         body: AttributedTitle? = nil,
         image: WalkthroughImage = .none,
-        sort: Int = 0
+        sort: Int = 0,
+        theme: WalkthroughTheme? = nil
     ) {
         self.id = id
         self.title = title
         self.body = body
         self.image = image
         self.sort = sort
+        self.theme = theme
     }
 
     public func makeSteps() -> [WalkthroughStep] {
-        [WalkthroughStep(id: id, kind: .info, title: title, body: body, image: image, sort: sort)]
+        [WalkthroughStep(id: id, kind: .info, title: title, body: body, image: image, sort: sort, theme: theme)]
     }
 }
 
@@ -42,6 +45,7 @@ public struct InputPage: WalkthroughStepConvertible, Sendable {
     public var image: WalkthroughImage
     public var spec: InputSpec
     public var sort: Int
+    public var theme: WalkthroughTheme?
 
     public init(
         _ id: String,
@@ -49,17 +53,19 @@ public struct InputPage: WalkthroughStepConvertible, Sendable {
         image: WalkthroughImage = .none,
         fields: [InputField],
         buttonTitle: String = "Continue",
-        sort: Int = 0
+        sort: Int = 0,
+        theme: WalkthroughTheme? = nil
     ) {
         self.id = id
         self.title = title
         self.image = image
         spec = InputSpec(fields: fields, buttonTitle: buttonTitle)
         self.sort = sort
+        self.theme = theme
     }
 
     public func makeSteps() -> [WalkthroughStep] {
-        [WalkthroughStep(id: id, kind: .input(spec), title: title, image: image, sort: sort)]
+        [WalkthroughStep(id: id, kind: .input(spec), title: title, image: image, sort: sort, theme: theme)]
     }
 }
 
@@ -70,6 +76,7 @@ public struct LoginPage: WalkthroughStepConvertible, Sendable {
     public var image: WalkthroughImage
     public var spec: LoginSpec
     public var sort: Int
+    public var theme: WalkthroughTheme?
 
     public init(
         _ id: String = "login",
@@ -78,9 +85,15 @@ public struct LoginPage: WalkthroughStepConvertible, Sendable {
         loginPrompt: String = "Email",
         passwordPrompt: String = "Password",
         placeholder: String = "",
+        loginPlaceholder: String? = nil,
+        passwordPlaceholder: String? = nil,
+        loginSecure: Bool = false,
+        passwordSecure: Bool = true,
         buttonTitle: String = "Sign In",
         scanEnabled: Bool = false,
-        sort: Int = 0
+        scanTitle: String? = nil,
+        sort: Int = 0,
+        theme: WalkthroughTheme? = nil
     ) {
         self.id = id
         self.title = title
@@ -89,14 +102,20 @@ public struct LoginPage: WalkthroughStepConvertible, Sendable {
             loginPrompt: loginPrompt,
             passwordPrompt: passwordPrompt,
             placeholder: placeholder,
+            loginPlaceholder: loginPlaceholder,
+            passwordPlaceholder: passwordPlaceholder,
+            loginSecure: loginSecure,
+            passwordSecure: passwordSecure,
             buttonTitle: buttonTitle,
-            scanEnabled: scanEnabled
+            scanEnabled: scanEnabled,
+            scanTitle: scanTitle
         )
         self.sort = sort
+        self.theme = theme
     }
 
     public func makeSteps() -> [WalkthroughStep] {
-        [WalkthroughStep(id: id, kind: .login(spec), title: title, image: image, sort: sort)]
+        [WalkthroughStep(id: id, kind: .login(spec), title: title, image: image, sort: sort, theme: theme)]
     }
 }
 
@@ -107,6 +126,7 @@ public struct SignupPage: WalkthroughStepConvertible, Sendable {
     public var image: WalkthroughImage
     public var spec: SignupSpec
     public var sort: Int
+    public var theme: WalkthroughTheme?
 
     public init(
         _ id: String = "signup",
@@ -115,17 +135,19 @@ public struct SignupPage: WalkthroughStepConvertible, Sendable {
         emailPrompt: String = "Email",
         placeholder: String = "",
         buttonTitle: String = "Sign Up",
-        sort: Int = 0
+        sort: Int = 0,
+        theme: WalkthroughTheme? = nil
     ) {
         self.id = id
         self.title = title
         self.image = image
         spec = SignupSpec(emailPrompt: emailPrompt, placeholder: placeholder, buttonTitle: buttonTitle)
         self.sort = sort
+        self.theme = theme
     }
 
     public func makeSteps() -> [WalkthroughStep] {
-        [WalkthroughStep(id: id, kind: .signup(spec), title: title, image: image, sort: sort)]
+        [WalkthroughStep(id: id, kind: .signup(spec), title: title, image: image, sort: sort, theme: theme)]
     }
 }
 
@@ -137,6 +159,7 @@ public struct ActionPage: WalkthroughStepConvertible, Sendable {
     public var image: WalkthroughImage
     public var spec: ActionSpec
     public var sort: Int
+    public var theme: WalkthroughTheme?
 
     public init(
         _ id: String,
@@ -144,18 +167,21 @@ public struct ActionPage: WalkthroughStepConvertible, Sendable {
         body: AttributedTitle? = nil,
         image: WalkthroughImage = .none,
         buttonTitle: String = "Continue",
-        sort: Int = 0
+        buttonStyle: WalkthroughTheme.WalkthroughButtonStyle? = nil,
+        sort: Int = 0,
+        theme: WalkthroughTheme? = nil
     ) {
         self.id = id
         self.title = title
         self.body = body
         self.image = image
-        spec = ActionSpec(buttonTitle: buttonTitle)
+        spec = ActionSpec(buttonTitle: buttonTitle, buttonStyle: buttonStyle)
         self.sort = sort
+        self.theme = theme
     }
 
     public func makeSteps() -> [WalkthroughStep] {
-        [WalkthroughStep(id: id, kind: .action(spec), title: title, body: body, image: image, sort: sort)]
+        [WalkthroughStep(id: id, kind: .action(spec), title: title, body: body, image: image, sort: sort, theme: theme)]
     }
 }
 
@@ -166,6 +192,7 @@ public struct PickerPage: WalkthroughStepConvertible, Sendable {
     public var image: WalkthroughImage
     public var spec: PickerSpec
     public var sort: Int
+    public var theme: WalkthroughTheme?
 
     public init(
         _ id: String,
@@ -174,17 +201,19 @@ public struct PickerPage: WalkthroughStepConvertible, Sendable {
         options: [PickerOption],
         selectedID: String? = nil,
         buttonTitle: String = "Select",
-        sort: Int = 0
+        sort: Int = 0,
+        theme: WalkthroughTheme? = nil
     ) {
         self.id = id
         self.title = title
         self.image = image
         spec = PickerSpec(options: options, selectedID: selectedID, buttonTitle: buttonTitle)
         self.sort = sort
+        self.theme = theme
     }
 
     public func makeSteps() -> [WalkthroughStep] {
-        [WalkthroughStep(id: id, kind: .picker(spec), title: title, image: image, sort: sort)]
+        [WalkthroughStep(id: id, kind: .picker(spec), title: title, image: image, sort: sort, theme: theme)]
     }
 }
 
@@ -195,6 +224,7 @@ public struct PermissionPage: WalkthroughStepConvertible, Sendable {
     public var image: WalkthroughImage
     public var spec: PermissionSpec
     public var sort: Int
+    public var theme: WalkthroughTheme?
 
     public init(
         _ kind: PermissionKind,
@@ -205,7 +235,8 @@ public struct PermissionPage: WalkthroughStepConvertible, Sendable {
         buttonTitle: String = "Allow",
         grantedMessage: String? = nil,
         deniedMessage: String? = nil,
-        sort: Int = 0
+        sort: Int = 0,
+        theme: WalkthroughTheme? = nil
     ) {
         self.id = id ?? "permission.\(kind.rawValue)"
         self.title = title
@@ -218,9 +249,10 @@ public struct PermissionPage: WalkthroughStepConvertible, Sendable {
             deniedMessage: deniedMessage
         )
         self.sort = sort
+        self.theme = theme
     }
 
     public func makeSteps() -> [WalkthroughStep] {
-        [WalkthroughStep(id: id, kind: .permission(spec), title: title, image: image, sort: sort)]
+        [WalkthroughStep(id: id, kind: .permission(spec), title: title, image: image, sort: sort, theme: theme)]
     }
 }

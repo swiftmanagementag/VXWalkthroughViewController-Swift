@@ -62,9 +62,21 @@ public struct LoginSpec: Sendable, Equatable {
     public var passwordPrompt: String
     public var loginValue: String
     public var passwordValue: String
+    /// Shared placeholder fallback used when a per-field placeholder is unset.
     public var placeholder: String
+    /// Placeholder for the login (first) field. Falls back to `placeholder`.
+    public var loginPlaceholder: String?
+    /// Placeholder for the password/code (second) field. Falls back to `placeholder`.
+    public var passwordPlaceholder: String?
+    /// Whether the login field masks input (default `false`).
+    public var loginSecure: Bool
+    /// Whether the password/code field masks input (default `true`).
+    public var passwordSecure: Bool
     public var buttonTitle: String
     public var scanEnabled: Bool
+    /// Optional label shown on the scan button. When `nil` the button is
+    /// icon-only (the legacy look).
+    public var scanTitle: String?
 
     public init(
         loginPrompt: String = "Email",
@@ -72,17 +84,32 @@ public struct LoginSpec: Sendable, Equatable {
         loginValue: String = "",
         passwordValue: String = "",
         placeholder: String = "",
+        loginPlaceholder: String? = nil,
+        passwordPlaceholder: String? = nil,
+        loginSecure: Bool = false,
+        passwordSecure: Bool = true,
         buttonTitle: String = "Sign In",
-        scanEnabled: Bool = false
+        scanEnabled: Bool = false,
+        scanTitle: String? = nil
     ) {
         self.loginPrompt = loginPrompt
         self.passwordPrompt = passwordPrompt
         self.loginValue = loginValue
         self.passwordValue = passwordValue
         self.placeholder = placeholder
+        self.loginPlaceholder = loginPlaceholder
+        self.passwordPlaceholder = passwordPlaceholder
+        self.loginSecure = loginSecure
+        self.passwordSecure = passwordSecure
         self.buttonTitle = buttonTitle
         self.scanEnabled = scanEnabled
+        self.scanTitle = scanTitle
     }
+
+    /// Resolved placeholder for the login field.
+    public var resolvedLoginPlaceholder: String { loginPlaceholder ?? placeholder }
+    /// Resolved placeholder for the password/code field.
+    public var resolvedPasswordPlaceholder: String { passwordPlaceholder ?? placeholder }
 }
 
 public struct SignupSpec: Sendable, Equatable {
@@ -108,9 +135,16 @@ public struct SignupSpec: Sendable, Equatable {
 
 public struct ActionSpec: Sendable, Equatable {
     public var buttonTitle: String
+    /// Optional per-step button style. When `nil`, the theme's
+    /// `actionButtonStyle` (or its legacy fallback) is used.
+    public var buttonStyle: WalkthroughTheme.WalkthroughButtonStyle?
 
-    public init(buttonTitle: String = "Continue") {
+    public init(
+        buttonTitle: String = "Continue",
+        buttonStyle: WalkthroughTheme.WalkthroughButtonStyle? = nil
+    ) {
         self.buttonTitle = buttonTitle
+        self.buttonStyle = buttonStyle
     }
 }
 

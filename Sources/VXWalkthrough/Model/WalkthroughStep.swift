@@ -51,6 +51,10 @@ public struct WalkthroughStep: Identifiable, Sendable, Equatable {
     public var body: AttributedTitle?
     public var image: WalkthroughImage
     public var sort: Int
+    /// Optional per-step theme override. When set, replaces the walkthrough
+    /// theme for this page's content. The overlaid page chrome (indicator / nav)
+    /// and cross-page circle sizing still use the walkthrough's base theme.
+    public var theme: WalkthroughTheme?
 
     public init(
         id: String,
@@ -58,7 +62,8 @@ public struct WalkthroughStep: Identifiable, Sendable, Equatable {
         title: AttributedTitle = "",
         body: AttributedTitle? = nil,
         image: WalkthroughImage = .none,
-        sort: Int = 0
+        sort: Int = 0,
+        theme: WalkthroughTheme? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -66,6 +71,7 @@ public struct WalkthroughStep: Identifiable, Sendable, Equatable {
         self.body = body
         self.image = image
         self.sort = sort
+        self.theme = theme
     }
 }
 

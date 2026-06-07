@@ -109,13 +109,15 @@ public struct WalkthroughView: View {
 public struct CustomPage: WalkthroughStepConvertible, Sendable {
     public var id: String
     public var sort: Int
+    public var theme: WalkthroughTheme?
 
-    public init(_ id: String, sort: Int = 0) {
+    public init(_ id: String, sort: Int = 0, theme: WalkthroughTheme? = nil) {
         self.id = id
         self.sort = sort
+        self.theme = theme
     }
 
     public func makeSteps() -> [WalkthroughStep] {
-        [WalkthroughStep(id: id, kind: .custom(contentID: id), sort: sort)]
+        [WalkthroughStep(id: id, kind: .custom(contentID: id), sort: sort, theme: theme)]
     }
 }
