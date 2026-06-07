@@ -26,7 +26,7 @@ struct PageChrome: View {
                             .padding(10)
                     }
                     .glassButtonStyleIfAvailable()
-                    .tint(theme.titleColor)
+                    .tint(theme.resolvedNavControlTint)
                     .accessibilityIdentifier("walkthrough.close")
                     .accessibilityLabel("Close")
                 }
@@ -47,7 +47,13 @@ struct PageChrome: View {
                 Spacer()
 
                 if model.numberOfPages > 1 {
-                    PageIndicator(count: model.numberOfPages, current: model.currentIndex, color: theme.titleColor)
+                    PageIndicator(
+                        count: model.numberOfPages,
+                        current: model.currentIndex,
+                        baseColor: theme.pageIndicatorColor,
+                        selectedColor: theme.resolvedPageIndicatorSelectedColor,
+                        fallbackColor: theme.titleColor
+                    )
                 }
 
                 Spacer()
@@ -78,7 +84,7 @@ struct PageChrome: View {
                 .frame(width: 44, height: 44)
         }
         .glassButtonStyleIfAvailable()
-        .tint(theme.titleColor)
+        .tint(theme.resolvedNavControlTint)
         .opacity(hidden ? 0 : 1)
         .disabled(hidden)
         .accessibilityIdentifier(id)
@@ -89,13 +95,24 @@ struct PageChrome: View {
 private struct PageIndicator: View {
     let count: Int
     let current: Int
-    let color: Color
+    /// Explicit unselected-dot color, if the theme set one.
+    let baseColor: Color?
+    /// Resolved selected-dot color.
+    let selectedColor: Color
+    /// Fallback used for unselected dots when `baseColor` is `nil` (legacy look:
+    /// `titleColor` at 35% opacity).
+    let fallbackColor: Color
+
+    private func dotColor(selected: Bool) -> Color {
+        if selected { return selectedColor }
+        return baseColor ?? fallbackColor.opacity(0.35)
+    }
 
     var body: some View {
         HStack(spacing: 8) {
             ForEach(0 ..< count, id: \.self) { index in
                 Circle()
-                    .fill(color.opacity(index == current ? 1 : 0.35))
+                    .fill(dotColor(selected: index == current))
                     .frame(width: 8, height: 8)
             }
         }

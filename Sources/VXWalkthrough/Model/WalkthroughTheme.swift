@@ -59,6 +59,37 @@ public struct WalkthroughTheme: Sendable, Equatable {
         public static let `default` = CircleStyle()
     }
 
+    /// Fill, label color, and corner treatment for a call-to-action button.
+    ///
+    /// Lets the host guarantee adequate contrast for the primary CTA against any
+    /// brand background, independent of the title/body colors.
+    public struct WalkthroughButtonStyle: Sendable, Equatable {
+        /// Corner treatment for the button.
+        public enum CornerStyle: Sendable, Equatable {
+            /// Rounded rectangle with the given corner radius.
+            case radius(CGFloat)
+            /// Fully-rounded (pill) shape.
+            case capsule
+        }
+
+        /// Button fill color.
+        public var background: Color
+        /// Label (and progress spinner) color.
+        public var foreground: Color
+        /// Corner treatment.
+        public var cornerStyle: CornerStyle
+
+        public init(
+            background: Color,
+            foreground: Color = .white,
+            cornerStyle: CornerStyle = .radius(12)
+        ) {
+            self.background = background
+            self.foreground = foreground
+            self.cornerStyle = cornerStyle
+        }
+    }
+
     /// Motion intensity for scroll-driven parallax effects.
     public enum MotionStyle: Sendable, Equatable {
         case none
@@ -77,6 +108,18 @@ public struct WalkthroughTheme: Sendable, Equatable {
     public var circleStyle: CircleStyle
     public var motion: MotionStyle
     public var buttonCornerRadius: CGFloat
+    /// Fill / label / corner for primary CTA buttons. `nil` keeps the legacy
+    /// look (filled with `accent`, white label, `buttonCornerRadius`).
+    public var actionButtonStyle: WalkthroughButtonStyle?
+    /// Color of the unselected page-indicator dots. `nil` falls back to
+    /// `titleColor` (rendered at 35% opacity, matching the legacy look).
+    public var pageIndicatorColor: Color?
+    /// Color of the selected page-indicator dot. `nil` falls back to
+    /// `titleColor` at full opacity.
+    public var pageIndicatorSelectedColor: Color?
+    /// Tint for the Next / Previous / Close controls. `nil` falls back to
+    /// `titleColor`.
+    public var navControlTint: Color?
     /// Adopt iOS 26 Liquid Glass chrome when available (falls back gracefully).
     public var usesLiquidGlass: Bool
 
@@ -91,6 +134,10 @@ public struct WalkthroughTheme: Sendable, Equatable {
         circleStyle: CircleStyle = .default,
         motion: MotionStyle = .standard,
         buttonCornerRadius: CGFloat = 12,
+        actionButtonStyle: WalkthroughButtonStyle? = nil,
+        pageIndicatorColor: Color? = nil,
+        pageIndicatorSelectedColor: Color? = nil,
+        navControlTint: Color? = nil,
         usesLiquidGlass: Bool = true
     ) {
         self.background = background
@@ -103,11 +150,36 @@ public struct WalkthroughTheme: Sendable, Equatable {
         self.circleStyle = circleStyle
         self.motion = motion
         self.buttonCornerRadius = buttonCornerRadius
+        self.actionButtonStyle = actionButtonStyle
+        self.pageIndicatorColor = pageIndicatorColor
+        self.pageIndicatorSelectedColor = pageIndicatorSelectedColor
+        self.navControlTint = navControlTint
         self.usesLiquidGlass = usesLiquidGlass
     }
 
     /// The default theme.
     public static let `default` = WalkthroughTheme()
+
+    // MARK: Resolved values
+
+    /// The primary-button style to use, resolving the legacy fallback (filled
+    /// with `accent`, white label, `buttonCornerRadius`) when none is set.
+    public var resolvedActionButtonStyle: WalkthroughButtonStyle {
+        actionButtonStyle
+            ?? WalkthroughButtonStyle(
+                background: accent,
+                foreground: .white,
+                cornerStyle: .radius(buttonCornerRadius)
+            )
+    }
+
+    /// Tint for the Next / Previous / Close controls (falls back to `titleColor`).
+    public var resolvedNavControlTint: Color { navControlTint ?? titleColor }
+
+    /// Selected page-indicator dot color (falls back to `titleColor`).
+    public var resolvedPageIndicatorSelectedColor: Color {
+        pageIndicatorSelectedColor ?? titleColor
+    }
 }
 
 // MARK: - Environment

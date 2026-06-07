@@ -213,6 +213,72 @@ WalkthroughTheme(
 )
 ```
 
+### Branding: buttons, indicators, and nav controls
+
+For a branded (non-white) background, theme the CTA, page-control dots, and the
+Next / Previous / Close controls so they keep adequate contrast. Everything is
+optional and defaults to the prior look (button filled with `accent` + white
+label; dots and nav derived from `titleColor`):
+
+```swift
+WalkthroughTheme(
+    background: brandCyan,
+    titleColor: .black,
+    bodyColor: .black.opacity(0.8),
+    actionButtonStyle: .init(
+        background: .black,        // CTA fill
+        foreground: .white,        // CTA label
+        cornerStyle: .capsule      // or .radius(16)
+    ),
+    pageIndicatorColor: .black.opacity(0.3),
+    pageIndicatorSelectedColor: .black,
+    navControlTint: .black
+)
+```
+
+An `ActionPage` can also carry a per-step `buttonStyle:` to override the theme
+for a single CTA.
+
+### Login fields and scanning
+
+`LoginPage` supports per-field placeholders, per-field secure entry, and a
+labelled scan button — useful for B2B "email + code" logins:
+
+```swift
+LoginPage(
+    loginPrompt: "Email",
+    passwordPrompt: "Voucher code",
+    loginPlaceholder: "info@domain.com",
+    passwordPlaceholder: "xxxx-xxxx-xxxx",
+    passwordSecure: false,         // a short human-entered code isn't masked
+    scanEnabled: true,
+    scanTitle: "Scan voucher"      // visible label instead of an icon-only button
+)
+```
+
+### Per-step theme override
+
+Any page accepts an optional `theme:` to diverge for a single step (e.g. a
+high-contrast CTA), without changing the global theme:
+
+```swift
+ActionPage("cta", title: "Ready?", buttonTitle: "Let's go",
+           theme: WalkthroughTheme(background: .black, titleColor: .white))
+```
+
+### Driving navigation from a custom page
+
+A `CustomPage` view can advance the walkthrough itself via the environment:
+
+```swift
+struct ExamDatePage: View {
+    @Environment(\.walkthroughAdvance) private var advance
+    var body: some View {
+        Button("Continue") { advance() }   // or advance.finish()
+    }
+}
+```
+
 ## Documentation
 
 - [Migration guide (1.x -> 2.0)](docs/migration-guide.md)

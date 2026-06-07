@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-06-07
+
+### Added
+
+- **Theme: full chrome theming.** `WalkthroughTheme` gains optional
+  `actionButtonStyle` (a new `WalkthroughButtonStyle` of `background` /
+  `foreground` / `cornerStyle`), `pageIndicatorColor`,
+  `pageIndicatorSelectedColor`, and `navControlTint`. These let the host
+  guarantee adequate contrast for the primary CTA, page-control dots, and the
+  Next / Previous / Close controls against a branded background. All default to
+  `nil`, preserving the prior look (button filled with `accent` + white label,
+  indicator/nav derived from `titleColor`).
+- **LoginSpec / LoginPage: per-field control.** New `loginPlaceholder` and
+  `passwordPlaceholder` (each falling back to the shared `placeholder`),
+  `loginSecure` (default `false`) and `passwordSecure` (default `true`) secure-
+  entry toggles, and an optional `scanTitle` that gives the scan button a visible
+  label (icon-only when unset).
+- **ActionSpec / ActionPage: themed button.** The action button now honors the
+  theme's `actionButtonStyle`, and an optional per-step `buttonStyle` override is
+  available on `ActionSpec` / `ActionPage`.
+- **Custom pages: `walkthroughAdvance` hook.** A new
+  `@Environment(\.walkthroughAdvance)` action (`advance()` / `previous()` /
+  `finish()`, callable directly) lets a custom page drive navigation without
+  threading the page proxy through subviews.
+- **Per-step theme override.** Every DSL page (and `WalkthroughStep`) accepts an
+  optional `theme:` that overrides the walkthrough theme for that page's content
+  (background, title/body colors + fonts, button). The overlaid page chrome
+  (indicator / nav) and cross-page circle sizing still use the base theme.
+
+All additions are optional and defaulted: re-pinning to 2.3.0 is a drop-in with
+zero behavior change until opted in.
+
 ## [2.2.2] - 2026-06-01
 
 ### Fixed

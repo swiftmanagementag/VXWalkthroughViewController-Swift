@@ -21,7 +21,7 @@ struct WalkthroughPageView: View {
         case let .input(spec):
             InputPageView(step: step, spec: spec, proxy: proxy)
         case let .action(spec):
-            ActionPageView(step: step, buttonTitle: spec.buttonTitle, proxy: proxy)
+            ActionPageView(step: step, buttonTitle: spec.buttonTitle, buttonStyle: spec.buttonStyle, proxy: proxy)
         case let .picker(spec):
             PickerPageView(step: step, spec: spec, proxy: proxy)
         case let .login(spec):

@@ -80,6 +80,7 @@ struct ContentView: View {
                 }
                 .onPageChange { lastEvent = "page \($0)" }
                 .onFinish { showWalkthrough = false }
+                .walkthroughCustomPage("ready") { _ in DemoReadyPage() }
                 .walkthroughPermissionRequester(DemoNotificationsRequester())
                 .walkthroughQRScanner()
         }
@@ -118,9 +119,17 @@ struct ContentView: View {
             LoginPage(
                 title: "Sign in",
                 image: .system("person.crop.circle"),
+                passwordPrompt: "Voucher code",
+                loginPlaceholder: "info@domain.com",
+                passwordPlaceholder: "xxxx-xxxx-xxxx",
+                passwordSecure: false,
                 buttonTitle: "Sign In",
-                scanEnabled: true
+                scanEnabled: true,
+                scanTitle: "Scan"
             )
+
+            // 2.3: a custom page that drives navigation via the environment.
+            CustomPage("ready")
 
             PermissionPage(
                 .notifications,
@@ -145,8 +154,36 @@ struct ContentView: View {
             background: Color(red: 0.05, green: 0.07, blue: 0.12),
             accent: .blue,
             // `.fit` renders wide artwork in full without cropping.
-            imageStyle: .fit
+            imageStyle: .fit,
+            // 2.3: theme the CTA, page dots, and nav controls explicitly.
+            actionButtonStyle: .init(background: .cyan, foreground: .black, cornerStyle: .capsule),
+            pageIndicatorColor: .white.opacity(0.3),
+            pageIndicatorSelectedColor: .cyan,
+            navControlTint: .cyan
         )
+    }
+}
+
+/// A custom page that drives navigation through the `walkthroughAdvance`
+/// environment action rather than a captured proxy.
+private struct DemoReadyPage: View {
+    @Environment(\.walkthroughAdvance) private var advance
+    @Environment(\.walkthroughTheme) private var theme
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "hand.thumbsup")
+                .font(.system(size: 56))
+                .foregroundStyle(theme.titleColor)
+            Text("Almost there")
+                .font(theme.titleFont)
+                .foregroundStyle(theme.titleColor)
+            Button("Finish") { advance.finish() }
+                .buttonStyle(.borderedProminent)
+                .tint(.cyan)
+        }
+        .padding(32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

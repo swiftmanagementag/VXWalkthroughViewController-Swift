@@ -43,11 +43,17 @@ WalkthroughView(
 - ``PermissionPage``
 - ``CustomPage``
 
+### Theming
+
+- ``WalkthroughTheme``
+- ``WalkthroughTheme/WalkthroughButtonStyle``
+
 ### Presenting & runtime
 
 - ``WalkthroughView``
 - ``WalkthroughModel``
 - ``WalkthroughPageProxy``
+- ``WalkthroughAdvanceAction``
 - ``StepState``
 - ``StepOutcome``
 - ``WalkthroughAction``

@@ -105,14 +105,10 @@ struct WalkthroughContainer: View {
             // circle diameter that fits across all pages.
             HStack(spacing: 0) {
                 ForEach(model.steps) { step in
-                    WalkthroughPageView(
-                        step: step,
-                        proxy: WalkthroughPageProxy(model: model, stepID: step.id),
-                        customProviders: customProviders
-                    )
-                    .containerRelativeFrame(.horizontal)
-                    .walkthroughParallax(theme.motion)
-                    .id(step.id)
+                    pageView(for: step)
+                        .containerRelativeFrame(.horizontal)
+                        .walkthroughParallax(theme.motion)
+                        .id(step.id)
                 }
             }
             .scrollTargetLayout()
@@ -126,5 +122,35 @@ struct WalkthroughContainer: View {
         // a sliver of the adjacent page and misaligning content. Page content
         // keeps clear of the notch via its own horizontal padding.
         .ignoresSafeArea(edges: theme.imageStyle == .fullBleed ? .all : .horizontal)
+    }
+
+    /// Builds a single page, wiring its proxy, the `walkthroughAdvance`
+    /// environment action, and any per-step theme override.
+    ///
+    /// A per-step `theme` replaces the walkthrough theme for that page's content
+    /// (background, title/body colors + fonts, button). The overlaid page chrome
+    /// (indicator / nav) and the cross-page circle diameter are still driven by
+    /// the walkthrough's base theme.
+    @ViewBuilder
+    private func pageView(for step: WalkthroughStep) -> some View {
+        let proxy = WalkthroughPageProxy(model: model, stepID: step.id)
+        let stepTheme = step.theme ?? theme
+        WalkthroughPageView(
+            step: step,
+            proxy: proxy,
+            customProviders: customProviders
+        )
+        // Paint the overridden background so a per-step theme is visible over the
+        // container's base background. Skipped when no override (zero change).
+        .background(step.theme.map(\.background) ?? Color.clear)
+        .walkthroughTheme(stepTheme)
+        .environment(
+            \.walkthroughAdvance,
+            WalkthroughAdvanceAction(
+                advance: { proxy.advance() },
+                previous: { proxy.previous() },
+                finish: { proxy.finish() }
+            )
+        )
     }
 }

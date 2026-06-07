@@ -198,6 +198,25 @@ let theme = WalkthroughTheme(
 )
 ```
 
+As of 2.3, the theme also exposes the CTA, page-control dots, and nav controls,
+so they keep contrast on a branded background (all optional, defaulting to the
+prior look):
+
+```swift
+let theme = WalkthroughTheme(
+    background: brandCyan,
+    titleColor: .black,
+    actionButtonStyle: .init(background: .black, foreground: .white, cornerStyle: .capsule),
+    pageIndicatorColor: .black.opacity(0.3),
+    pageIndicatorSelectedColor: .black,
+    navControlTint: .black
+)
+```
+
+A single step can override the theme with the optional `theme:` parameter on any
+page (e.g. `ActionPage("cta", ..., theme: highContrastTheme)`); the overlaid
+page chrome and circle sizing still follow the base theme.
+
 ## 9. Custom pages
 
 ```swift
@@ -209,4 +228,16 @@ WalkthroughView(walkthrough)
     .walkthroughCustomPage("promo") { proxy in
         MyPromoView(onContinue: proxy.advance)
     }
+```
+
+A custom page can also drive navigation through the environment instead of a
+captured proxy:
+
+```swift
+struct MyPromoView: View {
+    @Environment(\.walkthroughAdvance) private var advance
+    var body: some View {
+        Button("Continue") { advance() }   // advance() / advance.previous() / advance.finish()
+    }
+}
 ```
