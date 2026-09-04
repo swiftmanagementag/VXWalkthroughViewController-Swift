@@ -113,6 +113,12 @@ public struct WalkthroughTheme: Sendable, Equatable {
     public var actionButtonStyle: WalkthroughButtonStyle?
     /// Color of the unselected page-indicator dots. `nil` falls back to
     /// `titleColor` (rendered at 35% opacity, matching the legacy look).
+    /// Fill behind the login page's text fields. `nil` keeps the system look.
+    ///
+    /// ⚠️ Optional WITH a default so this stays source-compatible: every existing
+    /// caller constructs the theme without it and keeps working.
+    public var fieldBackground: Color = Color.white.opacity(0.12)
+
     public var pageIndicatorColor: Color?
     /// Color of the selected page-indicator dot. `nil` falls back to
     /// `titleColor` at full opacity.

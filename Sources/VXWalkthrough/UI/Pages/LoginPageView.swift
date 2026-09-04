@@ -91,6 +91,12 @@ struct LoginPageView: View {
         }
     }
 
+    /// Shared with `WalkthroughPrimaryButton`'s own metrics — the two buttons sit side
+    /// by side, so a number that lives in only one of them drifts the moment either is
+    /// touched.
+    private static let actionHeight: CGFloat = 50
+    private static let actionCornerRadius: CGFloat = 12
+
     @ViewBuilder
     private var scanButton: some View {
         Button {
@@ -99,16 +105,24 @@ struct LoginPageView: View {
             if let scanTitle = spec.scanTitle, !scanTitle.isEmpty {
                 Label(scanTitle, systemImage: "qrcode.viewfinder")
                     .font(.headline)
-                    .frame(minHeight: 50)
-                    .padding(.horizontal, 12)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, minHeight: Self.actionHeight)
+                    .background(theme.accent, in: .rect(cornerRadius: Self.actionCornerRadius))
             } else {
                 Image(systemName: "qrcode.viewfinder")
                     .font(.title2)
-                    .frame(width: 50, height: 50)
+                    .foregroundStyle(.white)
+                    .frame(width: Self.actionHeight, height: Self.actionHeight)
+                    .background(theme.accent, in: .rect(cornerRadius: Self.actionCornerRadius))
             }
         }
-        .buttonStyle(.bordered)
-        .tint(theme.accent)
+        // ⚠️ `.plain`, matching `WalkthroughPrimaryButton`. It was `.bordered`, which adds
+        // its OWN padding around a label already at `minHeight 50` — so the scan button
+        // rendered TALLER than the Login button beside it, which is the mismatch the
+        // operator's screenshot showed. Owning the background is what makes the two
+        // agree, and it is also what allows a solid accent with a white label: a
+        // `.bordered` button tints its TEXT, never its fill.
+        .buttonStyle(.plain)
         .accessibilityIdentifier("walkthrough.login.scan")
         .accessibilityLabel(spec.scanTitle.map { $0.isEmpty ? "Scan code" : $0 } ?? "Scan code")
     }
@@ -124,7 +138,14 @@ struct LoginPageView: View {
             if !prompt.isEmpty {
                 Text(prompt).font(.caption).foregroundStyle(theme.bodyColor)
             }
-            field().textFieldStyle(.roundedBorder)
+            // 👤 Operator 2026-09-04: the inputs should be a little taller with rounded
+            // edges. `.roundedBorder` is the SYSTEM style — short, hairline-bordered, and
+            // not themeable — so the chrome is owned here instead.
+            field()
+                .textFieldStyle(.plain)
+                .padding(.horizontal, 12)
+                .frame(minHeight: 44)
+                .background(theme.fieldBackground, in: .rect(cornerRadius: 10))
         }
     }
 }
