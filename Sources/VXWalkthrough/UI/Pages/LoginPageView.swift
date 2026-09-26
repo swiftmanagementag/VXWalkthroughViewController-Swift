@@ -50,6 +50,28 @@ struct LoginPageView: View {
                         scanButton
                     }
                 }
+
+                // A SECOND route to the same outcome — e.g. buy instead of
+                // signing in, where a purchase also unlocks the sets.
+                //
+                // ⚠️ BELOW the sign-in row, not beside it. The scan button shares
+                // that row because it is the same action by another input; this is
+                // a different action, and putting it alongside reads as a third way
+                // to sign in.
+                // ⛔ It emits `.action`, not a new payload case: the primary here
+                // emits `.login`, so `.action` is unambiguous on this page, and a
+                // new case would force every existing host to handle one it can
+                // never receive.
+                if let secondary = spec.secondaryTitle, !secondary.isEmpty {
+                    Button(secondary) {
+                        focus = nil
+                        Task { await proxy.submit(.action) }
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(theme.accent)
+                    .frame(maxWidth: .infinity, minHeight: Self.actionHeight)
+                    .accessibilityIdentifier("walkthrough.login.secondary")
+                }
             }
         }
         .onAppear {

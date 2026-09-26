@@ -78,6 +78,19 @@ public struct LoginSpec: Sendable, Equatable {
     /// icon-only (the legacy look).
     public var scanTitle: String?
 
+    /// Optional SECOND action offered below the sign-in row — e.g. "buy instead
+    /// of signing in" on a flavor where a purchase also unlocks the sets.
+    ///
+    /// ⚠️ `nil` by default, and that is what makes this additive: every existing
+    /// caller keeps the one-action page it had. A page with no second route to
+    /// the same outcome must not grow a button that does nothing.
+    ///
+    /// ⛔ It deliberately does NOT carry its own payload type. The primary button
+    /// emits `.login(Credentials)`, so on this page `.action` is unambiguous —
+    /// adding a `case secondary` would force every existing host to handle a case
+    /// it cannot receive.
+    public var secondaryTitle: String?
+
     public init(
         loginPrompt: String = "Email",
         passwordPrompt: String = "Password",
@@ -90,7 +103,8 @@ public struct LoginSpec: Sendable, Equatable {
         passwordSecure: Bool = true,
         buttonTitle: String = "Sign In",
         scanEnabled: Bool = false,
-        scanTitle: String? = nil
+        scanTitle: String? = nil,
+        secondaryTitle: String? = nil
     ) {
         self.loginPrompt = loginPrompt
         self.passwordPrompt = passwordPrompt
@@ -104,6 +118,7 @@ public struct LoginSpec: Sendable, Equatable {
         self.buttonTitle = buttonTitle
         self.scanEnabled = scanEnabled
         self.scanTitle = scanTitle
+        self.secondaryTitle = secondaryTitle
     }
 
     /// Resolved placeholder for the login field.
