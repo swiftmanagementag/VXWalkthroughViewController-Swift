@@ -1,52 +1,80 @@
+<div align="center">
+
+<img src="Demo/images/icon_167.png" width="96" alt="VXWalkthrough demo app icon">
+
 # VXWalkthrough
 
-A modern, declarative **SwiftUI** framework for building app onboarding and
-walkthrough flows. Display information, collect input, request permissions, and
-drop in your own custom pages — all from a type-safe result-builder DSL.
+**Declarative SwiftUI onboarding and walkthrough flows.**<br>
+Info pages, login, input, permissions and your own custom pages, from one result-builder DSL.
 
-> **Version 2.0** is a full rewrite for Swift 6 and SwiftUI. For the previous
+![Swift 6.1+](https://img.shields.io/badge/Swift-6.1%2B-F05138?logo=swift&logoColor=white)
+![iOS 17+](https://img.shields.io/badge/iOS-17%2B-000000?logo=apple&logoColor=white)
+![Mac Catalyst 17+](https://img.shields.io/badge/Mac%20Catalyst-17%2B-555555?logo=apple&logoColor=white)
+![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-F05138?logo=swift&logoColor=white)
+[![Latest tag](https://img.shields.io/github/v/tag/swiftmanagementag/VXWalkthroughViewController-Swift?label=tag&sort=semver)](https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift/tags)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+<img src="screenshot.png" width="720" alt="VXWalkthrough screenshot">
+
+</div>
+
+---
+
+> **Version 2** is a full rewrite for Swift 6 and SwiftUI. For the earlier
 > UIKit/storyboard API see the `1.x` releases and the
 > [migration guide](docs/migration-guide.md).
 
-## Features
+## ✨ Features
 
-- Declarative `Walkthrough { ... }` DSL — no storyboards, no dictionaries.
-- Built-in page types: **info**, **input**, **login**, **signup**, **action**,
-  **picker**, and **permission**.
-- Opt-in permission set: notifications, camera, microphone, photo library,
-  location, contacts, and App Tracking Transparency — each gated by a SwiftPM
-  trait so you link only what you use (see [Permissions](#permissions-opt-in)).
-- Host-extensible: inject your own SwiftUI pages with `CustomPage`.
-- `async`/`await` action handling with a typed `StepOutcome` state machine.
-- Themeable, with optional iOS 26 **Liquid Glass** chrome.
-- Accessible: Dynamic Type, VoiceOver labels, reduce-motion support, stable
-  accessibility identifiers.
-- Optional QR/barcode scanning and UIKit interop as separate products.
-- Zero required dependencies.
+| | |
+|---|---|
+| 🧩 **Declarative DSL** | `Walkthrough { ... }` result builder, no storyboards, no dictionaries |
+| 📄 **Page types** | info, input, login, signup, action, picker, permission, custom |
+| 🔐 **Opt-in permissions** | notifications, camera, microphone, photos, location, contacts, tracking, each behind a SwiftPM trait |
+| 🔌 **Host-extensible** | inject your own SwiftUI pages with `CustomPage` |
+| ⚡ **async/await actions** | a typed `StepOutcome` state machine |
+| 🎨 **Themeable** | page, button, indicator and nav theming, per-step overrides, optional iOS 26 Liquid Glass chrome |
+| ♿ **Accessible** | Dynamic Type, VoiceOver labels, reduce motion, stable accessibility identifiers |
+| 📷 **Optional extras** | QR/barcode scanning and UIKit interop as separate products |
+| 📦 **No required dependencies** | the core links no privacy-sensitive frameworks |
 
-## Requirements
+## 🏗️ How it fits together
 
-- iOS 17+ / iPadOS 17+ / Mac Catalyst 17+ (built with the iOS 26 SDK)
-- Swift 6 / Xcode 26
+```mermaid
+flowchart LR
+    H["Your app"] --> V["WalkthroughView"]
+    V --> M["WalkthroughModel<br/>(state machine)"]
+    D["Walkthrough { ... }<br/>pages + theme"] --> V
+    M -- "WalkthroughAction" --> A["actionHandler (async)"]
+    A -- "StepOutcome" --> M
+    P["VXWalkthroughPermissions<br/>(opt-in traits)"] -. "requester" .-> V
+    S["VXWalkthroughScanner"] -. "QR scan" .-> V
+    U["VXWalkthroughUIKit"] -. "hosting controller" .-> V
+```
 
-## Installation
+## 📋 Requirements
+
+| | |
+|---|---|
+| Platforms | iOS 17+, iPadOS 17+, Mac Catalyst 17+ (macOS 14+ builds the core for `swift test` and CI) |
+| Toolchain | Swift 6.1+ tools (package traits), Xcode 26 |
+
+## 📦 Installation
 
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift", .upToNextMajor(from: "2.1.0"))
+.package(url: "https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift", from: "2.3.0")
 ```
 
-Products:
+| Product | Purpose |
+|---|---|
+| `VXWalkthrough` | the core SwiftUI framework, references **no** privacy-sensitive frameworks |
+| `VXWalkthroughPermissions` | optional, opt-in system permission backends (see [Permissions](#permissions-opt-in)) |
+| `VXWalkthroughScanner` | optional QR/barcode scanning |
+| `VXWalkthroughUIKit` | optional `UIHostingController` convenience |
 
-- `VXWalkthrough` — the core SwiftUI framework. References **no**
-  privacy-sensitive frameworks.
-- `VXWalkthroughPermissions` — optional, opt-in system permission backends
-  (see [Permissions](#permissions-opt-in)).
-- `VXWalkthroughScanner` — optional QR/barcode scanning.
-- `VXWalkthroughUIKit` — optional `UIHostingController` convenience.
-
-## Usage
+## 🚀 Usage
 
 ```swift
 import SwiftUI
@@ -104,7 +132,7 @@ forced to declare unused purpose strings. To request real permissions:
 ```swift
 .package(
     url: "https://github.com/swiftmanagementag/VXWalkthroughViewController-Swift",
-    .upToNextMajor(from: "2.1.0"),
+    .upToNextMajor(from: "2.3.0"),
     traits: ["PermissionsNotifications", "PermissionsCamera"]
 )
 ```
@@ -256,6 +284,35 @@ LoginPage(
 )
 ```
 
+### Optional second action on the login page
+
+`LoginSpec.secondaryTitle` adds a text button **below** the sign-in row, for a
+second route to the same outcome (for example "Buy instead"). It is `nil` by
+default, so existing login pages are unchanged. Tapping it reports a
+`.action` payload (the primary button reports `.login`). The `LoginPage` DSL
+shortcut does not expose it yet; build the step from a `LoginSpec`:
+
+```swift
+let login = WalkthroughStep(
+    id: "login",
+    kind: .login(LoginSpec(buttonTitle: "Sign In", secondaryTitle: "Buy instead"))
+)
+
+WalkthroughView(Walkthrough(steps: [login]))
+    .actionHandler { action in
+        switch action.payload {
+        case .login(let credentials):
+            return await signIn(credentials)   // your sign-in call
+        case .action:
+            return .advance                    // the second action was tapped
+        default:
+            return .advance
+        }
+    }
+```
+
+> Available on `master` after the 2.3.0 tag; it ships with the next release.
+
 ### Per-step theme override
 
 Any page accepts an optional `theme:` to diverge for a single step (e.g. a
@@ -279,20 +336,22 @@ struct ExamDatePage: View {
 }
 ```
 
-## Documentation
+## 📚 Documentation
 
-- [Migration guide (1.x -> 2.0)](docs/migration-guide.md)
+- [Changelog](CHANGELOG.md)
+- [Migration guide (1.x to 2.0)](docs/migration-guide.md)
 - [Modernization plan](docs/ios26-refactor-plan.md)
+- A runnable example lives in [`Demo/`](Demo/).
 - DocC: build documentation for the `VXWalkthrough` scheme in Xcode.
 
-## Credits
+## 🙏 Credits
 
 VXWalkthrough is brought to you by
 [Swift Management AG](https://www.swiftmanagement.ch) and contributors. The
 original UIKit implementation was based on Yari D'areglia's BWWalkthrough and
 Sam Vermette's SVWebViewController.
 
-## License
+## 📄 License
 
 VXWalkthrough is released under the MIT License. See [LICENSE](LICENSE) for the
 full text.
